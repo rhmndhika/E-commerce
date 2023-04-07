@@ -42,7 +42,6 @@ import axios from 'axios';
     useEffect(() => {
       axios.get("http://localhost:5000/login").then((response)=> {
           setLoginStatus(response.data.email)
-          console.log(response.data.email)
       });
     }, []);
     

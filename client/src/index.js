@@ -7,17 +7,21 @@ import Home from './scenes/home/Home';
 import Signup from './components/SignUp';
 import Navbar from './components/Navbar.tsx';
 import Default from './scenes/global/Default';
+import ProductList from './scenes/global/ProductList';
+import Product from './scenes/global/Product';
+import SignIn from './components/SignIn';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ChakraProvider>
-    <Navbar />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Default />} />
+          <Route path='/' element={<Home />} />
           <Route path='/signup' element={<Signup />} />
-          <Route path='/home' element={<Home />} />
+          <Route path='/signin' element={<SignIn />} />
+          <Route path='/productList' element={<ProductList />} />
+          <Route path='/productSingle' element={<Product />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

@@ -15,9 +15,17 @@ import {
   Stack,
   useColorMode,
   Center,
+  InputGroup,
+  InputLeftElement,
+  Input,
   IconButton
-} from '@chakra-ui/react';
-import { MoonIcon, SunIcon, BellIcon } from '@chakra-ui/icons';
+} from '@chakra-ui/react'
+import styled from 'styled-components';
+import { MoonIcon, SunIcon, BellIcon, SearchIcon } from '@chakra-ui/icons'
+import { BsFillCartFill } from 'react-icons/bs'
+
+const Container = styled.div`
+`
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <Link
@@ -33,12 +41,14 @@ const NavLink = ({ children }: { children: ReactNode }) => (
   </Link>
 );
 
+
+
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Box bg={useColorModeValue('blue.100', 'gray.900')} px={4}>
+      <Box backgroundColor={'white'} px={4} shadow="md">
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box>
             <a href="/">
@@ -46,16 +56,20 @@ export default function Navbar() {
             </a>
           </Box>
 
+          <Flex>
+            <InputGroup margin="10px">
+            <InputLeftElement
+              pointerEvents='none'
+              children={<SearchIcon color='black.300' />}/>
+            <Input border="1px solid" textColor="black.300" width="330px" height="40px" type='text' placeholder='Cari di toko.....' />
+            </InputGroup>
+          </Flex>
+
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              <Button onClick={toggleColorMode}>
-                {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              </Button>
-
-              <IconButton aria-label='Search database' icon={<BellIcon />} />
              
-
-              <Menu>
+              <IconButton aria-label='Notification' icon={<BsFillCartFill />} />
+              {/* <Menu>
                 <MenuButton
                   as={Button}
                   rounded={'full'}
@@ -85,7 +99,15 @@ export default function Navbar() {
                   <MenuItem>Account Settings</MenuItem>
                   <MenuItem>Logout</MenuItem>
                 </MenuList>
-              </Menu>
+              </Menu> */}
+              <Flex>
+                <a href="/signup">
+                  <Button mr="20px" variant="outline" colorScheme='teal'>Register</Button>
+                </a>
+                <a href="/signin">
+                <Button variant="solid" colorScheme='teal'>Login</Button>
+                </a>
+              </Flex>
             </Stack>
           </Flex>
         </Flex>
