@@ -1,6 +1,7 @@
 import React from 'react'
 import { Flex, Text, Button } from '@chakra-ui/react'
 import styled from 'styled-components'
+import { mobile, isMobile } from '../reponsive'
 
 const Container = styled.div`
   flex: 1;
@@ -14,6 +15,7 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  ${isMobile({ height: "20vh", padding: "10px"})}
 `;
 
 const Info = styled.div`

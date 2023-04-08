@@ -9,7 +9,7 @@ import Navbar from '../../components/Navbar.tsx'
 const Home = () => {
   return (
    <div>
-    <Navbar />
+    {/* <Navbar /> */}
       <Slider />
       <Categories />
       <Products />

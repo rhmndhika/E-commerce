@@ -13,7 +13,8 @@ import {
 import styled from 'styled-components'
 import { GrAdd} from 'react-icons/gr';
 import { AiOutlineMinus} from 'react-icons/ai';
-
+import { mobile, isMobile, isTablet } from '../../reponsive'
+import { useMediaQuery } from '@chakra-ui/react'
 
 const Container = styled.div`
 `
@@ -21,12 +22,14 @@ const Container = styled.div`
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;
+  ${isTablet({ padding: "10px", flexDirection: "column"})}
 `
 
 const Image = styled.img`
   width: 100%;
   height: 90vh;
   object-fit: cover;
+  ${isTablet({ height: "40%"})}
 `
 
 const ImageContainer = styled.div`
@@ -36,6 +39,7 @@ const ImageContainer = styled.div`
 const InfoContainer = styled.div`
   flex: 1;
   padding: 0px 50px;
+  ${isTablet({ padding: "10px"})}
 `
 
 const Title = styled.h1`
@@ -67,6 +71,11 @@ const ButtonStyled = styled.button`
 
 const Product = () => {
 
+  const [ isSmallerThan704 ] = useMediaQuery('(min-width: 704px)', {
+    ssr: true,
+    fallback: false, 
+  })
+
   const [ amount, setAmount ] = useState(0);
 
   const increment = () => {
@@ -79,7 +88,7 @@ const Product = () => {
 
   return (
     <Container>
-      <Navbar />
+      {/* <Navbar /> */}
         <Wrapper>
             <ImageContainer>
               <Image src="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png" alt="product" />
@@ -94,6 +103,7 @@ const Product = () => {
               condimentum ac, volutpat ornare.
             </Desc>
             <Price>$ 20</Price>
+          { isSmallerThan704 ? 
           <Flex flexDirection="row" mt="30px">
             <Flex>
               <Select placeholder='Color' width="110px" mt="-3px" ml="5px">
@@ -110,7 +120,26 @@ const Product = () => {
               </Select>
             </Flex>
           </Flex>
-          <Flex margin="10px 0 0 5px" justifyContent="space-between" alignItems="center" width="50%" mt="30px">
+          :
+          <Flex flexDirection="row" mt="30px" justifyContent="space-between">
+          <Flex>
+            <Select placeholder='Color' width="110px" mt="-3px" ml="5px">
+              <option value='option1'>Red</option>
+              <option value='option2'>Green</option>
+              <option value='option3'>Blue</option>
+            </Select>
+          </Flex>
+          <Flex>
+            <Select placeholder='Size' width="110px" mt="-3px" ml="5px">
+              <option value='option1'>S</option>
+              <option value='option2'>M</option>
+              <option value='option3'>L</option>
+              <option value='option4'>XL</option>
+            </Select>
+          </Flex>
+        </Flex>
+          }
+          <Flex margin="10px 0 0 5px" justifyContent="space-between" alignItems="center"  mt="30px">
             <Flex>
               {/* <Button onClick={decrement}>-</Button> */}
               <AiOutlineMinus onClick={decrement} cursor="pointer" />
@@ -118,9 +147,12 @@ const Product = () => {
               <GrAdd onClick={increment} cursor="pointer" />
               {/* <Button onClick={increment}>+</Button> */}
             </Flex>
+          
             <Flex>
-            </Flex>
               <Button padding="15px" border="2px solid teal" backgroundColor="white" cursor="pointer" fontWeight="500" _hover={{backgroundColor : "#f8f4f4"}} >Add to Cart</Button>
+              
+            </Flex>
+          
             </Flex>
           </InfoContainer>
         </Wrapper>
