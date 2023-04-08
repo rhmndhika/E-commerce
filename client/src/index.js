@@ -9,6 +9,8 @@ import ProductList from './scenes/global/ProductList';
 import Product from './scenes/global/Product';
 import SignIn from './components/SignIn';
 import Cart from './scenes/global/Cart';
+import Payment from './scenes/global/Payment';
+import Succes from './scenes/global/Succes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,6 +24,8 @@ root.render(
           <Route path='/productList' element={<ProductList />} />
           <Route path='/productSingle' element={<Product />} />
           <Route path='/cart' element={<Cart />} />
+          <Route path='/pay' element={<Payment />} />
+          <Route path='/succes' element={<Succes />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

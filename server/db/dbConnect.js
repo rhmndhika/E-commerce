@@ -1,11 +1,13 @@
 // external imports
 const mongoose = require("mongoose");
-require('dotenv').config()
+const dotenv =  require("dotenv");
+
+dotenv.config();
 
 async function dbConnect() {
   mongoose
     .connect(
-      "mongodb+srv://rahmandhika:0p83RCbX1brFyptZ@ecommerce.vac0m5u.mongodb.net/Ecommerce?retryWrites=true&w=majority"
+      process.env.MONGO_URL
     )
     .then(() => {
       console.log("Successfully connected to MongoDB Atlas!");

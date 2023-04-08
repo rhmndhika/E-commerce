@@ -1,24 +1,28 @@
 const express = require('express'); 
 const app = express(); 
 const cors = require("cors");
-const port = process.env.PORT || 5000;
+const port = 5000;
 const dbConnect = require("./db/dbConnect");
 const path = require('path');
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const MemoryStore = require('memorystore')(session);
 const http = require('http');
 const { Server } = require('socket.io');
+const dotenv =  require("dotenv");
 
+dotenv.config();
 
 
 dbConnect();
 
-const UserModel = require('./models/User')
-const registerRoute = require("./routes/Register");
-const loginRoute = require("./routes/Login");
-const productRoute = require("./routes/Product");
+
+const authRoute = require("./routes/auth");
+const userRoute = require("./routes/user");
+const producttRoute = require("./routes/product");
+const cartRoute = require("./routes/cart");
+const orderRoute = require("./routes/order");
+const stripeRoute = require("./routes/stripe");
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -35,6 +39,7 @@ app.use(
   credentials: true,
   optionsSuccessStatus : 200
 }));
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -50,28 +55,14 @@ app.use(session({
   }
 }));
 
-app.use(registerRoute);
-app.use(loginRoute);
-app.use(productRoute);
+app.use(authRoute);
+app.use(userRoute);
+app.use(producttRoute);
+app.use(cartRoute);
+app.use(orderRoute);
+app.use(stripeRoute);
 
-// create a GET route
-app.get('/express_backend', (req, res) => { 
-  res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
-}); 
-
-app.get('/getUser', (req, res) => { 
-  UserModel.find({}, (err, result) => {
-    if (err) {
-      res.json(err)
-    } else {
-      res.json(result)
-    }
-  })
-}); 
-
-
-// This displays message that the server running and listening to specified port
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
   console.log(`Listening on port ${port}`);
 }) 
 

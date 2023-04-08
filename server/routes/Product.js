@@ -1,90 +1,87 @@
 const express = require("express");
 const router = express.Router();
-const path = require('path');
-const multer = require('multer');
+const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
+const Product = require("../models/Product");
 
-const ProductModel = require('../models/Product');
-
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'images')
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() +  path.extname(file.originalname))
-    }
-});
-
-const upload = multer({storage: storage});
 
 const addProduct = async (req, res) => {
 
-    const dataProduct = new ProductModel({
-        name : req.body.name,
-        price : req.body.price,
-        category : req.body.category,
-        stock : req.body.stock,
-        description : req.body.description,
-        image : `http://localhost:5000/images/${req.file.filename}`
-    })
+    const newProduct = new Product(req.body)
 
-    dataProduct.save(function(err) {
-        if (err) {
-            res.json(err);
-        } else {
-            res.json(dataProduct);
-        }
-    })
+    try {
+        const saveProduct = await newProduct.save();
+        res.status(200).json(saveProduct);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+
 }
 
-const getAllProduct = (req, res) => {
+const updateProduct = async (req, res) => {
+    
+    try {
+        const updatedProduct = await Product.findByIdAndUpdate(
+          req.params.id,
+          {
+            $set: req.body,
+          },
+          { new: true }
+        );
+        res.status(200).json(updatedProduct);
+      } catch (err) {
+        res.status(500).json(err);
+      }
 
-    ProductModel.find({}, (err, result) => {
-        if (err) {
-            res.json(err);
-        } else {
-            res.json(result);
-        }
-    })
 }
 
-const updateProductById = async (req, res) => {
-    const Id = req.params.id;
+const deleteProduct = async (req, res) => {
   
     try {
-      const updateProduct = await ProductModel.findByIdAndUpdate({_id : Id}, {
-        name : req.body.name,
-        price : req.body.price,
-        category : req.body.category,
-        stock : req.body.stock,
-        description : req.body.description
-      })
-
-        return res.send(updateProduct);
-
-    } catch (err) {
-      return res.status(500).send({
-        message: err.message
-      })
+        await Product.findByIdAndDelete(req.params.id);
+        res.status(200).json("Product has been deleted..");
+    } catch(err) {
+        res.status(500).json(err)
     }
 }
 
-const deleteProductById = async (req, res) => {
-    const Id = req.params.id;
-  
+const getProduct = async (req, res) => {
     try {
-      const deleteProduct = await ProductModel.findByIdAndDelete({_id : Id});
-      return res.send(deleteProduct);
-    } catch (err) {
-      return res.status(500).send({
-        message: err.message
-      })
+        const product = await Product.findById(req.params.id);
+        
+        res.status(200).json(product);
+    } catch(err) {
+        res.status(500).json(err)
     }
-  }
+}
 
-router.post("/product/add", upload.single('file'), addProduct);
+const getAllProduct = async (req, res) => {
+    const queryNew = req.query.new;
+    const queryCategory = req.query.category;
+
+    try {
+        let products;
+
+        if(queryNew) {
+            products = await Product.find({}).sort({ createdAt: -1}).limit(5);
+        } else if (queryCategory) {
+            products = await Product.find({categories: {
+                $in: [queryCategory],
+            },
+        });
+        } else {
+            products = await Product.find({});
+        }
+  
+        res.status(200).json(products);
+    } catch(err) {
+        res.status(500).json(err)
+    }
+}
+
+router.post("/product/add", verifyTokenAndAdmin, addProduct);
+router.put("/product/update/:id", verifyTokenAndAdmin, updateProduct);
+router.delete("/product/delete/:id", verifyTokenAndAdmin, deleteProduct);
+router.get("/product/find/:id", getProduct);
 router.get("/product/all", getAllProduct);
-router.put("/product/update/:id", updateProductById);
-router.delete("/product/delete/:id", deleteProductById);
 
 module.exports = router
