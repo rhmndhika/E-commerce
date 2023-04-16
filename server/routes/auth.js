@@ -4,7 +4,7 @@ const User = require("../models/User");
 const CryptoJs = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
-// Register
+
 
 const Register = async (req, res) => {
     const newUser = new User({
@@ -21,7 +21,6 @@ const Register = async (req, res) => {
     }
 }
 
-// Login 
 
 const Login = async (req, res) => {
     
@@ -51,7 +50,7 @@ const Login = async (req, res) => {
         
     } catch(err) {
         res.status(500).json(err);
-        console.log(err)
+        console.log(err);
     }
 }
 

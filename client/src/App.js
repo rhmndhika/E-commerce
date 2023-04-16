@@ -1,19 +1,35 @@
 import React from 'react';
-import useFetch from './useFetch';
+import { ChakraProvider } from '@chakra-ui/react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './scenes/home/Home';
+import Signup from './components/SignUp';
+import ProductList from './scenes/global/ProductList';
+import Product from './scenes/global/Product';
+import SignIn from './components/SignIn';
+import Cart from './scenes/global/Cart';
+import Payment from './scenes/global/Payment';
+import Succes from './scenes/global/Succes';
 
 function App() {
 
-  const { data, loading, error, refetch } = useFetch("https://v2.jokeapi.dev/joke/Any");
+  const user = true
 
-  if (loading) return <h1>loading...</h1>
-
-  if (error) console.log(error);
 
   return (
-    <div className="App">
-      <h1>{data?.setup} : {data?.delivery}</h1>
-      <button onClick={refetch}>Refetch</button>
-    </div>
+  <ChakraProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/signup' element={ user? <Navigate to="/" /> : <Signup />} />
+        <Route path='/signin' element={ user ? <Navigate to="/" /> : <SignIn />} />
+        <Route path='/productList/:category' element={<ProductList />} />
+        <Route path='/productSingle/:id' element={<Product />} />
+        <Route path='/cart' element={<Cart />} />
+        <Route path='/pay' element={<Payment />} />
+        <Route path='/succes' element={<Succes />} />
+      </Routes>
+    </BrowserRouter>
+  </ChakraProvider>
   );
 }
 

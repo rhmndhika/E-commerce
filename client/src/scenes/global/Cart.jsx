@@ -30,9 +30,9 @@ const TopButton = styled.button`
     font-weight: 600;
     cursor: pointer;
     border: ${(props) => props.type === "filled" && "none"};
-    background-color: ${(props) => 
+    background-color: ${(props) =>
         props.type === "filled" ? "black" : "transparent"};
-    color: ${props => props.type === "filled" && "white"};
+    color: ${(props) => props.type === "filled" && "white"};
 `
 const TopTexts = styled.div`
     ${isTablet730({ display: "none"})}
@@ -154,7 +154,7 @@ const Button = styled.button`
 const Cart = () => {
   return (
     <Container>
-        {/* <Navbar /> */}
+        <Navbar />
         <Wrapper>
             <Title>Your Bag</Title>
             <Top>

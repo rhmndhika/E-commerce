@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/Navbar.tsx'
 import Newsletter from '../../components/Newsletter'
 import Footer from '../../components/Footer.tsx'
@@ -15,6 +15,9 @@ import { GrAdd} from 'react-icons/gr';
 import { AiOutlineMinus} from 'react-icons/ai';
 import { mobile, isMobile, isTablet } from '../../reponsive'
 import { useMediaQuery } from '@chakra-ui/react'
+import { useLocation } from 'react-router-dom'
+import { publicRequest } from '../../useFetch.js'
+
 
 const Container = styled.div`
 `
@@ -76,34 +79,56 @@ const Product = () => {
     fallback: false, 
   })
 
-  const [ amount, setAmount ] = useState(0);
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
+
+  console.log(id)
+
+  const [ product, setProduct ] = useState({});
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await publicRequest.get("/product/find/"+id);
+        setProduct(res.data);
+      } catch(err) {
+        console.log(err);
+      }
+    }
+    getProduct();
+  }, [product])
+
+
+  const handleClick = () => {
+    //update cart
+    
+  }
+
+
+  const [ amount, setAmount ] = useState(1);
 
   const increment = () => {
     setAmount(amount + 1)
   }
 
   const decrement = () => {
-    setAmount(amount - 1)
+    amount > 1 && setAmount(amount - 1)
   }
 
   return (
     <Container>
-      {/* <Navbar /> */}
+      <Navbar />
         <Wrapper>
             <ImageContainer>
-              <Image src="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png" alt="product" />
+              <Image src={product.img} alt="product" />
             </ImageContainer>
           <InfoContainer>
-            <Title>Denim Jumpsuit</Title>
+            <Title>{product.title}</Title>
             <Desc>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-              iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-              tristique tortor pretium ut. Curabitur elit justo, consequat id
-              condimentum ac, volutpat ornare.
+             {product.desc}
             </Desc>
-            <Price>$ 20</Price>
-          { isSmallerThan704 ? 
+            <Price>$ {product.price}</Price>
+          {/* { isSmallerThan704 ? 
           <Flex flexDirection="row" mt="30px">
             <Flex>
               <Select placeholder='Color' width="110px" mt="-3px" ml="5px">
@@ -138,7 +163,7 @@ const Product = () => {
             </Select>
           </Flex>
         </Flex>
-          }
+          } */}
           <Flex margin="10px 0 0 5px" justifyContent="space-between" alignItems="center"  mt="30px">
             <Flex>
               {/* <Button onClick={decrement}>-</Button> */}
@@ -149,8 +174,8 @@ const Product = () => {
             </Flex>
           
             <Flex>
-              <Button padding="15px" border="2px solid teal" backgroundColor="white" cursor="pointer" fontWeight="500" _hover={{backgroundColor : "#f8f4f4"}} >Add to Cart</Button>
-              
+              <Button padding="15px" border="2px solid teal" backgroundColor="white" cursor="pointer" fontWeight="500" _hover={{backgroundColor : "#f8f4f4"}} 
+              onClick={handleClick}>Add to Cart</Button>
             </Flex>
           
             </Flex>

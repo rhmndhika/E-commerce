@@ -6,6 +6,7 @@ import {
   AiOutlineHeart
 } from 'react-icons/ai';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Info = styled.div`
   opacity: 0;
@@ -87,10 +88,10 @@ const Product = ({item}) => {
         <Icon>
           <AiOutlineShoppingCart />
         </Icon>
-        <a href='/productList'>
-        <Icon>
-          <AiOutlineSearch />
-        </Icon>
+        <a href={`/productSingle/${item._id}`}>
+          <Icon>
+            <AiOutlineSearch />
+          </Icon>
         </a>
         <Icon>
           <AiOutlineHeart />

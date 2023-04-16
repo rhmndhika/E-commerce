@@ -20,11 +20,6 @@ const Categories = () => {
         <CategoryItem item={item} key={item.id} />
       ))}
     </Container>
-    // <Flex alignItems="center" justifyContent="space-around" padding="20px" flex-wrap="wrap" gap="10px" mt="80px">
-    //     {categories.map(item => (
-    //         <CategoryItem item={item} key={item.id} />
-    //     ))}
-    // </Flex>
   )
 }
 

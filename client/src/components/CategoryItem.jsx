@@ -31,7 +31,8 @@ const Info = styled.div`
 `;
 
 const Title = styled.h1`
-    color:white;
+    color:black;
+    font-weight: bold;
     margin-bottom: 20px;
 `;
 
@@ -50,7 +51,9 @@ const CategoryItem = ({item}) => {
       <Image src={item.img} />
       <Info>
         <Title>{item.title}</Title>
-        <Button border="none" padding="10px" backgroundColor="white" color="black" cursor="pointer" fontWeight="600">SHOP NOW</Button>
+        <a href={`/productList/${item.cat}`}>
+          <Button border="none" padding="10px" backgroundColor="white" color="black" cursor="pointer" fontWeight="600">SHOP NOW</Button>
+        </a>
       </Info>
     </Container>
     // <Flex flexDirection="row" alignItems="center" justifyContent="center" margin="3px" position="relative" flex="1" height="70vh">
