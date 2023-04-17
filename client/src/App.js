@@ -26,7 +26,7 @@ function App() {
         <Route path='/productSingle/:id' element={<Product />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/pay' element={<Payment />} />
-        <Route path='/succes' element={<Succes />} />
+        <Route path='/success' element={<Succes />} />
       </Routes>
     </BrowserRouter>
   </ChakraProvider>

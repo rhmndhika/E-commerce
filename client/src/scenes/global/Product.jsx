@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Navbar from '../../components/Navbar.tsx'
+import Navbar from '../../components/Navbar.jsx'
 import Newsletter from '../../components/Newsletter'
 import Footer from '../../components/Footer.tsx'
 import { 
@@ -17,7 +17,8 @@ import { mobile, isMobile, isTablet } from '../../reponsive'
 import { useMediaQuery } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom'
 import { publicRequest } from '../../useFetch.js'
-
+import { addProduct } from '../../redux/cartRedux.js'
+import { useDispatch } from 'react-redux'
 
 const Container = styled.div`
 `
@@ -81,10 +82,9 @@ const Product = () => {
 
   const location = useLocation();
   const id = location.pathname.split("/")[2];
-
-  console.log(id)
-
   const [ product, setProduct ] = useState({});
+  const [ quantity, setQuantity ] = useState(1);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const getProduct = async () => {
@@ -92,27 +92,25 @@ const Product = () => {
         const res = await publicRequest.get("/product/find/"+id);
         setProduct(res.data);
       } catch(err) {
-        console.log(err);
+        
       }
     }
     getProduct();
-  }, [product])
+  }, [id])
 
 
   const handleClick = () => {
     //update cart
-    
+    dispatch(addProduct({ ...product, quantity }));
   }
 
 
-  const [ amount, setAmount ] = useState(1);
-
   const increment = () => {
-    setAmount(amount + 1)
+    setQuantity(quantity + 1)
   }
 
   const decrement = () => {
-    amount > 1 && setAmount(amount - 1)
+    quantity > 1 && setQuantity(quantity - 1)
   }
 
   return (
@@ -168,7 +166,7 @@ const Product = () => {
             <Flex>
               {/* <Button onClick={decrement}>-</Button> */}
               <AiOutlineMinus onClick={decrement} cursor="pointer" />
-              <Amount>{amount}</Amount>
+              <Amount>{quantity}</Amount>
               <GrAdd onClick={increment} cursor="pointer" />
               {/* <Button onClick={increment}>+</Button> */}
             </Flex>

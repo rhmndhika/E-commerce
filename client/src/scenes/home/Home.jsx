@@ -4,7 +4,7 @@ import Products from '../../components/Products';
 import Slider from '../../components/Slider';
 import Newsletter from '../../components/Newsletter';
 import Footer from '../../components/Footer.tsx';
-import Navbar from '../../components/Navbar.tsx'
+import Navbar from '../../components/Navbar.jsx'
 
 const Home = () => {
   return (

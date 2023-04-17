@@ -88,11 +88,11 @@ const Product = ({item}) => {
         <Icon>
           <AiOutlineShoppingCart />
         </Icon>
-        <a href={`/productSingle/${item._id}`}>
+        <Link to={`/productSingle/${item._id}`}>
           <Icon>
             <AiOutlineSearch />
           </Icon>
-        </a>
+        </Link>
         <Icon>
           <AiOutlineHeart />
         </Icon>

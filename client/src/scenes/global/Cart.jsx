@@ -1,11 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import Navbar from '../../components/Navbar.tsx'
+import Navbar from '../../components/Navbar.jsx'
 import Footer from '../../components/Footer.tsx'
 import { GrAdd} from 'react-icons/gr'
 import { AiOutlineMinus} from 'react-icons/ai'
-import { Input} from '@chakra-ui/react'
 import { isMobile490, isTablet730 } from '../../reponsive'
+import { useSelector } from 'react-redux'
+import StripeCheckout from 'react-stripe-checkout'
+import { useState } from 'react'
+import { userMethod } from '../../useFetch.js'
+import { useNavigate } from 'react-router-dom';
+
+const KEY =  "pk_test_51MuV3GECvrLW1LL9pTqGJ5eCINrDmbC81kIycSRw70xvBPx6KDHspuAxibLSQGprMc2TJzFKaRgowk8JwhMd7K6I00oOGcoFW4"
 
 const Container = styled.div``
 
@@ -152,6 +158,32 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+
+    const cart = useSelector(state=>state.cart);
+    const [ stripeToken, setStripeToken ] = useState(null);
+    const navigate = useNavigate();
+    
+    const onToken = (token) => {
+        setStripeToken(token);
+    }
+
+
+    useEffect(() => {
+        const makeRequest = async () => {
+            try{
+                const response = await userMethod.post("/checkout/payment", {
+                    tokenId: stripeToken.id,
+                    amount: 500,
+                })
+                navigate("/success", { state: {data: response.data} });
+            } catch (err) {
+            } 
+        }
+        stripeToken &&  makeRequest();
+    }, [stripeToken, cart.total, navigate])
+
+
+
   return (
     <Container>
         <Navbar />
@@ -160,58 +192,41 @@ const Cart = () => {
             <Top>
                 <TopButton>Continue Shopping</TopButton>
                 <TopTexts>
-                    <TopText>Shooping Bag(2)</TopText>
+                    <TopText>Shooping Bag({cart.quantity})</TopText>
                     <TopText>Your Wishlist</TopText>
                 </TopTexts>
                 <TopButton type="filled">Checkout Now</TopButton>
             </Top>
             <Bottom>
                 <Info>
+                {cart.products.map((product) => (
                     <Product>
                         <ProductDetail>
-                            <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" alt="google"></Image>
+                            <Image src={product.img} alt="google"></Image>
                             <Details>
-                                <ProductName><b>Product:</b> Shoes</ProductName>
-                                <ProductId><b>ID:</b> 00000040733</ProductId>
-                                <ProductColor color="black" />
-                                <ProductSize><b>Size:</b> XL</ProductSize>
+                                <ProductName><b>Product:</b> {product.title}</ProductName>
+                                <ProductId><b>ID:</b> {product._id}</ProductId>
+                                {/* <ProductColor color="black" />
+                                <ProductSize><b>Size:</b> XL</ProductSize> */}
                             </Details>
                         </ProductDetail>
                         <PriceDetail>
                             <ProductAmountContainer>
                                 <AiOutlineMinus />
-                                <ProductAmount>2</ProductAmount>
+                                <ProductAmount>{product.quantity}</ProductAmount>
                                 <GrAdd />
                             </ProductAmountContainer>
-                            <ProductPrice>$ 300</ProductPrice>
+                            <ProductPrice>$ {product.price * product.quantity}</ProductPrice>
                         </PriceDetail>
                     </Product>
+                        ))}
                     <Hr></Hr>
-                    <Product>
-                        <ProductDetail>
-                            <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" alt="google"></Image>
-                            <Details>
-                                <ProductName><b>Product:</b> Shoes</ProductName>
-                                <ProductId><b>ID:</b> 00000040733</ProductId>
-                                <ProductColor color="black" />
-                                <ProductSize><b>Size:</b> XL</ProductSize>
-                            </Details>
-                        </ProductDetail>
-                        <PriceDetail>
-                            <ProductAmountContainer>
-                                <AiOutlineMinus />
-                                <ProductAmount>2</ProductAmount>
-                                <GrAdd />
-                            </ProductAmountContainer>
-                            <ProductPrice>$ 300</ProductPrice>
-                        </PriceDetail>
-                    </Product>
                 </Info>
                 <Summary>
                     <SummaryTitle>Order Summary</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>$ 600</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -223,9 +238,20 @@ const Cart = () => {
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText type="total">Total</SummaryItemText>
-                            <SummaryItemPrice>$ 591</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
-                        <Button>Checkout Now</Button>
+                        <StripeCheckout 
+                            name="Kimia shop" 
+                            image="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png"
+                            billingAddress
+                            shippingAddress
+                            description={`your total is $ ${cart.total}`}
+                            amount={cart.total * 100}
+                            token={onToken}
+                            stripeKey={KEY}
+                            >
+                            <Button>Checkout Now</Button>
+                        </StripeCheckout>
                 </Summary>
             </Bottom>
         </Wrapper>
