@@ -8,10 +8,14 @@ const Succes = () => {
   const location = useLocation();
 
   const data = location.state.stripeData;
-  const cart = location.state.cart;
+  const cart = location.state.products;
 
   const currentUser = useSelector((state) => state.user.currentUser);
   const [orderId, setOrderId] = useState(null);
+
+  console.log(data)
+  console.log(cart)
+  console.log(location)
 
   useEffect(() => {
     const createOrder = async () => {
