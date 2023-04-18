@@ -17,33 +17,25 @@ import {
   } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { login } from '../redux/apiCalls';
+import { useDispatch, useSelector } from 'react-redux';
   
   export default function SignIn() {
 
     axios.defaults.withCredentials = true;
 
+    const [ username, setUsername ] = useState('');
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ showPassword, setShowPassword ] = useState(false);
-    const [ logins, setLogins ] = useState(false);
-    const [ loginStatus, setLoginStatus ] = useState('');
+ 
+    const dispatch = useDispatch();
+    const { isFetching, error } = useSelector(state=> state.user);
 
-    const login = () => {
-        axios.post("http://localhost:5000/login", {
-            email : email,
-            password : password
-        }).then((response) => {
-            setEmail(response.data.email);
-            setPassword(response.data.password);
-            setLogins(true)
-        })
+    const handleLogin = (e) => {
+      e.preventDefault();
+      login(dispatch, { username, password});
     }
-
-    useEffect(() => {
-      axios.get("http://localhost:5000/login").then((response)=> {
-          setLoginStatus(response.data.email)
-      });
-    }, []);
     
     return (
       <Flex
@@ -64,13 +56,19 @@ import axios from 'axios';
             boxShadow={'lg'}
             p={8}>
             <Stack spacing={4}>
-            <form onSubmit={login}>
-              <FormControl id="email" isRequired>
+            <form>
+              <FormControl id="username" isRequired>
+                <FormLabel>Username</FormLabel>
+                <Input type="username" name="username" value={username} onChange={(e)=> {
+                    setUsername(e.target.value)
+                }} />
+              </FormControl>
+              {/* <FormControl id="email" isRequired>
                 <FormLabel>Email address</FormLabel>
                 <Input type="email" name="email" value={email} onChange={(e)=> {
                     setEmail(e.target.value)
                 }} />
-              </FormControl>
+              </FormControl> */}
                <FormControl id="password" isRequired pb={5}>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
@@ -102,10 +100,18 @@ import axios from 'axios';
                   color={'white'}
                   _hover={{
                     bg: 'blue.500',
-                  }}>
+                  }}
+                  _disabled={{
+                    bg : "black.100",
+                    cursor: "not-allowed"
+                  }}
+                  onClick={handleLogin}
+                  disabled={isFetching}>
                   Sign in
                 </Button>
-                <p>{loginStatus}</p>
+                {error &&
+                <Text color="red">Something went wrong</Text>
+                }
               </Stack>
             </form>
             </Stack>

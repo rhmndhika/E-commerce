@@ -18,8 +18,9 @@ import {
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { BsFillCartFill } from 'react-icons/bs'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { logout } from '../redux/userRedux';
 
 
 // const NavLink = ({ children }: { children: ReactNode }) => (
@@ -43,6 +44,14 @@ export default function Nav() {
 
   const quantity = useSelector(state=>state.cart.quantity);
 
+  const user = useSelector((state) => state.user.currentUser);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  }
+
   
   return (
     <>
@@ -60,27 +69,34 @@ export default function Nav() {
               </Button>
               </Link>
 
-              <Button
-                as={'a'}
-                fontSize={'sm'}
-                fontWeight={400}
-                variant={'outline'}
-                colorScheme='pink'
-                href={'/signin'}>
-                Sign In
-              </Button>
-              <Button
-                as={'a'}
-                fontSize={'sm'}
-                fontWeight={600}
-                color={'white'}
-                bg={'pink.400'}
-                href={'/signup'}
-                _hover={{
-                  bg: 'pink.300',
-                }}>
-                Sign Up
-              </Button>
+              { user ? 
+              <p onClick={handleLogout}>{user.username}</p>
+              :
+              <Flex>
+                <Button
+                  as={'a'}
+                  fontSize={'sm'}
+                  fontWeight={400}
+                  mr={'5'}
+                  variant={'outline'}
+                  colorScheme='pink'
+                  href={'/signin'}>
+                  Sign In
+                </Button>
+                <Button
+                  as={'a'}
+                  fontSize={'sm'}
+                  fontWeight={600}
+                  color={'white'}
+                  bg={'pink.400'}
+                  href={'/signup'}
+                  _hover={{
+                    bg: 'pink.300',
+                  }}>
+                  Sign Up
+                </Button>
+              </Flex>
+              }
             </Stack>
           </Flex>
         </Flex>

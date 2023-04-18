@@ -8,12 +8,12 @@ import Product from './scenes/global/Product';
 import SignIn from './components/SignIn';
 import Cart from './scenes/global/Cart';
 import Payment from './scenes/global/Payment';
-import Succes from './scenes/global/Succes';
+import Succes from './scenes/global/Succes'
+import { useSelector } from 'react-redux'
 
 function App() {
 
-  const user = true
-
+  const user = useSelector((state) => state.user.currentUser);
 
   return (
   <ChakraProvider>
