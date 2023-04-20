@@ -5,11 +5,13 @@ import Footer from '../../components/Footer.tsx'
 import { GrAdd} from 'react-icons/gr'
 import { AiOutlineMinus} from 'react-icons/ai'
 import { isMobile490, isTablet730 } from '../../reponsive'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import StripeCheckout from 'react-stripe-checkout'
 import { useState } from 'react'
 import { userMethod } from '../../useFetch.js'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
+import { removeCartItem } from '../../redux/apiCalls.js'
+import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, getCartTotal, removeItem } from '../../redux/cartRedux.js'
 
 const KEY =  "pk_test_51MuV3GECvrLW1LL9pTqGJ5eCINrDmbC81kIycSRw70xvBPx6KDHspuAxibLSQGprMc2TJzFKaRgowk8JwhMd7K6I00oOGcoFW4"
 
@@ -160,12 +162,23 @@ const Button = styled.button`
 const Cart = () => {
 
     const cart = useSelector(state=>state.cart);
+   
     const [ stripeToken, setStripeToken ] = useState(null);
     const navigate = useNavigate();
     
     const onToken = (token) => {
         setStripeToken(token);
     }
+
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.currentUser._id);
+
+
+    const [ Carts, setCarts ] = useState([]);
+
+    const cartProducts = useSelector(cartProductsSelector);
+    const cartQuantity = useSelector(cartQuantitySelector);
+    const cartTotal = useSelector(cartTotalSelector);
 
 
     useEffect(() => {
@@ -182,7 +195,42 @@ const Cart = () => {
         stripeToken &&  makeRequest();
     }, [stripeToken, cart.total, navigate])
 
+    useEffect(() => {
+        const makeCartRequest = async () => {
+            try{
+                const response = await userMethod.get(`/cart/find/${user}`)
+                setCarts(response.data);
+            } catch (err) {
+                console.log(err);
+            } 
+        }
+        makeCartRequest();
+    }, [user])
 
+    
+    // const deleteCart = (cartId, itemId) => {
+    //     // removeCartItem(dispatch, cartId, itemId);
+    //     dispatch(removeCartItem(dispatch, cartId, itemId));
+    //     // window.location.reload();
+    // }
+
+    // const deleteCart = (cartId, itemId) => {
+    //     dispatch(removeCartItem(dispatch, cartId, itemId));
+    // };
+
+    const deleteCart = async (cartId, itemId) => {
+        try {
+          // Asynchronous call to backend, wait to resolve
+          await dispatch(removeCartItem(cartId)).unwrap;
+    
+          // Now dispatch action to remove item from state
+          dispatch(removeItem(itemId));
+          window.location.reload();
+        } catch(error) {
+          // handle any errors
+          console.log(error);
+        }
+      };
 
   return (
     <Container>
@@ -190,7 +238,7 @@ const Cart = () => {
         <Wrapper>
             <Title>Your Bag</Title>
             <Top>
-                <TopButton>Continue Shopping</TopButton>
+                <TopButton onClick={deleteCart}>Continue Shopping</TopButton>
                 <TopTexts>
                     <TopText>Shooping Bag({cart.quantity})</TopText>
                     <TopText>Your Wishlist</TopText>
@@ -199,24 +247,25 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                {cart.products.map((product) => (
+                {Carts.map((product) => (
                     <Product>
                         <ProductDetail>
-                            <Image src={product.img} alt="google"></Image>
+                            <Image src={product.products[0].img} alt="google"></Image>
                             <Details>
-                                <ProductName><b>Product:</b> {product.title}</ProductName>
-                                <ProductId><b>ID:</b> {product._id}</ProductId>
-                                {/* <ProductColor color="black" />
-                                <ProductSize><b>Size:</b> XL</ProductSize> */}
+                                <ProductName><b>Product:</b> {product.products[0].title}</ProductName>
+                                <ProductId><b>ID:</b> {product.products[0]._id}</ProductId>
+                                <Button onClick={() => {
+                                    deleteCart(product._id, product.products[0]._id)
+                                }}>Delete</Button>
                             </Details>
                         </ProductDetail>
                         <PriceDetail>
                             <ProductAmountContainer>
                                 <AiOutlineMinus />
-                                <ProductAmount>{product.quantity}</ProductAmount>
+                                <ProductAmount>{product.products[0].quantity}</ProductAmount>
                                 <GrAdd />
                             </ProductAmountContainer>
-                            <ProductPrice>$ {product.price * product.quantity}</ProductPrice>
+                            <ProductPrice>$ {product.products[0].price * product.products[0].quantity}</ProductPrice>
                         </PriceDetail>
                     </Product>
                         ))}
@@ -226,7 +275,7 @@ const Cart = () => {
                     <SummaryTitle>Order Summary</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cartQuantity}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -238,15 +287,15 @@ const Cart = () => {
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText type="total">Total</SummaryItemText>
-                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cartTotal}</SummaryItemPrice>
                         </SummaryItem>
                         <StripeCheckout 
                             name="Kimia shop" 
                             image="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png"
                             billingAddress
                             shippingAddress
-                            description={`your total is $ ${cart.total}`}
-                            amount={cart.total * 100}
+                            description={`your total is $ ${cartTotal}`}
+                            amount={cartTotal * 100}
                             token={onToken}
                             stripeKey={KEY}
                             >

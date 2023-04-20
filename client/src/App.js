@@ -24,7 +24,7 @@ function App() {
         <Route path='/signin' element={ user ? <Navigate to="/" /> : <SignIn />} />
         <Route path='/productList/:category' element={<ProductList />} />
         <Route path='/productSingle/:id' element={<Product />} />
-        <Route path='/cart' element={<Cart />} />
+        <Route path='/cart/:id' element={<Cart />} />
         <Route path='/pay' element={<Payment />} />
         <Route path='/success' element={<Succes />} />
       </Routes>

@@ -18,7 +18,8 @@ import { useMediaQuery } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom'
 import { publicRequest } from '../../useFetch.js'
 import { addProduct } from '../../redux/cartRedux.js'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart  } from '../../redux/apiCalls.js'
 
 const Container = styled.div`
 `
@@ -84,6 +85,7 @@ const Product = () => {
   const id = location.pathname.split("/")[2];
   const [ product, setProduct ] = useState({});
   const [ quantity, setQuantity ] = useState(1);
+  const user = useSelector((state) => state.user.currentUser._id);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -101,7 +103,7 @@ const Product = () => {
 
   const handleClick = () => {
     //update cart
-    dispatch(addProduct({ ...product, quantity }));
+    addToCart(dispatch, ({ ...product, quantity, user }))
   }
 
 

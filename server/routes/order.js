@@ -92,7 +92,7 @@ const getMonthlyIncome = async (req, res) => {
 }
 
 
-router.post("/order/create", verifyToken, createOrder);
+router.post("/order/create", createOrder);
 router.put("/order/update/:id", verifyTokenAndAdmin, updateOrder);
 router.delete("/order/delete/:id", verifyTokenAndAdmin, deleteOrder);
 router.get("/order/find/:userId", verifyTokenAndAuthorization, getUserOrder);

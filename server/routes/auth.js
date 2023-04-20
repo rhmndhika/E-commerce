@@ -46,6 +46,9 @@ const Login = async (req, res) => {
 
             const { password, ...others } = user._doc;
 
+            req.session.info = user._doc
+            console.log(req.session)
+
         res.status(200).json({...others, accessToken});
         
     } catch(err) {
@@ -54,7 +57,16 @@ const Login = async (req, res) => {
     }
 }
 
+const getUserInfo = (req, res) => {
+    if (req.session.info) {
+        res.send({loggedIn: true})  
+    } else {
+        
+    }
+}
+
 router.post("/register", Register);
 router.post("/login", Login);
+router.get("/login", getUserInfo);
 
 module.exports = router

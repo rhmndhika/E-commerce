@@ -19,8 +19,9 @@ import {
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { BsFillCartFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { logout } from '../redux/userRedux';
+import { cartQuantitySelector } from '../redux/cartRedux';
 
 
 // const NavLink = ({ children }: { children: ReactNode }) => (
@@ -43,15 +44,21 @@ export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const quantity = useSelector(state=>state.cart.quantity);
-
   const user = useSelector((state) => state.user.currentUser);
 
+  //*
+  const cartQuantity = useSelector(cartQuantitySelector);
+
+  
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/");
   }
-
+  
   
   return (
     <>
@@ -61,13 +68,17 @@ export default function Nav() {
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              <Link to="/cart">
+              { user ? 
+              <Link to={`/cart/${user._id}`}>
               <Button>
                 {/* {colorMode === 'light' ? <MoonIcon /> : <SunIcon />} */}
                 <BsFillCartFill />
-                <Text>{quantity}</Text>
+                <Text>{cartQuantity}</Text>
               </Button>
               </Link>
+              :
+              null
+              }
 
               { user ? 
               <p onClick={handleLogout}>{user.username}</p>

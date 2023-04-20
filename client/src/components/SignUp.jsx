@@ -33,7 +33,6 @@ export default function Signup() {
         email : email,
         password : password
     }).then((response) => {
-        alert(response.data.message)
     })
 }
 
