@@ -8,7 +8,8 @@ import {
   Select,
   Input,
   Button,
-  StatLabel
+  StatLabel,
+  Tabs, TabList, TabPanels, Tab, TabPanel 
 } from '@chakra-ui/react'
 import styled from 'styled-components'
 import { GrAdd} from 'react-icons/gr';
@@ -20,6 +21,8 @@ import { publicRequest } from '../../useFetch.js'
 import { addProduct } from '../../redux/cartRedux.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart  } from '../../redux/apiCalls.js'
+import RelatedProduct from '../../components/RelatedProduct.tsx'
+import axios from 'axios'
 
 const Container = styled.div`
 `
@@ -76,6 +79,8 @@ const ButtonStyled = styled.button`
 
 const Product = () => {
 
+  axios.defaults.withCredentials = true;
+
   const [ isSmallerThan704 ] = useMediaQuery('(min-width: 704px)', {
     ssr: true,
     fallback: false, 
@@ -85,7 +90,7 @@ const Product = () => {
   const id = location.pathname.split("/")[2];
   const [ product, setProduct ] = useState({});
   const [ quantity, setQuantity ] = useState(1);
-  const user = useSelector((state) => state.user.currentUser._id);
+  const user = useSelector((state) => state.user?.currentUser?._id);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -125,62 +130,44 @@ const Product = () => {
           <InfoContainer>
             <Title>{product.title}</Title>
             <Desc>
-             {product.desc}
+             <Tabs isFitted variant='enclosed' defaultIndex={0}>
+              <TabList mb='1em'>
+                <Tab>Description</Tab>
+                <Tab>Benefits</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  {product.desc}
+                </TabPanel>
+                <TabPanel>
+                  {/* {product.benefits} */}
+                  Benefits
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
             </Desc>
             <Price>$ {product.price}</Price>
-          {/* { isSmallerThan704 ? 
-          <Flex flexDirection="row" mt="30px">
-            <Flex>
-              <Select placeholder='Color' width="110px" mt="-3px" ml="5px">
-                <option value='option1'>Red</option>
-                <option value='option2'>Green</option>
-                <option value='option3'>Blue</option>
-              </Select>
-              
-              <Select placeholder='Size' width="110px" mt="-3px" ml="5px">
-                <option value='option1'>S</option>
-                <option value='option2'>M</option>
-                <option value='option3'>L</option>
-                <option value='option4'>XL</option>
-              </Select>
-            </Flex>
-          </Flex>
-          :
-          <Flex flexDirection="row" mt="30px" justifyContent="space-between">
-          <Flex>
-            <Select placeholder='Color' width="110px" mt="-3px" ml="5px">
-              <option value='option1'>Red</option>
-              <option value='option2'>Green</option>
-              <option value='option3'>Blue</option>
-            </Select>
-          </Flex>
-          <Flex>
-            <Select placeholder='Size' width="110px" mt="-3px" ml="5px">
-              <option value='option1'>S</option>
-              <option value='option2'>M</option>
-              <option value='option3'>L</option>
-              <option value='option4'>XL</option>
-            </Select>
-          </Flex>
-        </Flex>
-          } */}
           <Flex margin="10px 0 0 5px" justifyContent="space-between" alignItems="center"  mt="30px">
             <Flex>
-              {/* <Button onClick={decrement}>-</Button> */}
               <AiOutlineMinus onClick={decrement} cursor="pointer" />
               <Amount>{quantity}</Amount>
               <GrAdd onClick={increment} cursor="pointer" />
-              {/* <Button onClick={increment}>+</Button> */}
             </Flex>
           
+          { user ? 
             <Flex>
               <Button padding="15px" border="2px solid teal" backgroundColor="white" cursor="pointer" fontWeight="500" _hover={{backgroundColor : "#f8f4f4"}} 
               onClick={handleClick}>Add to Cart</Button>
             </Flex>
+            :
+            null
+          }
           
             </Flex>
           </InfoContainer>
         </Wrapper>
+      <Text ml="30px" fontSize="20px" fontWeight="bold">Related Product </Text>
+      <RelatedProduct />
       <Newsletter />
       <Footer />
     </Container>

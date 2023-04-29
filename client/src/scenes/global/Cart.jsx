@@ -9,9 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import StripeCheckout from 'react-stripe-checkout'
 import { useState } from 'react'
 import { userMethod } from '../../useFetch.js'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { removeCartItem } from '../../redux/apiCalls.js'
 import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, getCartTotal, removeItem } from '../../redux/cartRedux.js'
+import axios from 'axios'   
 
 const KEY =  "pk_test_51MuV3GECvrLW1LL9pTqGJ5eCINrDmbC81kIycSRw70xvBPx6KDHspuAxibLSQGprMc2TJzFKaRgowk8JwhMd7K6I00oOGcoFW4"
 
@@ -161,6 +162,9 @@ const Button = styled.button`
 
 const Cart = () => {
 
+    axios.defaults.withCredentials = true;
+
+
     const cart = useSelector(state=>state.cart);
    
     const [ stripeToken, setStripeToken ] = useState(null);
@@ -175,12 +179,12 @@ const Cart = () => {
 
 
     const [ Carts, setCarts ] = useState([]);
+    const [ Prices, setPrices ] = useState(null);
 
     const cartProducts = useSelector(cartProductsSelector);
     const cartQuantity = useSelector(cartQuantitySelector);
     const cartTotal = useSelector(cartTotalSelector);
-
-
+    
     useEffect(() => {
         const makeRequest = async () => {
             try{
@@ -188,7 +192,7 @@ const Cart = () => {
                     tokenId: stripeToken.id,
                     amount: 500,
                 })
-                navigate("/success", { state: {stripeData: response.data, products: cart} });
+                navigate("/success", { state: {stripeData: response.data, products: Carts.filter((item) => user === item.userId)} });
             } catch (err) {
             } 
         }
@@ -207,16 +211,18 @@ const Cart = () => {
         makeCartRequest();
     }, [user])
 
-    
-    // const deleteCart = (cartId, itemId) => {
-    //     // removeCartItem(dispatch, cartId, itemId);
-    //     dispatch(removeCartItem(dispatch, cartId, itemId));
-    //     // window.location.reload();
-    // }
+    useEffect(() => {
+        const getPriceSummary = async () => {
+            try{
+                const response = await userMethod.get(`/cart/summary/${user}`)
+                setPrices(response.data);
+            } catch (err) {
+                console.log(err);
+            } 
+        }
+        getPriceSummary();
+    }, [user])
 
-    // const deleteCart = (cartId, itemId) => {
-    //     dispatch(removeCartItem(dispatch, cartId, itemId));
-    // };
 
     const deleteCart = async (cartId, itemId) => {
         try {
@@ -230,7 +236,7 @@ const Cart = () => {
           // handle any errors
           console.log(error);
         }
-      };
+    };
 
   return (
     <Container>
@@ -240,14 +246,18 @@ const Cart = () => {
             <Top>
                 <TopButton onClick={deleteCart}>Continue Shopping</TopButton>
                 <TopTexts>
-                    <TopText>Shooping Bag({cart.quantity})</TopText>
-                    <TopText>Your Wishlist</TopText>
+                    <TopText>Shooping Bag({Carts.filter((item) => user === item.userId).length})</TopText>
+                    <Link to="/order/history">
+                        <TopText>Order History</TopText>
+                    </Link>
                 </TopTexts>
                 <TopButton type="filled">Checkout Now</TopButton>
             </Top>
             <Bottom>
                 <Info>
-                {Carts.map((product) => (
+                {Carts.filter((item) => user === item.userId).map((product) => (
+                    <>
+                    { user === product.userId ? 
                     <Product>
                         <ProductDetail>
                             <Image src={product.products[0].img} alt="google"></Image>
@@ -268,14 +278,18 @@ const Cart = () => {
                             <ProductPrice>$ {product.products[0].price * product.products[0].quantity}</ProductPrice>
                         </PriceDetail>
                     </Product>
-                        ))}
+                    :
+                    null
+                    }
+                    </>
+                    ))}
                     <Hr></Hr>
                 </Info>
                 <Summary>
                     <SummaryTitle>Order Summary</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>$ {cartQuantity}</SummaryItemPrice>
+                            <SummaryItemPrice>$ {Carts.length}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -287,15 +301,15 @@ const Cart = () => {
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText type="total">Total</SummaryItemText>
-                            <SummaryItemPrice>$ {cartTotal}</SummaryItemPrice>
+                            <SummaryItemPrice>$ {Prices}</SummaryItemPrice>
                         </SummaryItem>
                         <StripeCheckout 
                             name="Kimia shop" 
                             image="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png"
                             billingAddress
                             shippingAddress
-                            description={`your total is $ ${cartTotal}`}
-                            amount={cartTotal * 100}
+                            description={`your total is $ ${Prices}`}
+                            amount={Prices * 100}
                             token={onToken}
                             stripeKey={KEY}
                             >

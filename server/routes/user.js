@@ -90,9 +90,9 @@ const getUserStats = async (req, res) => {
 
 
 
-router.put("/:id", verifyTokenAndAuthorization, updateUser);
-router.delete("/:id", verifyTokenAndAuthorization, deleteUser);
-router.get("/find/:id", verifyTokenAndAdmin, getUser);
+router.put("/users/update/:id", verifyTokenAndAuthorization, updateUser);
+router.delete("/users/delete/:id", verifyTokenAndAuthorization, deleteUser);
+router.get("/users/find/:id", verifyTokenAndAdmin, getUser);
 router.get("/users", verifyTokenAndAdmin, getAllUser);
 router.get("/users/stats", verifyTokenAndAdmin, getUserStats);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -22,7 +22,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { logout } from '../redux/userRedux';
 import { cartQuantitySelector } from '../redux/cartRedux';
-
+import { userMethod } from '../useFetch';
+import Cart from '../scenes/global/Cart';
+import axios from 'axios'
 
 // const NavLink = ({ children }: { children: ReactNode }) => (
 //   <Link
@@ -42,12 +44,15 @@ export default function Nav() {
 
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [ Carts, setCarts ] = useState([]);
 
   const quantity = useSelector(state=>state.cart.quantity);
   const user = useSelector((state) => state.user.currentUser);
 
   //*
   const cartQuantity = useSelector(cartQuantitySelector);
+
+  axios.defaults.withCredentials = true;
 
   
   const dispatch = useDispatch();
@@ -56,9 +61,9 @@ export default function Nav() {
 
   const handleLogout = () => {
     dispatch(logout());
+    localStorage.removeItem("token")
     navigate("/");
   }
-  
   
   return (
     <>
@@ -68,20 +73,50 @@ export default function Nav() {
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              { user ? 
-              <Link to={`/cart/${user._id}`}>
+              { user ?
+              <a href={`/cart/${user._id}`}>
               <Button>
-                {/* {colorMode === 'light' ? <MoonIcon /> : <SunIcon />} */}
                 <BsFillCartFill />
-                <Text>{cartQuantity}</Text>
+                  {/* <Text>{cartQuantity}</Text> */}
               </Button>
-              </Link>
+              </a>
               :
               null
               }
-
               { user ? 
-              <p onClick={handleLogout}>{user.username}</p>
+              // <p onClick={handleLogout}>{user.username}</p>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={'full'}
+                  variant={'link'}
+                  cursor={'pointer'}
+                  minW={0}>
+                  <Avatar
+                    size={'sm'}
+                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                  />
+                </MenuButton>
+                <MenuList alignItems={'center'}>
+                  <br />
+                  <Center>
+                    <Avatar
+                      size={'2xl'}
+                      src={'https://avatars.dicebear.com/api/male/username.svg'}
+                    />
+                  </Center>
+                  <br />
+                  <Center>
+                    <p>{user.username}</p>
+                  </Center>
+                  <br />
+                  <MenuDivider />
+                  <Link to={`/user/profile/${user._id}`}>
+                    <MenuItem>Account Settings</MenuItem>
+                  </Link>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
               :
               <Flex>
                 <Button

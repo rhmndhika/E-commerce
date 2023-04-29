@@ -64,6 +64,7 @@ const getAllOrder = async (req, res) => {
 }
 
 const getMonthlyIncome = async (req, res) => {
+    const productId = req.query.pid;
     const date = new Date();
     const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
     const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
@@ -71,7 +72,11 @@ const getMonthlyIncome = async (req, res) => {
     try {
 
         const income = await Order.aggregate([
-            { $match: { createdAt: { $gte: previousMonth } } },
+            { $match: { createdAt: { $gte: previousMonth }, ...(productId && {
+                products: {
+                    $elementMatch: { productId }
+                },
+            }) } },
             {
                 $project: {
                     month: { $month : "$createdAt" },
@@ -92,11 +97,11 @@ const getMonthlyIncome = async (req, res) => {
 }
 
 
-router.post("/order/create", createOrder);
+router.post("/order/create", verifyToken, createOrder);
 router.put("/order/update/:id", verifyTokenAndAdmin, updateOrder);
 router.delete("/order/delete/:id", verifyTokenAndAdmin, deleteOrder);
-router.get("/order/find/:userId", verifyTokenAndAuthorization, getUserOrder);
+router.get("/order/find/:userId", verifyToken, getUserOrder);
 router.get("/order/all", verifyTokenAndAdmin, getAllOrder);
-router.get("/income", verifyTokenAndAdmin, getMonthlyIncome);
+router.get("/order/income", verifyTokenAndAdmin, getMonthlyIncome);
 
 module.exports = router

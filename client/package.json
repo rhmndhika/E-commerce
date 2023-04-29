@@ -28,6 +28,7 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.9",
     "swiper": "^9.2.0",
+    "timeago.js": "^4.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

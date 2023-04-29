@@ -10,6 +10,9 @@ import Cart from './scenes/global/Cart';
 import Payment from './scenes/global/Payment';
 import Succes from './scenes/global/Succes'
 import { useSelector } from 'react-redux'
+import OrderHistory from './scenes/global/OrderHistory';
+import OrderDetail from './scenes/global/OrderDetail';
+import Profile from './scenes/global/Profile';
 
 function App() {
 
@@ -20,13 +23,16 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/signup' element={ user? <Navigate to="/" /> : <Signup />} />
+        <Route path='/signup' element={ user ? <Navigate to="/" /> : <Signup />} />
         <Route path='/signin' element={ user ? <Navigate to="/" /> : <SignIn />} />
         <Route path='/productList/:category' element={<ProductList />} />
         <Route path='/productSingle/:id' element={<Product />} />
         <Route path='/cart/:id' element={<Cart />} />
         <Route path='/pay' element={<Payment />} />
         <Route path='/success' element={<Succes />} />
+        <Route path='/order/history' element={<OrderHistory />} />
+        <Route path='/order/detail/:id' element={<OrderDetail />} />
+        <Route path='/user/profile/:id' element={<Profile />} />
       </Routes>
     </BrowserRouter>
   </ChakraProvider>

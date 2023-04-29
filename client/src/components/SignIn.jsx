@@ -32,6 +32,9 @@ import { useDispatch, useSelector } from 'react-redux';
     const dispatch = useDispatch();
     const { isFetching, error } = useSelector(state=> state.user);
 
+    axios.defaults.withCredentials = true;
+
+
     const handleLogin = (e) => {
       e.preventDefault();
       login(dispatch, { username, password});

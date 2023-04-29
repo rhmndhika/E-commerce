@@ -16,6 +16,9 @@ const Products = ({cat,filter,sort}) => {
 
   const [ products, setProducts ] = useState([]);
   const [ filteredProducts, setFilteredProducts ] = useState([]); 
+
+  axios.defaults.withCredentials = true;
+
   
 
   useEffect(() => {

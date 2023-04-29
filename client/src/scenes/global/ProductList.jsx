@@ -8,6 +8,7 @@ import Navbar from '../../components/Navbar.jsx'
 import { useMediaQuery } from '@chakra-ui/react'
 import { mobile, isMobile } from '../../reponsive'
 import { useLocation } from 'react-router-dom'
+import axios from 'axios'
 
 const Container = styled.div`
 `
@@ -20,6 +21,7 @@ const FilterText = styled.span`
 
 const ProductList = () => {
 
+  axios.defaults.withCredentials = true;
 
   const location = useLocation();
   const cat = location.pathname.split("/")[2]

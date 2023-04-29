@@ -27,6 +27,9 @@ export default function Signup() {
 
   const register = (e) => {
 
+    axios.defaults.withCredentials = true;
+
+
     e.preventDefault();
     axios.post("http://localhost:5000/register", {
         username : username,

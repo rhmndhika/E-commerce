@@ -34,6 +34,6 @@ const verifyTokenAndAdmin = (req, res, next) => {
         res.status(403).json("You are not alowed to do that!");
       }
     });
-  };
+};
 
 module.exports = { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin};

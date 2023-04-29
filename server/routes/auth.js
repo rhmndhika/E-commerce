@@ -44,25 +44,36 @@ const Login = async (req, res) => {
             { expiresIn: "3d"}
             );
 
-            const { password, ...others } = user._doc;
+            const { password, ...others } = user._doc; 
 
-            req.session.info = user._doc
-            console.log(req.session)
-
-        res.status(200).json({...others, accessToken});
-        
+    
+            const sessionUser = {
+                id: user._id,
+                email: user.email,
+                username: user.username,
+                admin: user.isAdmin,
+                token: accessToken
+            };
+            req.session.data = sessionUser
+           
+            res.status(200).json({ ...others, accessToken });
+          
     } catch(err) {
         res.status(500).json(err);
-        console.log(err);
     }
 }
 
 const getUserInfo = (req, res) => {
-    if (req.session.info) {
-        res.send({loggedIn: true})  
-    } else {
-        
-    }
+
+    // session=req.session;
+    // if (session.user) {
+    //     res.send("Nice");
+    // } else {
+    //     res.send("Not Nice")
+    // }
+    // req.session.destroy();
+
+    console.log(req.session)
 }
 
 router.post("/register", Register);

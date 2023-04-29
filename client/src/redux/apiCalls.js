@@ -3,10 +3,12 @@ import { publicRequest, userMethod } from '../useFetch';
 import { addProduct, removeItem } from "./cartRedux";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+
 export const login = async (dispatch, user) => {
     dispatch(loginStart());
     try {
         const res = await publicRequest.post("/login", user);
+        localStorage.setItem("token", res.data.accessToken)
         dispatch(loginSuccess(res.data));
     } catch (err) {
         dispatch(loginFailure());
@@ -26,15 +28,6 @@ export const addToCart = async (dispatch, product, quantity, user) => {
     }
 }
 
-// export const removeCartItem = async (dispatch, cartId, itemId) => {
-//     try {
-//         const res = await userMethod.delete(`/cart/delete/${cartId}`);
-//        dispatch(removeItem(itemId));
-//        console.log(itemId)
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
 export const removeCartItem = createAsyncThunk(
     "cart/removeItem",
     async (cartId, thunkAPI) => {

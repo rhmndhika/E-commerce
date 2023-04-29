@@ -67,6 +67,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { userMethod } from '../../useFetch'
 import { removeItem } from '../../redux/cartRedux' 
+import axios from 'axios'
+import { removeCartItem } from '../../redux/apiCalls'
 
 const Succes = () => {
   
@@ -77,21 +79,36 @@ const Succes = () => {
 
   const currentUser = useSelector((state) => state.user.currentUser);
   const [orderId, setOrderId] = useState(null);
+  const [ Prices, setPrices ] = useState(null);
 
   const dispatch = useDispatch();
 
+  axios.defaults.withCredentials = true;
 
+  useEffect(() => {
+    const getPriceSummary = async () => {
+        try{
+            const response = await userMethod.get(`/cart/summary/${currentUser._id}`)
+            setPrices(response.data);
+            console.log(Prices)
+        } catch (err) {
+            console.log(err);
+        } 
+    }
+    getPriceSummary();
+}, []);
 
   useEffect(() => {
     const createOrder = async () => {
+      let total = 0; 
       try {
         const res = await userMethod.post("/order/create", {
           userId: currentUser._id,
-          products: cart.products.map((item) => ({
+          products: cart.map((item) => ({
             productId: item._id,
             quantity: item.quantity,
           })),
-          amount: "0",
+          amount: Prices,
           address: data.billing_details.address,
         });
         setOrderId(res.data._id);
@@ -99,14 +116,28 @@ const Succes = () => {
         console.log(err);
       }
     };
-    data && createOrder();
+    data && Prices && createOrder();
   }, [cart, data, currentUser]);
+
+  const deleteCart = async (cartId, itemId) => {
+    try {
+      // Asynchronous call to backend, wait to resolve
+      await dispatch(removeCartItem(cartId)).unwrap;
+
+      // Now dispatch action to remove item from state
+      dispatch(removeItem(itemId));
+      window.location.reload();
+    } catch(error) {
+      // handle any errors
+      console.log(error);
+    }
+  };
 
   const resetCart = () => {
     dispatch(removeItem());
   }
 
-
+ 
   return (
     <div
     style={{
