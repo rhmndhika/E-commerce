@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
-const Product = require("../models/product");
+const Product = require("../models/Product");
 
 
 const addProduct = async (req, res) => {
