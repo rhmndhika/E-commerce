@@ -52,9 +52,6 @@ export default function Nav() {
   //*
   const cartQuantity = useSelector(cartQuantitySelector);
 
-  axios.defaults.withCredentials = true;
-
-  
   const dispatch = useDispatch();
 
   const navigate = useNavigate();

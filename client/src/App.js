@@ -11,8 +11,8 @@ import Payment from './scenes/global/Payment';
 import Succes from './scenes/global/Succes'
 import { useSelector } from 'react-redux'
 import OrderHistory from './scenes/global/OrderHistory';
-import OrderDetail from './scenes/global/OrderDetail';
 import Profile from './scenes/global/Profile';
+import Invoices from './scenes/global/Invoices';
 
 function App() {
 
@@ -31,7 +31,7 @@ function App() {
         <Route path='/pay' element={<Payment />} />
         <Route path='/success' element={<Succes />} />
         <Route path='/order/history' element={<OrderHistory />} />
-        <Route path='/order/detail/:id' element={<OrderDetail />} />
+        <Route path='/order/history/detail/:id' element={<Invoices />} />
         <Route path='/user/profile/:id' element={<Profile />} />
       </Routes>
     </BrowserRouter>

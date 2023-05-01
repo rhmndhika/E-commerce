@@ -162,9 +162,6 @@ const Button = styled.button`
 
 const Cart = () => {
 
-    axios.defaults.withCredentials = true;
-
-
     const cart = useSelector(state=>state.cart);
    
     const [ stripeToken, setStripeToken ] = useState(null);
@@ -175,7 +172,7 @@ const Cart = () => {
     }
 
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.currentUser._id);
+    const user = useSelector((state) => state.user.currentUser);
 
 
     const [ Carts, setCarts ] = useState([]);
@@ -190,10 +187,11 @@ const Cart = () => {
             try{
                 const response = await userMethod.post("/checkout/payment", {
                     tokenId: stripeToken.id,
-                    amount: 500,
+                    amount: Prices,
                 })
-                navigate("/success", { state: {stripeData: response.data, products: Carts.filter((item) => user === item.userId)} });
+                navigate("/success", { state: {stripeData: response.data, products: Carts.filter((item) => user._id === item.userId)} });
             } catch (err) {
+                console.log(err);
             } 
         }
         stripeToken &&  makeRequest();
@@ -202,7 +200,7 @@ const Cart = () => {
     useEffect(() => {
         const makeCartRequest = async () => {
             try{
-                const response = await userMethod.get(`/cart/find/${user}`)
+                const response = await userMethod.get(`/cart/find/${user._id}`)
                 setCarts(response.data);
             } catch (err) {
                 console.log(err);
@@ -214,7 +212,7 @@ const Cart = () => {
     useEffect(() => {
         const getPriceSummary = async () => {
             try{
-                const response = await userMethod.get(`/cart/summary/${user}`)
+                const response = await userMethod.get(`/cart/summary/${user._id}`)
                 setPrices(response.data);
             } catch (err) {
                 console.log(err);
@@ -246,7 +244,7 @@ const Cart = () => {
             <Top>
                 <TopButton onClick={deleteCart}>Continue Shopping</TopButton>
                 <TopTexts>
-                    <TopText>Shooping Bag({Carts.filter((item) => user === item.userId).length})</TopText>
+                    <TopText>Shooping Bag({Carts.filter((item) => user._id === item.userId).length})</TopText>
                     <Link to="/order/history">
                         <TopText>Order History</TopText>
                     </Link>
@@ -255,9 +253,9 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                {Carts.filter((item) => user === item.userId).map((product) => (
+                {Carts.filter((item) => user._id === item.userId).map((product) => (
                     <>
-                    { user === product.userId ? 
+                    { user._id === product.userId ? 
                     <Product>
                         <ProductDetail>
                             <Image src={product.products[0].img} alt="google"></Image>
@@ -305,6 +303,7 @@ const Cart = () => {
                         </SummaryItem>
                         <StripeCheckout 
                             name="Kimia shop" 
+                            email={user.email}
                             image="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png"
                             billingAddress
                             shippingAddress
@@ -312,6 +311,7 @@ const Cart = () => {
                             amount={Prices * 100}
                             token={onToken}
                             stripeKey={KEY}
+                            currency='USD'
                             >
                             <Button>Checkout Now</Button>
                         </StripeCheckout>

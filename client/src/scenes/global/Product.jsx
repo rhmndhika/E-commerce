@@ -79,8 +79,6 @@ const ButtonStyled = styled.button`
 
 const Product = () => {
 
-  axios.defaults.withCredentials = true;
-
   const [ isSmallerThan704 ] = useMediaQuery('(min-width: 704px)', {
     ssr: true,
     fallback: false, 

@@ -27,11 +27,8 @@ export default function Signup() {
 
   const register = (e) => {
 
-    axios.defaults.withCredentials = true;
-
-
     e.preventDefault();
-    axios.post("http://localhost:5000/register", {
+    axios.post("http://e-commerce-production-75aa.up.railway.app/register", {
         username : username,
         email : email,
         password : password

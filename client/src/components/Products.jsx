@@ -17,14 +17,10 @@ const Products = ({cat,filter,sort}) => {
   const [ products, setProducts ] = useState([]);
   const [ filteredProducts, setFilteredProducts ] = useState([]); 
 
-  axios.defaults.withCredentials = true;
-
-  
-
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get( cat ? `http://localhost:5000/product/all?category=${cat}` : "http://localhost:5000/product/all");
+        const response = await axios.get( cat ? `http://e-commerce-production-75aa.up.railway.app/product/all?category=${cat}` : "http://e-commerce-production-75aa.up.railway.app/product/all");
         setProducts(response.data);
       }catch(err) {
 

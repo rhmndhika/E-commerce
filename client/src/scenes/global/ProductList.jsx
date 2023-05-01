@@ -21,8 +21,6 @@ const FilterText = styled.span`
 
 const ProductList = () => {
 
-  axios.defaults.withCredentials = true;
-
   const location = useLocation();
   const cat = location.pathname.split("/")[2]
 

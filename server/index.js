@@ -33,7 +33,7 @@ app.set('trust proxy', 1)
 
 app.use(
   cors({
-  origin: ["http://localhost:3000"], 
+  origin: ["http://localhost:3000", "e-commerce-production-75aa.up.railway.app"], 
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
   optionsSuccessStatus : 200
@@ -43,6 +43,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 const store = MongoDBStore({
   collection: 'users',
@@ -65,7 +66,6 @@ app.use(session({
   resave: false
 }))
 
-app.use(cookieParser());
 
 app.use(authRoute);
 app.use(userRoute);

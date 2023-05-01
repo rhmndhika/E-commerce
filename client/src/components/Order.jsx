@@ -16,16 +16,15 @@ import {
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch'
 import { useSelector } from 'react-redux'
-import { format } from "timeago.js"
-import { Link } from 'react-router-dom'
-import axios from 'axios'
+import { Link, useParams } from 'react-router-dom'
+import TimeAgo from 'react-timeago'
+
 
 const Order = () => {
 
     const user = useSelector((state) => state.user.currentUser._id);
     const [ orderHistory, setOrderHistory ] = useState([]);
 
-    axios.defaults.withCredentials = true;
 
     useEffect(() => {
         const getOrderHistory = async () => {
@@ -71,9 +70,9 @@ const Order = () => {
                             <Badge>{order.status}</Badge>
                         </Td>
                     }
-                    <Td>{format(order.createdAt)}</Td>
+                    <Td><TimeAgo date={order.createdAt} /></Td>
                     <Td>
-                        <Link to={`/order/detail/${user}`}>
+                        <Link to={`/order/history/detail/${order._id}`}>
                             <Button width="70px">Edit</Button>
                         </Link>
                     </Td>

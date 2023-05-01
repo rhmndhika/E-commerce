@@ -14,7 +14,6 @@ const createCart = async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
-   
 }
 
 const updateCart = async (req, res) => {
@@ -83,11 +82,6 @@ const getSummaryPriceCart = async (req, res) => {
 }
 
 const deleteCartIfOrdered = async (req, res) => {
-    // removeItem: (state, action) => {
-    //     state.products.splice(state.products.findIndex((arrow) => arrow.id === action.payload), 1);
-    // },
-    
-    
     
     try {
         
@@ -104,7 +98,7 @@ const deleteCartIfOrdered = async (req, res) => {
     }
 }
 
-router.post("/cart/create", verifyToken ,createCart);
+router.post("/cart/create", verifyToken , createCart);
 router.put("/cart/update/:id", verifyTokenAndAuthorization, updateCart);
 router.delete("/cart/delete/:id", verifyToken ,deleteCart);
 router.get("/cart/find/:userId", verifyToken ,getUserCart);

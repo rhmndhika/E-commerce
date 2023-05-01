@@ -49,7 +49,19 @@ const getUserOrder = async (req, res) => {
         
         res.status(200).json(orders);
     } catch(err) {
-        res.status(500).json(err)
+        res.status(500).json(err);
+    }
+}
+
+const getUserSingleOrder = async (req, res) => {
+    try {
+
+        const orders = await Order.findById(req.params.id).populate('products.productId').exec();
+        
+        res.status(200).json(orders);
+    } catch(err) {
+        res.status(500).json(err);
+        console.log(err);
     }
 }
 
@@ -101,6 +113,7 @@ router.post("/order/create", verifyToken, createOrder);
 router.put("/order/update/:id", verifyTokenAndAdmin, updateOrder);
 router.delete("/order/delete/:id", verifyTokenAndAdmin, deleteOrder);
 router.get("/order/find/:userId", verifyToken, getUserOrder);
+router.get("/order/single/:id", verifyToken, getUserSingleOrder);
 router.get("/order/all", verifyTokenAndAdmin, getAllOrder);
 router.get("/order/income", verifyTokenAndAdmin, getMonthlyIncome);
 

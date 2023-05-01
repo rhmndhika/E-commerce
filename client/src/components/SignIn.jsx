@@ -22,8 +22,6 @@ import { useDispatch, useSelector } from 'react-redux';
   
   export default function SignIn() {
 
-    axios.defaults.withCredentials = true;
-
     const [ username, setUsername ] = useState('');
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
@@ -31,9 +29,6 @@ import { useDispatch, useSelector } from 'react-redux';
  
     const dispatch = useDispatch();
     const { isFetching, error } = useSelector(state=> state.user);
-
-    axios.defaults.withCredentials = true;
-
 
     const handleLogin = (e) => {
       e.preventDefault();

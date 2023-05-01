@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { store } from './redux/store'
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "http://e-commerce-production-75aa.up.railway.app";
 
 // const TOKEN = (JSON.parse(JSON.parse(sessionStorage.getItem("persist:root")).user).currentUser?.accessToken);
-axios.defaults.withCredentials = true;
 
 export const publicRequest = axios.create({
     baseURL: BASE_URL

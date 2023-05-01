@@ -3,7 +3,6 @@ const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 
-
 const payment = (req, res) => {
 
     stripe.charges.create({

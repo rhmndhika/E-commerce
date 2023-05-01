@@ -34,16 +34,13 @@ import {
 
     const [ products, setProducts ] = useState<any[]>([]);
 
-    axios.defaults.withCredentials = true;
-
-
     useEffect(() => {
         const getProducts = async () => {
           try {
-            const response = await axios.get("http://localhost:5000/product/all");
+            const response = await axios.get("http://e-commerce-production-75aa.up.railway.app/product/all");
             setProducts(response.data);
           }catch(err) {
-    
+            console.log(err);
           }
         };
         getProducts();
@@ -76,7 +73,7 @@ import {
               alt={`Picture of`}
               roundedTop="lg"
               objectFit="cover"
-              height="350px"              
+              height="250px"              
               />
           </a>
   
