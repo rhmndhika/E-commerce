@@ -47,6 +47,21 @@ app.use(session({
   resave: false
 }))
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000", "https://e-commerce-production-25ef.up.railway.app");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+
 const authRoute = require("./routes/auth.js");
 const userRoute = require("./routes/user.js");
 const producttRoute = require("./routes/product.js");
