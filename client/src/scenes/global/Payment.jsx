@@ -18,7 +18,7 @@ const Payment = () => {
     useEffect(() => {
         const makeRequest = async () => {
             try {
-                const response = await axios.post("https://e-commerce-production-75aa.up.railway.app/checkout/payment", {
+                const response = await axios.post("https://e-commerce-production-25ef.up.railway.app/checkout/payment", {
                     tokenId: stripeToken.id,
                     amount: 2000, 
                 });
