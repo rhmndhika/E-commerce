@@ -7,28 +7,14 @@ const path = require('path');
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
 const MemoryStore = require('memorystore')(session)
 const dotenv =  require("dotenv");
 
-const authRoute = require("./routes/auth");
-const userRoute = require("./routes/user");
-const producttRoute = require("./routes/product");
-const cartRoute = require("./routes/cart");
-const orderRoute = require("./routes/order");
-const stripeRoute = require("./routes/stripe");
 
 dotenv.config();
 
 dbConnect();
 
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   },
-// });
 app.set('trust proxy', 1)
 
 app.use(
@@ -45,11 +31,6 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
-const store = MongoDBStore({
-  collection: 'users',
-  uri: process.env.MONGO_URL,
-  expires: 1000
-})
 
 app.use(session({
   cookie : {
@@ -66,6 +47,12 @@ app.use(session({
   resave: false
 }))
 
+const authRoute = require("./routes/auth.js");
+const userRoute = require("./routes/user.js");
+const producttRoute = require("./routes/product.js");
+const cartRoute = require("./routes/cart.js");
+const orderRoute = require("./routes/order.js");
+const stripeRoute = require("./routes/stripe.js");
 
 app.use(authRoute);
 app.use(userRoute);

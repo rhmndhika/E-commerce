@@ -84,4 +84,4 @@ router.delete("/product/delete/:id", verifyTokenAndAdmin, deleteProduct);
 router.get("/product/find/:id", getProduct);
 router.get("/product/all", getAllProduct);
 
-module.exports = router
+module.exports = router;
