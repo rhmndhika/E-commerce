@@ -33,7 +33,7 @@ app.set('trust proxy', 1)
 
 app.use(
   cors({
-  origin: ["http://localhost:3000", "e-commerce-production-75aa.up.railway.app"], 
+  origin: ["http://localhost:3000", "http://e-commerce-production-75aa.up.railway.app"], 
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
   optionsSuccessStatus : 200
