@@ -64,14 +64,15 @@ app.use((req, res, next) => {
 
 const authRoute = require("./routes/auth.js");
 const userRoute = require("./routes/user.js");
-const producttRoute = require("./routes/product.js");
+// const producttRoute = require("./routes/Product.js");
+const productRoute = require("./routes/Product");
 const cartRoute = require("./routes/cart.js");
 const orderRoute = require("./routes/order.js");
 const stripeRoute = require("./routes/stripe.js");
 
 app.use(authRoute);
 app.use(userRoute);
-app.use(producttRoute);
+app.use(productRoute);
 app.use(cartRoute);
 app.use(orderRoute);
 app.use(stripeRoute);
