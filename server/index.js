@@ -33,7 +33,7 @@ app.set('trust proxy', 1)
 
 app.use(
   cors({
-  origin: ["http://localhost:3000", "http://e-commerce-production-75aa.up.railway.app"], 
+  origin: ["http://localhost:3000", "https://https://e-commerce-production-75aa.up.railway.app"], 
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
   optionsSuccessStatus : 200
@@ -53,7 +53,7 @@ const store = MongoDBStore({
 
 app.use(session({
   cookie : {
-    secure: false,
+    secure: true,
     sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000
   },

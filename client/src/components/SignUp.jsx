@@ -28,7 +28,7 @@ export default function Signup() {
   const register = (e) => {
 
     e.preventDefault();
-    axios.post("http://e-commerce-production-75aa.up.railway.app/register", {
+    axios.post("https://e-commerce-production-75aa.up.railway.app/register", {
         username : username,
         email : email,
         password : password

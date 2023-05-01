@@ -3,7 +3,7 @@ import axios from 'axios';
 import { store } from './redux/store';
 
 
-const BASE_URL = "http://e-commerce-production-75aa.up.railway.app";
+const BASE_URL = "https://e-commerce-production-75aa.up.railway.app";
 
 // const user = store.getState().user.currentUser.accessToken;
 const TOKEN = (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser?.accessToken);
