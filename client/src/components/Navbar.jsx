@@ -31,7 +31,6 @@ export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ Carts, setCarts ] = useState([]);
 
-  const quantity = useSelector(state=>state.cart.quantity);
   const user = useSelector((state) => state.user.currentUser);
 
   //*

@@ -84,14 +84,25 @@ const getSummaryPriceCart = async (req, res) => {
 const deleteCartIfOrdered = async (req, res) => {
     
     try {
+
+        let selectedId = null
+        let CartItem = []
         
-        const orders = await Order.find({userId: req.params.id}).select("userId -_id");
-        const carts = await Cart.find({ userId: orders[0].userId }).select("userId -_id");
+        const orders = await Order.find({})
+        const carts = await Cart.find({});
+
+        orders.map((item) => {
+           selectedId = (item.products[0].productId.toString());
+        })
+
+ 
+        
+
+         
+    //    console.log(carts.products.productId.includes(selectedId))
+
+       
   
-
-        const deleteCarts = await Cart.deleteMany({carts});
-
-        res.status(200).json(deleteCarts);
 
     } catch (err) {
         console.log(err);
@@ -104,6 +115,6 @@ router.delete("/cart/delete/:id", verifyToken ,deleteCart);
 router.get("/cart/find/:userId", verifyToken ,getUserCart);
 router.get("/cart/all", verifyTokenAndAdmin, getAllCart);
 router.get("/cart/summary/:id", verifyToken, getSummaryPriceCart);
-router.delete("/cart/deleteOrdered/:id", verifyToken, deleteCartIfOrdered);
+router.delete("/cart/deleteOrdered", verifyToken, deleteCartIfOrdered);
 
 module.exports = router

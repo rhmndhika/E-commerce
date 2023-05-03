@@ -178,6 +178,7 @@ const Cart = () => {
     const [ Carts, setCarts ] = useState([]);
     const [ Prices, setPrices ] = useState(null);
 
+
     const cartProducts = useSelector(cartProductsSelector);
     const cartQuantity = useSelector(cartQuantitySelector);
     const cartTotal = useSelector(cartTotalSelector);
@@ -195,7 +196,7 @@ const Cart = () => {
             } 
         }
         stripeToken &&  makeRequest();
-    }, [stripeToken, cart.total, navigate])
+    }, [stripeToken, Prices, navigate])
 
     useEffect(() => {
         const makeCartRequest = async () => {

@@ -21,6 +21,7 @@ const Invoice = () => {
 
     const [ userOrder, setUserOrder ] = useState(null);
     const { id } = useParams();
+    const [ Prices, setPrices ] = useState(null);
 
     const pdfRef = useRef(null);
     const handleDownload = () => {
@@ -44,6 +45,8 @@ const Invoice = () => {
         }
         getUserOrder();
     }, [id])
+
+    console.log(userOrder)
 
        
   return (
@@ -101,9 +104,9 @@ const Invoice = () => {
                 return (
             <Tbody>
             <Tr>
-                <Td>{product.productId}</Td>
+                <Td>{product.productId.title}</Td>
                 <Td>{product.quantity}</Td>
-                <Td>AMOUNT</Td>
+                <Td>$ {userOrder.amount}</Td>
             </Tr>
             </Tbody>
                 )
@@ -112,7 +115,7 @@ const Invoice = () => {
         </TableContainer>
         <Flex justifyContent="flex-end" alignItems="center" flexDirection="row" padding="10px">
             <Box>
-                <Text>Total : $ 2000</Text>
+                <Text>Total : $ {userOrder.amount}</Text>
             </Box>
         </Flex>
         </Flex>

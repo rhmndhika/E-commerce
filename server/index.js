@@ -64,7 +64,6 @@ app.use((req, res, next) => {
 
 const authRoute = require("./routes/auth.js");
 const userRoute = require("./routes/user.js");
-// const producttRoute = require("./routes/Product.js");
 const productRoute = require("./routes/Product");
 const cartRoute = require("./routes/cart.js");
 const orderRoute = require("./routes/order.js");

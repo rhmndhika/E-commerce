@@ -5,12 +5,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from 'js-cookie';
 
 
-export const login = async (dispatch, user) => {
+export const login = async (dispatch, user, notify) => {
     dispatch(loginStart());
     try {
         const res = await publicRequest.post("/login", user);
         Cookies.set('token', res.data.accessToken, { expires: 3 });
-        // localStorage.setItem("token", res.data.accessToken)
         dispatch(loginSuccess(res.data));
     } catch (err) {
         dispatch(loginFailure());
@@ -23,7 +22,7 @@ export const addToCart = async (dispatch, product, quantity, user) => {
             userId: product.user,
             products: product,
             bill: product.quantity * product.price
-        });
+        })
         dispatch(addProduct({ ...product }));
     } catch (err) {
         console.log(err);

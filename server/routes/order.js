@@ -56,7 +56,7 @@ const getUserOrder = async (req, res) => {
 const getUserSingleOrder = async (req, res) => {
     try {
 
-        const orders = await Order.findById(req.params.id).populate('products.productId').exec();
+        const orders = await Order.findById(req.params.id).populate('products.productId')
         
         res.status(200).json(orders);
     } catch(err) {

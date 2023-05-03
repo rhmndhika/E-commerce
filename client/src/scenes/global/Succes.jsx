@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { userMethod } from '../../useFetch'
 import { removeItem } from '../../redux/cartRedux' 
-import axios from 'axios'
 import { removeCartItem } from '../../redux/apiCalls'
 
 const Succes = () => {
@@ -38,8 +37,8 @@ const Succes = () => {
         const res = await userMethod.post("/order/create", {
           userId: currentUser._id,
           products: cart.map((item) => ({
-            productId: item._id,
-            quantity: item.quantity,
+            productId: item.products[0]._id,
+            quantity: item.products[0].quantity,
           })),
           amount: Prices,
           address: data.billing_details.address,

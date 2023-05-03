@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Flex,
     Box,
@@ -16,9 +16,10 @@ import {
     InputRightElement
   } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import axios from 'axios';
 import { login } from '../redux/apiCalls';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
   
   export default function SignIn() {
 
@@ -26,13 +27,17 @@ import { useDispatch, useSelector } from 'react-redux';
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ showPassword, setShowPassword ] = useState(false);
+
+    const notify = () => toast.success("Logging In", {
+      position: toast.POSITION.TOP_RIGHT
+    });
  
     const dispatch = useDispatch();
     const { isFetching, error } = useSelector(state=> state.user);
 
     const handleLogin = (e) => {
       e.preventDefault();
-      login(dispatch, { username, password});
+      login(dispatch, { username, password}, notify);
     }
     
     return (
@@ -41,6 +46,7 @@ import { useDispatch, useSelector } from 'react-redux';
         align={'center'}
         justify={'center'}
         bg={useColorModeValue('gray.50', 'gray.800')}>
+        <ToastContainer />
         <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
           <Stack align={'center'}>
             <Heading fontSize={'4xl'}>Sign in to your account</Heading>
@@ -107,9 +113,6 @@ import { useDispatch, useSelector } from 'react-redux';
                   disabled={isFetching}>
                   Sign in
                 </Button>
-                {error &&
-                <Text color="red">Something went wrong</Text>
-                }
               </Stack>
             </form>
             </Stack>
