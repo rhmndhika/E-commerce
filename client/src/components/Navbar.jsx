@@ -22,23 +22,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { logout } from '../redux/userRedux';
 import { cartQuantitySelector } from '../redux/cartRedux';
-import { userMethod } from '../useFetch';
-import Cart from '../scenes/global/Cart';
-import axios from 'axios'
+import Cookies from 'js-cookie';
 
-// const NavLink = ({ children }: { children: ReactNode }) => (
-//   <Link
-//     px={2}
-//     py={1}
-//     rounded={'md'}
-//     _hover={{
-//       textDecoration: 'none',
-//       bg: useColorModeValue('gray.200', 'gray.700'),
-//     }}
-//     href={'#'}>
-//     {children}
-//   </Link>
-// );
 
 export default function Nav() {
 
@@ -58,7 +43,7 @@ export default function Nav() {
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("token")
+    Cookies.remove('token');
     navigate("/");
   }
   

@@ -20,7 +20,7 @@ const Products = ({cat,filter,sort}) => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get( cat ? `https://e-commerce-production-25ef.up.railway.app/product/all?category=${cat}` : "https://e-commerce-production-25ef.up.railway.app/product/all");
+        const response = await axios.get( cat ? `http://localhost:5000/product/all?category=${cat}` : "http://localhost:5000/product/all");
         setProducts(response.data);
       }catch(err) {
 

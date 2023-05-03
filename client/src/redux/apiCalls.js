@@ -2,13 +2,15 @@ import { loginFailure, loginStart, loginSuccess } from "./userRedux"
 import { publicRequest, userMethod } from '../useFetch';
 import { addProduct, removeItem } from "./cartRedux";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import Cookies from 'js-cookie';
 
 
 export const login = async (dispatch, user) => {
     dispatch(loginStart());
     try {
         const res = await publicRequest.post("/login", user);
-        localStorage.setItem("token", res.data.accessToken)
+        Cookies.set('token', res.data.accessToken, { expires: 3 });
+        // localStorage.setItem("token", res.data.accessToken)
         dispatch(loginSuccess(res.data));
     } catch (err) {
         dispatch(loginFailure());
