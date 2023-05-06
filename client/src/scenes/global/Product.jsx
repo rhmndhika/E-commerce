@@ -22,7 +22,8 @@ import { addProduct } from '../../redux/cartRedux.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart  } from '../../redux/apiCalls.js'
 import RelatedProduct from '../../components/RelatedProduct.tsx'
-import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const Container = styled.div`
 `
@@ -106,9 +107,9 @@ const Product = () => {
 
   const handleClick = () => {
     //update cart
+    notify();
     addToCart(dispatch, ({ ...product, quantity, user }))
   }
-
 
   const increment = () => {
     setQuantity(quantity + 1)
@@ -118,9 +119,23 @@ const Product = () => {
     quantity > 1 && setQuantity(quantity - 1)
   }
 
+  const notify = () => {
+    toast.success('Added to Cart', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }
+
   return (
     <Container>
       <Navbar />
+      <ToastContainer />
         <Wrapper>
             <ImageContainer>
               <Image src={product.img} alt="product" />

@@ -1,10 +1,10 @@
 import React from 'react'
-import SignIn from '../../components/SignIn'
+import Welcome from '../../components/Welcome'
 
 const Default = () => {
   return (
     <>
-    <SignIn />
+    <Welcome />
     </>
   )
 }

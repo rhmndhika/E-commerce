@@ -12,7 +12,9 @@ import { userMethod } from '../../useFetch.js'
 import { Link, useNavigate } from 'react-router-dom'
 import { removeCartItem } from '../../redux/apiCalls.js'
 import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, getCartTotal, removeItem } from '../../redux/cartRedux.js'
-import axios from 'axios'   
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+  
 
 const KEY =  "pk_test_51MuV3GECvrLW1LL9pTqGJ5eCINrDmbC81kIycSRw70xvBPx6KDHspuAxibLSQGprMc2TJzFKaRgowk8JwhMd7K6I00oOGcoFW4"
 
@@ -40,8 +42,9 @@ const TopButton = styled.button`
     cursor: pointer;
     border: ${(props) => props.type === "filled" && "none"};
     background-color: ${(props) =>
-        props.type === "filled" ? "black" : "transparent"};
+        props.type === "filled" ? "#319795" : "transparent"};
     color: ${(props) => props.type === "filled" && "white"};
+    border-radius: 5px;
 `
 const TopTexts = styled.div`
     ${isTablet730({ display: "none"})}
@@ -153,11 +156,21 @@ const SummaryItemText = styled.span``;
 const SummaryItemPrice = styled.span``;
 
 const Button = styled.button`
-  width: 100%;
+  width: 200px;
   padding: 10px;
-  background-color: black;
+  background-color: #319795;
   color: white;
   font-weight: 600;
+  border-radius: 5px;
+`;
+
+const CheckoutButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  background-color: #319795;
+  color: white;
+  font-weight: 600;
+  border-radius: 5px;
 `;
 
 const Cart = () => {
@@ -178,11 +191,6 @@ const Cart = () => {
     const [ Carts, setCarts ] = useState([]);
     const [ Prices, setPrices ] = useState(null);
 
-
-    const cartProducts = useSelector(cartProductsSelector);
-    const cartQuantity = useSelector(cartQuantitySelector);
-    const cartTotal = useSelector(cartTotalSelector);
-    
     useEffect(() => {
         const makeRequest = async () => {
             try{
@@ -230,20 +238,36 @@ const Cart = () => {
     
           // Now dispatch action to remove item from state
           dispatch(removeItem(itemId));
-          window.location.reload();
+          notify();
         } catch(error) {
           // handle any errors
           console.log(error);
         }
     };
 
+    const notify = () => {
+        toast.success('Item has been deleted', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+
   return (
     <Container>
         <Navbar />
+        <ToastContainer />
         <Wrapper>
             <Title>Your Bag</Title>
             <Top>
-                <TopButton onClick={deleteCart}>Continue Shopping</TopButton>
+                <Link to={`/productSingle/643a51326211f71905302abe`}>
+                    <TopButton>Continue Shopping</TopButton>
+                </Link>
                 <TopTexts>
                     <TopText>Shooping Bag({Carts.filter((item) => user._id === item.userId).length})</TopText>
                     <Link to="/order/history">
@@ -314,7 +338,7 @@ const Cart = () => {
                             stripeKey={KEY}
                             currency='USD'
                             >
-                            <Button>Checkout Now</Button>
+                            <CheckoutButton>Checkout Now</CheckoutButton>
                         </StripeCheckout>
                 </Summary>
             </Bottom>

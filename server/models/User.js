@@ -18,11 +18,8 @@ const UserSchema = new mongoose.Schema({
     isAdmin : {
         type: Boolean,
         default: false,
-    },
-    img : {
-        type: String,
-        require: true
     }
+
 }, { timestamps: true })
 
 const UserModel = mongoose.model("users", UserSchema)

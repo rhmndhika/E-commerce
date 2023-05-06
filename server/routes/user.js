@@ -19,7 +19,6 @@ const updateUser = async (req, res) => {
         res.status(200).json(updatedUser);
     } catch(err) {
         res.status(500).json(err);
-        console.log(err);
     }
 }
 
@@ -92,7 +91,7 @@ const getUserStats = async (req, res) => {
 
 router.put("/users/update/:id", verifyTokenAndAuthorization, updateUser);
 router.delete("/users/delete/:id", verifyTokenAndAuthorization, deleteUser);
-router.get("/users/find/:id", verifyTokenAndAdmin, getUser);
+router.get("/users/find/:id", verifyTokenAndAuthorization, getUser);
 router.get("/users", verifyTokenAndAdmin, getAllUser);
 router.get("/users/stats", verifyTokenAndAdmin, getUserStats);
 

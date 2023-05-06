@@ -1,18 +1,31 @@
 import { loginFailure, loginStart, loginSuccess } from "./userRedux"
 import { publicRequest, userMethod } from '../useFetch';
-import { addProduct, removeItem } from "./cartRedux";
+import { addProduct } from "./cartRedux";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from 'js-cookie';
+import { setModal, setError } from "./global";
 
 
-export const login = async (dispatch, user, notify) => {
+export const login = async (dispatch, user) => {
     dispatch(loginStart());
     try {
-        const res = await publicRequest.post("/login", user);
-        Cookies.set('token', res.data.accessToken, { expires: 3 });
-        dispatch(loginSuccess(res.data));
+         await publicRequest.post("/login", user).then((response) => {
+            if (response) {
+                Cookies.set('token', response.data.accessToken, { expires: 3 });
+                dispatch(setModal(true));
+                setTimeout(() => {
+                    dispatch(loginSuccess(response.data));
+                    dispatch(setModal(false));
+                }, 3000);
+            }
+        })
+ 
     } catch (err) {
         dispatch(loginFailure());
+        dispatch(setError(err.response.data.message));
+        setTimeout(() => {
+            dispatch(setError(""));
+        }, 1000) 
     }
 }
 

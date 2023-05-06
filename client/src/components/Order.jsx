@@ -73,7 +73,7 @@ const Order = () => {
                     <Td><TimeAgo date={order.createdAt} /></Td>
                     <Td>
                         <Link to={`/order/history/detail/${order._id}`}>
-                            <Button width="70px">Edit</Button>
+                            <Button colorScheme='teal'>Check Invoice</Button>
                         </Link>
                     </Td>
                 </Tr>

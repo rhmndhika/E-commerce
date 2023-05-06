@@ -20,6 +20,7 @@ import { login } from '../redux/apiCalls';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { setModal } from '../redux/global';
   
   export default function SignIn() {
 
@@ -28,16 +29,29 @@ import "react-toastify/dist/ReactToastify.css";
     const [ password, setPassword ] = useState('');
     const [ showPassword, setShowPassword ] = useState(false);
 
+    const modalValue = useSelector((state) => state.global.modal);
+    const message = useSelector((state) => state.global.error);
+
     const notify = () => toast.success("Logging In", {
+      position: toast.POSITION.TOP_RIGHT
+    });
+
+    const notifyError = () => toast.error(message, {
       position: toast.POSITION.TOP_RIGHT
     });
  
     const dispatch = useDispatch();
     const { isFetching, error } = useSelector(state=> state.user);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
       e.preventDefault();
-      login(dispatch, { username, password}, notify);
+      
+      await dispatch(setModal(true));
+      if (modalValue && username && password && message === "") {
+        notify();
+      } 
+      
+      login(dispatch, { username, password });
     }
     
     return (
@@ -113,6 +127,9 @@ import "react-toastify/dist/ReactToastify.css";
                   disabled={isFetching}>
                   Sign in
                 </Button>
+                {error &&
+                <Text color="red">{message}</Text>
+                }
               </Stack>
             </form>
             </Stack>

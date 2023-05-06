@@ -15,14 +15,16 @@ import {
   useColorMode,
   Center,
   Text,
+  IconButton,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import { BsFillCartFill } from 'react-icons/bs'
+import { BsFillCartFill, BsFillHeartFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { logout } from '../redux/userRedux';
 import { cartQuantitySelector } from '../redux/cartRedux';
 import Cookies from 'js-cookie';
+import { BiHeart } from 'react-icons/bi';
 
 
 export default function Nav() {
@@ -43,7 +45,7 @@ export default function Nav() {
   const handleLogout = () => {
     dispatch(logout());
     Cookies.remove('token');
-    navigate("/");
+    navigate("/", { replace : true });
   }
   
   return (
@@ -55,12 +57,18 @@ export default function Nav() {
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
               { user ?
-              <a href={`/cart/${user._id}`}>
-              <Button>
-                <BsFillCartFill />
-                  {/* <Text>{cartQuantity}</Text> */}
-              </Button>
-              </a>
+              <Flex gap="10px">
+                <a href={`/cart/${user._id}`}>
+                <IconButton
+                  icon={<BsFillCartFill />}
+                  />
+                </a>
+                <a>
+                <IconButton
+                  icon={<BsFillHeartFill />}
+                  />
+                </a>
+              </Flex>              
               :
               null
               }

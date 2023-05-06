@@ -29,23 +29,23 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+// app.use(cookieParser());
 
 
-app.use(session({
-  cookie : {
-    secure: true,
-    sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000
-  },
-  name: "keyId",
-  store: new MemoryStore({
-    checkPeriod: 86400000
-  }),
-  secret: 'subscribe',
-  saveUninitialized: true,
-  resave: false
-}))
+// app.use(session({
+//   cookie : {
+//     secure: true,
+//     sameSite: "none",
+//     maxAge: 24 * 60 * 60 * 1000
+//   },
+//   name: "keyId",
+//   store: new MemoryStore({
+//     checkPeriod: 86400000
+//   }),
+//   secret: 'subscribe',
+//   saveUninitialized: true,
+//   resave: false
+// }))
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000", "http://localhost:5000");
@@ -68,6 +68,7 @@ const productRoute = require("./routes/Product");
 const cartRoute = require("./routes/cart.js");
 const orderRoute = require("./routes/order.js");
 const stripeRoute = require("./routes/stripe.js");
+const profileRoute = require("./routes/profile.js");
 
 app.use(authRoute);
 app.use(userRoute);
@@ -75,6 +76,7 @@ app.use(productRoute);
 app.use(cartRoute);
 app.use(orderRoute);
 app.use(stripeRoute);
+app.use(profileRoute);
 
 
 app.listen(process.env.PORT || port, () => {

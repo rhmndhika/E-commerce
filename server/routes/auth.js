@@ -28,14 +28,14 @@ const Login = async (req, res) => {
 
         const user = await User.findOne({ username: req.body.username });
 
-        !user && res.status(401).json("Wrong Credentials!");
+        !user && res.status(401).json({ message: "Wrong Username!"});
 
         const hashedPassword = CryptoJs.AES.decrypt(user.password, process.env.PASS_SEC);
 
         const OriginalPassword = hashedPassword.toString(CryptoJs.enc.Utf8);
         
         OriginalPassword !== req.body.password && 
-            res.status(401).json("Wrong Credentials!");
+            res.status(401).json({ message: "Please input the correct password!"});
 
             const accessToken = jwt.sign({
                 id: user._id, 
@@ -45,17 +45,7 @@ const Login = async (req, res) => {
             );
 
             const { password, ...others } = user._doc; 
-
-    
-            const sessionUser = {
-                id: user._id,
-                email: user.email,
-                username: user.username,
-                admin: user.isAdmin,
-                token: accessToken
-            };
-            req.session.data = sessionUser
-           
+       
             res.status(200).json({ ...others, accessToken });
           
     } catch(err) {
@@ -63,21 +53,10 @@ const Login = async (req, res) => {
     }
 }
 
-const getUserInfo = (req, res) => {
 
-    // session=req.session;
-    // if (session.user) {
-    //     res.send("Nice");
-    // } else {
-    //     res.send("Not Nice")
-    // }
-    // req.session.destroy();
-
-    console.log(req.session)
-}
 
 router.post("/register", Register);
 router.post("/login", Login);
-router.get("/login", getUserInfo);
+
 
 module.exports = router

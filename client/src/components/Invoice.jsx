@@ -5,7 +5,6 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
@@ -15,7 +14,7 @@ import {
 import { userMethod } from '../useFetch'
 import { useParams } from 'react-router-dom'
 import { jsPDF } from "jspdf"
-import moment from 'moment';
+import moment from 'moment'
 
 const Invoice = () => {
 
@@ -46,12 +45,10 @@ const Invoice = () => {
         getUserOrder();
     }, [id])
 
-    console.log(userOrder)
-
        
   return (
     <>
-    <Button mt="30px" justifyContent="center" left="45%" onClick={handleDownload}>Download</Button>
+    <Button mt="30px" justifyContent="center" left="45%" onClick={handleDownload} colorScheme='teal'>Download</Button>
     { userOrder === null ? <p>Loading...</p> : 
     <Container mt="30px" shadow="lg"  maxW='container.sm' centerContent>
         <Flex flexDirection="column" justifyContent="center" alignItems="center" ref={pdfRef}>
@@ -106,7 +103,7 @@ const Invoice = () => {
             <Tr>
                 <Td>{product.productId.title}</Td>
                 <Td>{product.quantity}</Td>
-                <Td>$ {userOrder.amount}</Td>
+                <Td>$ {product.productId.price}</Td>
             </Tr>
             </Tbody>
                 )

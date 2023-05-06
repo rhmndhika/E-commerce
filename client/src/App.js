@@ -11,8 +11,9 @@ import Payment from './scenes/global/Payment';
 import Succes from './scenes/global/Succes'
 import { useSelector } from 'react-redux'
 import OrderHistory from './scenes/global/OrderHistory';
-import Profile from './scenes/global/Profile';
 import Invoices from './scenes/global/Invoices';
+import UserProfile from './scenes/global/UserProfile';
+import Welcome from './components/Welcome';
 
 
 function App() {
@@ -24,8 +25,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/signup' element={ user ? <Navigate to="/" /> : <Signup />} />
-        <Route path='/signin' element={ user ? <Navigate to="/" /> : <SignIn />} />
+        <Route path='/signup' element={ user ? <Navigate to="/welcome" replace={true} /> : <Signup />} />
+        <Route path='/signin' element={ user ? <Navigate to="/welcome" replace={true} /> : <SignIn />} />
+        <Route path='/welcome' element={<Welcome />} />
         <Route path='/productList/:category' element={<ProductList />} />
         <Route path='/productSingle/:id' element={<Product />} />
         <Route path='/cart/:id' element={<Cart />} />
@@ -33,7 +35,7 @@ function App() {
         <Route path='/success' element={<Succes />} />
         <Route path='/order/history' element={<OrderHistory />} />
         <Route path='/order/history/detail/:id' element={<Invoices />} />
-        <Route path='/user/profile/:id' element={<Profile />} />
+        <Route path='/user/profile/:id' element={<UserProfile />} />
       </Routes>
     </BrowserRouter>
   </ChakraProvider>
