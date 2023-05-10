@@ -25,6 +25,7 @@ import { logout } from '../redux/userRedux';
 import { cartQuantitySelector } from '../redux/cartRedux';
 import Cookies from 'js-cookie';
 import { BiHeart } from 'react-icons/bi';
+import { userMethod } from '../useFetch';
 
 
 export default function Nav() {
@@ -32,6 +33,7 @@ export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ Carts, setCarts ] = useState([]);
+  const [ userProfile, setUserProfile ] = useState([]);
 
   const user = useSelector((state) => state.user.currentUser);
 
@@ -47,6 +49,20 @@ export default function Nav() {
     Cookies.remove('token');
     navigate("/", { replace : true });
   }
+
+  useEffect(() => {
+    const getUserProfile = async () => {
+        try{
+            const response = await userMethod.get(`/profile/${user._id}`);
+            setUserProfile(response.data);
+        } catch (err) {
+            console.log(err);
+        } 
+    }
+    getUserProfile();
+  }, [])
+
+  console.log(userProfile)
   
   return (
     <>
@@ -63,7 +79,7 @@ export default function Nav() {
                   icon={<BsFillCartFill />}
                   />
                 </a>
-                <a>
+                <a href={`/user/wishlist/${user._id}`}>
                 <IconButton
                   icon={<BsFillHeartFill />}
                   />
@@ -83,7 +99,7 @@ export default function Nav() {
                   minW={0}>
                   <Avatar
                     size={'sm'}
-                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                    src={userProfile.img}
                   />
                 </MenuButton>
                 <MenuList alignItems={'center'}>
@@ -91,7 +107,7 @@ export default function Nav() {
                   <Center>
                     <Avatar
                       size={'2xl'}
-                      src={'https://avatars.dicebear.com/api/male/username.svg'}
+                      src={userProfile.img}
                     />
                   </Center>
                   <br />

@@ -68,7 +68,7 @@ export default function Carousel() {
       height={'500px'}
       width={'full'}
       overflow={'hidden'}
-      padding={"25px"}>
+      >
       {/* CSS files for react-slick */}
       <link
         rel="stylesheet"

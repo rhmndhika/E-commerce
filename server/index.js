@@ -19,7 +19,7 @@ app.set('trust proxy', 1)
 
 app.use(
   cors({
-  origin: ["http://localhost:3000", "http://localhost:5000"], 
+  origin: ["http://localhost:3000", "https://e-commerce-production-25ef.up.railway.app"], 
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
   optionsSuccessStatus : 200
@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 // }))
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000", "http://localhost:5000");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000", "https://e-commerce-production-25ef.up.railway.app");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
@@ -69,6 +69,7 @@ const cartRoute = require("./routes/cart.js");
 const orderRoute = require("./routes/order.js");
 const stripeRoute = require("./routes/stripe.js");
 const profileRoute = require("./routes/profile.js");
+const wishlistRoute = require("./routes/wishlist.js");
 
 app.use(authRoute);
 app.use(userRoute);
@@ -77,6 +78,7 @@ app.use(cartRoute);
 app.use(orderRoute);
 app.use(stripeRoute);
 app.use(profileRoute);
+app.use(wishlistRoute);
 
 
 app.listen(process.env.PORT || port, () => {

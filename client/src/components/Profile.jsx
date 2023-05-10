@@ -30,10 +30,15 @@ import {
   FormLabel,
   FormErrorMessage,
   FormHelperText,
+  Select,
+  Skeleton
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch';
 import { useParams } from 'react-router';
-import ModalNew  from './ModalNew';
+import moment from 'moment';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import app from "../firebase"
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
 
@@ -49,10 +54,28 @@ const Profile = () => {
     onClose: onCloseModalDate 
   } = useDisclosure();
 
- 
+  const { 
+    isOpen: isOpenModalGender, 
+    onOpen: onOpenModalGender, 
+    onClose: onCloseModalGender 
+  } = useDisclosure();
 
+  const { 
+    isOpen: isOpenModalEmail, 
+    onOpen: onOpenModalEmail, 
+    onClose: onCloseModalEmail 
+  } = useDisclosure();
+
+  const { 
+    isOpen: isOpenModalNumber, 
+    onOpen: onOpenModalNumber, 
+    onClose: onCloseModalNumber 
+  } = useDisclosure();
+
+  
   const [ inputs, setInputs ] = useState({});
-  const [ userProfile, setUserProfile ] = useState(null);
+  const [ file, setFile ] = useState(null);
+  const [ userProfile, setUserProfile ] = useState([]);
   const { id } = useParams();
 
 
@@ -62,54 +85,197 @@ const Profile = () => {
     })
   }
   
-
   const updateUserProfile = async () => {
     try{
-      const response = await userMethod.put(`/profile/update/${id}`);
-      setUserProfile(response.data);
+      await userMethod.put(`/profile/update/${id}`, inputs);
     } catch (err) {
       console.log(err);
     } 
   }
 
+  useEffect(() => {
+    const getUserProfile = async () => {
+        try{
+            const response = await userMethod.get(`/profile/${id}`);
+            setUserProfile(response.data);
+        } catch (err) {
+            console.log(err);
+        } 
+    }
+    getUserProfile();
+  }, [])
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    const fileName = new Date().getTime() + file.name;
+    const storage = getStorage(app);
+    const StorageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(StorageRef, file);
+
+    // Register three observers:
+    // 1. 'state_changed' observer, called any time the state changes
+    // 2. Error observer, called on failure
+    // 3. Completion observer, called on successful completion
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+          default:
+        }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+      },
+      () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          try{
+            userMethod.put(`/profile/update/${id}`, {
+              img: downloadURL
+            });
+          } catch (err) {
+            console.log(err);
+          } 
+        });
+      }
+    );
+  }
+
+
   return (
     <div>
-      <ModalNew isOpen={isOpenModalName} onOpen={onOpenModalName} onClose={onCloseModalName} id="Nama">
-      <Text>Kamu hanya dapat mengubah nama 1 kali lagi. Pastikan nama sudah benar.</Text>
-          <FormControl mt="10px">
-            <FormLabel>Nama</FormLabel>
-            <Input type='name' placeholder='Rahmandhika' />
-            <FormHelperText>Nama dapat dilihat oleh pengguna lainnya</FormHelperText>
-          </FormControl>
-      </ModalNew>
-
-      <ModalNew isOpen={isOpenModalDate} onOpen={onOpenModalDate} onClose={onCloseModalDate} id="Tanggal">
-      <Text>Kamu hanya dapat mengubah nama 1 kali lagi. Pastikan nama sudah benar.</Text>
-          <FormControl mt="10px">
-            <FormLabel>TANGGAL LAHIR</FormLabel>
-            <Input type='date' placeholder='Rahmandhika' />
-          </FormControl>
-      </ModalNew>
-      
+    {/* Modal Update Nama */}
+    <Modal closeOnOverlayClick={false} isOpen={isOpenModalName} onClose={onCloseModalName} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Ubah Nama</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>  
+            <FormControl mt="10px">
+              <FormLabel>Nama</FormLabel>
+              <Input name="fullname" type='text' placeholder='Rahmandhika' onChange={handleChange} />
+              <FormHelperText>Nama dapat dilihat oleh pengguna lainnya</FormHelperText>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
+              Simpan
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+    </Modal>
+    {/* Modal Update Tanggal Lahir */}
+    <Modal closeOnOverlayClick={false} isOpen={isOpenModalDate} onClose={onCloseModalDate} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Ubah Tanggal Lahir</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>  
+            <FormControl mt="10px">
+              <FormLabel>Nama</FormLabel>
+              <Input name="dateOfBirth" type='date' placeholder='29-10-2001' onChange={handleChange} />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
+              Simpan
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+    </Modal>
+     {/* Modal Update Jenis Kelamin */}
+     <Modal closeOnOverlayClick={false} isOpen={isOpenModalGender} onClose={onCloseModalGender} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Ubah Jenis Kelamin</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>  
+            <FormControl mt="10px">
+              <FormLabel>Jenis Kelamin</FormLabel>
+              <Select name="gender" onChange={handleChange}>
+                <option>Pria</option>
+                <option>Wanita</option>
+              </Select>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
+              Simpan
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+    </Modal>
+     {/* Modal Update Email */}
+     <Modal closeOnOverlayClick={false} isOpen={isOpenModalEmail} onClose={onCloseModalEmail} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Ubah Email</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>  
+            <FormControl mt="10px">
+              <FormLabel>Email</FormLabel>
+                <Input name="email" type='email' placeholder='email@email.com' onChange={handleChange} />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
+              Simpan
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+    </Modal>
+    {/* Modal Update Handphone */}
+    <Modal closeOnOverlayClick={false} isOpen={isOpenModalNumber} onClose={onCloseModalNumber} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Ubah Nomor HP</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>  
+            <FormControl mt="10px">
+              <FormLabel>Nomor HP</FormLabel>
+                <Input name="phoneNumber" type='phone' placeholder='0xxxxxxxxxxxx' onChange={handleChange} />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
+              Simpan
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+    </Modal>
+    { userProfile.map((profile) => {
+      return (
     <Container maxW='1200px' mt="40px"> 
       <Flex flexDirection="row" justifyContent="center" alignItems="center" gap="20px" flexWrap="wrap">
         <Flex width="300px" flexDirection="column" gap="10px" shadow="md">
           <Flex> 
             <Flex ml="10px">
-              <Avatar name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
+              <Avatar name={userProfile.username} src={profile.img} />
             </Flex>
-            <Flex flexDirection="column" ml="10px">
-              <Text>Rahmandhika</Text>
-              <Text>Tersambung dengan GOJEK</Text>
+            <Flex flexDirection="column" ml="10px" mt="10px">
+              <Text>{profile.fullname}</Text>
             </Flex>
           </Flex>
 
-          <Flex ml="10px">
+          {/* <Flex ml="10px">
             <Text>PROFILE</Text>
-          </Flex>
+          </Flex> */}
 
-          <Accordion allowMultiple defaultIndex={[0, 1]}>
-          <AccordionItem isDisabled>
+          <Accordion allowMultiple defaultIndex={[0, 1, 2, 3]}>
+
+          <AccordionItem isDisabled={true} defaultIsOpen={true}>
             <h2>
               <AccordionButton>
                 <Box as="span" flex='1' textAlign='left'>
@@ -119,14 +285,23 @@ const Profile = () => {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-              commodo consequat.
+              <Box>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Chat</Text>
+              </Box>
+            </AccordionPanel>
+            <AccordionPanel pb={4}>
+              <Box>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Ulasan</Text>
+              </Box>
+            </AccordionPanel>
+            <AccordionPanel pb={4}>
+              <Box>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Diskusi Produk</Text>
+              </Box>
             </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem isDisabled>
+          <AccordionItem isDisabled={true} defaultIsOpen={true}>
             <h2>
               <AccordionButton>
                 <Box as="span" flex='1' textAlign='left'>
@@ -136,21 +311,50 @@ const Profile = () => {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-              commodo consequat.
+              <Box>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Menunggu Pembayaran</Text>
+              </Box>
+            </AccordionPanel>
+            <AccordionPanel pb={4}>
+              <Box>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Daftar Transaksi</Text>
+              </Box>
             </AccordionPanel>
           </AccordionItem>
+
+          <AccordionItem isDisabled={true} defaultIsOpen={true}>
+            <h2>
+              <AccordionButton>
+                <Box as="span" flex='1' textAlign='left'>
+                  Profil Saya
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <Box>
+                <Link to={`/user/wishlist/${id}`}>
+                  <Text textDecoration="none" cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Wishlist</Text>
+                </Link>
+              </Box>
+            </AccordionPanel>
+            <AccordionPanel pb={4}>
+              <Box>
+                  <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Pengaturan</Text>
+              </Box>
+            </AccordionPanel>
+          </AccordionItem>
+
+          
         </Accordion>
         </Flex>
 
-        <Flex width="700px" mt="-60px" flexGrow="1" gap="50px" shadow="md" flexWrap="wrap" justifyContent="center">
+        <Flex width="700px" mt="-10px" flexGrow="1" gap="50px" shadow="md" flexWrap="wrap" justifyContent="center">
           <Flex padding="20px">
             <Card width="300px">
               <CardBody>
                 <Image
-                  src='https://images.tokopedia.net/img/cache/300/tPxBYm/2023/1/20/0c17a989-7381-454e-92f5-488ae5fe16f4.jpg'
+                  src={profile.img} 
                   fallbackSrc='https://via.placeholder.com/150'
                   alt='Green double couch with wooden legs'
                   borderRadius='lg'
@@ -161,7 +365,13 @@ const Profile = () => {
                   width="100%"
                 />
                 <Stack mt='6' spacing='3'>
-                  <Button>Upload Foto</Button>
+                  <Text>Change Photo Profile</Text>
+                  { file === null ?
+                  <Input type="file" id="file" variant={"unstyled"} padding="5px"
+                  onChange={(e) => setFile(e.target.files[0])} />
+                  :
+                  <Button onClick={handleClick}>Upload Photo</Button>
+                  }
                   <Text>
                     Besar file: maksimum 10.000.000 bytes (10 Megabytes). 
                     Ekstensi file yang diperbolehkan: .JPG .JPEG .PNG
@@ -177,35 +387,37 @@ const Profile = () => {
            <Heading as='h4' size='sm' mt="20px">Ubah Biodata Diri</Heading>
             <HStack spacing="50px" mt="20px">
               <Text>Nama</Text>
-              <Text>Rahmandhika</Text>
+              <Text>{profile.fullname}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalName} >Ubah</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
               <Text>Tanggal Lahir</Text>
-              <Text>29 Oktober 2001</Text>
+              <Text>{moment(profile.dateOfBirth).format('MMMM Do YYYY')}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalDate}>Ubah</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
               <Text>Jenis Kelamin</Text>
-              <Text>Pria</Text>
-              <Text color="teal" as="b" cursor="pointer">Ubah</Text>
+              <Text>{profile.gender}</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalGender}>Ubah</Text>
             </HStack>
 
             <Heading as='h4' size='sm' mt="20px">Ubah Kontak</Heading>
             <HStack spacing="50px" mt="20px">
               <Text>Email</Text>
-              <Text>Rahmandhika5@gmail.com</Text>
-              <Text color="teal" as="b" cursor="pointer">Ubah</Text>
+              <Text>{profile.email}</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalEmail}>Ubah</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
               <Text>Nomor HP</Text>
-              <Text>081280410775</Text>
-              <Text color="teal" as="b" cursor="pointer">Ubah</Text>
+              <Text>{profile.phoneNumber}</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalNumber}>Ubah</Text>
             </HStack>
           </Flex>
          </Flex>  
         </Flex>      
     </Container>
+      )
+    })}
     </div>
   )
 }

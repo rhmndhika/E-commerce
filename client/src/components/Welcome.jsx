@@ -27,6 +27,8 @@ import {
 import { userMethod } from '../useFetch'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css"
 
 export default function Welcome() {
 
@@ -35,6 +37,8 @@ export default function Welcome() {
   const [ show, setShow ] = useState(false);
   const [ inputs, setInputs ] = useState({
     fullname: "",
+    email: "",
+    phoneNumber: null,
     dateOfBirth: "",
     gender: "",
     available: ""
@@ -58,17 +62,39 @@ export default function Welcome() {
         await userMethod.post("profile/create", {
           userId : user._id,
           fullname : inputs.fullname,
+          email: inputs.email,
+          phoneNumber: inputs.phoneNumber,
           dateOfBirth : inputs.dateOfBirth,
           gender : inputs.gender,
           available: inputs.available,
           company : inputs.company,
-        });
+        }).then((res) => {
+          toast.success(`Profile Create, Redirecting to Homepage`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTimeout(() => {
+            navigate("/", { replace: true });
+          }, 2000);
+        })
         setShow(true);
-        setTimeout(() => {
-          navigate("/", { replace: true });
-        }, 1000);
     } catch (err) {
-        console.log(err);
+        toast.error(err.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
     } 
   }
 
@@ -88,6 +114,7 @@ export default function Welcome() {
 
   return (
     <>
+    <ToastContainer />
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} isCentered> 
         <ModalOverlay />
         <ModalContent>
@@ -95,34 +122,44 @@ export default function Welcome() {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl isRequired>
-              <FormLabel>Nama</FormLabel>
-              <Input name="fullname" type='name' placeholder='Nama' onChange={handleChange} />
+              <FormLabel>Full Name</FormLabel>
+              <Input name="fullname" type='name' placeholder='John Doe' onChange={handleChange} />
             </FormControl>
 
             <FormControl isRequired>
-              <FormLabel>Tanggal Lahir</FormLabel>
+              <FormLabel>Email</FormLabel>
+              <Input name="email" type='email' placeholder='Email@email.com' onChange={handleChange} />
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Date of Birth</FormLabel>
               <Input name="dateOfBirth" type='date' placeholder='Tanggal Lahir' onChange={handleChange} />
             </FormControl>
 
             <FormControl isRequired>
-              <FormLabel>Jenis Kelamin</FormLabel>
-              <Select name="gender" placeholder='Jenis Kelamin' onChange={handleChange}>
-                <option value='Laki-laki'>Laki-laki</option>
-                <option value='Perempuan'>Perempuan</option>
+              <FormLabel>Phone Number</FormLabel>
+              <Input name="phoneNumber" type='phone' placeholder='0xxxxxxxxxxxxx' onChange={handleChange} />
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Gender</FormLabel>
+              <Select name="gender" placeholder='Gender' onChange={handleChange}>
+                <option value='male'>Male</option>
+                <option value='female'>Female</option>
               </Select>
             </FormControl>
 
             <FormControl isRequired>
-              <FormLabel>Untuk Perusahaan ?</FormLabel>
-              <Select name="available" placeholder='Pilih..' onChange={handleChange}>
-                <option value='Yes'>Ya</option>
-                <option value='No'>Tidak</option>
+              <FormLabel>Do you work for the company</FormLabel>
+              <Select name="available" placeholder='Choose..' onChange={handleChange}>
+                <option value='yes'>Yes</option>
+                <option value='no'>No</option>
               </Select>
             </FormControl>
             
-            { inputs.available === "Yes"  ?
+            { inputs.available === "yes"  ?
             <FormControl isRequired>
-              <FormLabel>Perusahaan</FormLabel>
+              <FormLabel>What Company</FormLabel>
               <Input name="company" type='text' placeholder='Perusahaan' onChange={handleChange} />
             </FormControl>
             :

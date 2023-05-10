@@ -15,11 +15,12 @@ const Container = styled.div`
 
 const Categories = () => {
   return (
-    <Container>
+    <Flex flexDirection="row" alignItems="center" flexWrap="wrap" gap="10px" mt="20px">
       {categories.map((item) => (
         <CategoryItem item={item} key={item.id} />
-      ))}
-    </Container>
+        ))}
+    </Flex>
+
   )
 }
 

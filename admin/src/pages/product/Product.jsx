@@ -20,6 +20,8 @@ export default function Product() {
   const [ cat, setCat ] = useState([]);
   const dispatch = useDispatch();
 
+  const [ updatedProduct, setUpdatedProduct ] = useState({});
+
   const product = useSelector((state) =>
     state.product.products.find((product) => product._id === productId)
   );
@@ -29,7 +31,8 @@ export default function Product() {
       return { ...prev, [e.target.name]: e.target.value }
     })
   }
-  
+
+
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   }
@@ -40,6 +43,18 @@ export default function Product() {
       setCat(product.categories);
     }
   }, [])
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await userMethod.get(`/product/find/${productId}`);
+        setUpdatedProduct(res.data)
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getProduct();
+  }, []);
 
   
   const handleClick = (e) => {
@@ -125,6 +140,8 @@ export default function Product() {
         getStats();
       }, [productId, MONTHS])
 
+
+
   return (
     <div className="product">
       <div className="productTitleContainer">
@@ -164,15 +181,15 @@ export default function Product() {
           <form className="productForm">
               <div className="productFormLeft">
                   <label>Product Name</label>
-                  <input name="title" type="text" placeholder={product.title} onChange={handleChange} />
-                  <label>Product Descriiption</label>
-                  <input name="desc" type="text" placeholder={product.desc} onChange={handleChange} />
+                  <input name="title" id="title" type="text" placeholder={product.title} onChange={handleChange} />
+                  <label>Product Descriiption</label> 
+                  <input name="desc" type="text" placeholder={product.desc}  />
                   <label>Price</label>
-                  <input name="price" type="text" placeholder={product.price} onChange={handleChange} />
+                  <input name="price" type="text" placeholder={product.price}  />
                   <label>Categories</label>
                   <input type="text" placeholder={product.categories} onChange={handleCat} />
                   <label>Materials</label>
-                  <select name="materials" onChange={handleChange}>
+                  <select name="materials" >
                     <option selected disabled>{product.materials}</option>
                     <option value="">None</option>
                     <option value="Rubber">Rubber</option>
@@ -181,7 +198,7 @@ export default function Product() {
                     <option value="Plastic">Plastic</option>
                   </select>
                   <label>In Stock</label>
-                  <select name="inStock" id="idStock" onChange={handleChange}>
+                  <select name="inStock" id="idStock" >
                     <option value="true">Yes</option>
                     <option value="false">No</option>
                   </select>

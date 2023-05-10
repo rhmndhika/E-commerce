@@ -6,13 +6,14 @@ import Cookies from 'js-cookie';
 import { setModal, setError } from "./global";
 
 
-export const login = async (dispatch, user) => {
+export const login = async (dispatch, user, notify) => {
     dispatch(loginStart());
     try {
          await publicRequest.post("/login", user).then((response) => {
             if (response) {
                 Cookies.set('token', response.data.accessToken, { expires: 3 });
                 dispatch(setModal(true));
+                notify();
                 setTimeout(() => {
                     dispatch(loginSuccess(response.data));
                     dispatch(setModal(false));

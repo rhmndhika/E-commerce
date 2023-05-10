@@ -235,9 +235,17 @@ const Cart = () => {
         try {
           // Asynchronous call to backend, wait to resolve
           await dispatch(removeCartItem(cartId)).unwrap;
-    
           // Now dispatch action to remove item from state
           dispatch(removeItem(itemId));
+          const updatedCarts = Carts.filter((cartItem) => cartItem._id !== cartId);
+          const updatedProducts = updatedCarts.map((cartItem) => ({
+            ...cartItem,
+            products: cartItem.products.filter((product) => product._id !== itemId),
+          }));
+        
+          // Update the carts state with the updated products
+          setCarts(updatedProducts);
+
           notify();
         } catch(error) {
           // handle any errors

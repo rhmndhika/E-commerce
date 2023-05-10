@@ -46,12 +46,12 @@ import { setModal } from '../redux/global';
     const handleLogin = async (e) => {
       e.preventDefault();
       
-      await dispatch(setModal(true));
-      if (modalValue && username && password && message === "") {
-        notify();
-      } 
+      dispatch(setModal(true));
+      // if (modalValue && username && password && message === "") {
+      //   notify();
+      // } 
       
-      login(dispatch, { username, password });
+      login(dispatch, { username, password }, notify);
     }
     
     return (
@@ -81,12 +81,6 @@ import { setModal } from '../redux/global';
                     setUsername(e.target.value)
                 }} />
               </FormControl>
-              {/* <FormControl id="email" isRequired>
-                <FormLabel>Email address</FormLabel>
-                <Input type="email" name="email" value={email} onChange={(e)=> {
-                    setEmail(e.target.value)
-                }} />
-              </FormControl> */}
                <FormControl id="password" isRequired pb={5}>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>

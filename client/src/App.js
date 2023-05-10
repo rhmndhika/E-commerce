@@ -14,6 +14,7 @@ import OrderHistory from './scenes/global/OrderHistory';
 import Invoices from './scenes/global/Invoices';
 import UserProfile from './scenes/global/UserProfile';
 import Welcome from './components/Welcome';
+import UserWishlist from './scenes/global/UserWishlist';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path='/order/history' element={<OrderHistory />} />
         <Route path='/order/history/detail/:id' element={<Invoices />} />
         <Route path='/user/profile/:id' element={<UserProfile />} />
+        <Route path='/user/wishlist/:id' element={<UserWishlist />} />
       </Routes>
     </BrowserRouter>
   </ChakraProvider>

@@ -6,16 +6,28 @@ const ProfileSchema = new mongoose.Schema({
         ref: "users"
     },
     fullname : {
-        type: String
+        type: String,
+        require: true
+    },
+    email : {
+        type: String,
+        require: true
     },
     dateOfBirth : {
-        type: Date
+        type: Date,
+        require: true
+    },
+    phoneNumber : {
+        type: Number,
+        require: true
     },
     gender : {
-        type: String
+        type: String,
+        require: true
     },
     available : {
-        type: String
+        type: String,
+        require: true
     },
     company : {
         type: String

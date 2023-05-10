@@ -17,14 +17,16 @@ import { AiOutlineMinus} from 'react-icons/ai';
 import { mobile, isMobile, isTablet } from '../../reponsive'
 import { useMediaQuery } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom'
-import { publicRequest } from '../../useFetch.js'
+import { publicRequest, userMethod } from '../../useFetch.js'
 import { addProduct } from '../../redux/cartRedux.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart  } from '../../redux/apiCalls.js'
 import RelatedProduct from '../../components/RelatedProduct.tsx'
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
+import { BsHeart, BsHeartFill } from 'react-icons/bs'
+import { BiCart } from 'react-icons/bi'
+import axios from 'axios';
 const Container = styled.div`
 `
 
@@ -75,9 +77,6 @@ const Amount = styled.span`
   margin: -7px 5px;
 `
 
-const ButtonStyled = styled.button`
-`
-
 const Product = () => {
 
   const [ isSmallerThan704 ] = useMediaQuery('(min-width: 704px)', {
@@ -89,25 +88,58 @@ const Product = () => {
   const id = location.pathname.split("/")[2];
   const [ product, setProduct ] = useState({});
   const [ quantity, setQuantity ] = useState(1);
+  const [ wishlist, setWishlist ] = useState([]);
+
   const user = useSelector((state) => state.user?.currentUser?._id);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const res = await publicRequest.get("/product/find/"+id);
+        const res = await userMethod.get("/product/find/"+id);
         setProduct(res.data);
       } catch(err) {
-        
+        console.log(err)
       }
     }
     getProduct();
   }, [id])
 
+  useEffect(() => {
+    let mounted = true;
+    
+    const getWishlist = async () => {
+      try {
+        const response = await userMethod.get(`/wishlist/user/${user}`);
+        if (mounted) {
+          setWishlist(response.data[0].products);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  
+    getWishlist();
+  
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+
+  const isProductInWishlist = wishlist.some((item) => item.productId._id === product._id);
 
   const handleClick = () => {
-    //update cart
-    notify();
+    toast.success('Added to Cart', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
     addToCart(dispatch, ({ ...product, quantity, user }))
   }
 
@@ -119,17 +151,63 @@ const Product = () => {
     quantity > 1 && setQuantity(quantity - 1)
   }
 
-  const notify = () => {
-    toast.success('Added to Cart', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      });
+  const addtoWishlist = async () => {
+    try {
+      await userMethod.post("/wishlist/add", {
+        userId: user,
+        products: product._id
+    }).then((res) => {
+      toast.success(res.data, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    })
+    } catch (err) {
+      toast.error(err.response.data, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    }
+  }
+
+  const deleteWishlistItem = async () => {
+    try {
+      await userMethod.delete(`/wishlist/delete/${user}/${product._id}`).then((res) => {
+      toast.success(res.data, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    })
+    } catch (err) {
+      toast.error(err.response.data, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    }
   }
 
   return (
@@ -168,9 +246,17 @@ const Product = () => {
             </Flex>
           
           { user ? 
-            <Flex>
-              <Button padding="15px" border="2px solid teal" backgroundColor="white" cursor="pointer" fontWeight="500" _hover={{backgroundColor : "#f8f4f4"}} 
-              onClick={handleClick}>Add to Cart</Button>
+            <Flex gap="10px">
+              { isProductInWishlist ? 
+              <Button  width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
+                onClick={deleteWishlistItem} leftIcon={<BsHeartFill />}>Remove from Wishlist</Button>
+               :
+              <Button width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
+                onClick={addtoWishlist} leftIcon={<BsHeart />}>Add to Wishlist</Button>
+              }
+
+              <Button width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
+              onClick={handleClick} leftIcon={<BiCart />}>Add to Cart</Button>
             </Flex>
             :
             null
