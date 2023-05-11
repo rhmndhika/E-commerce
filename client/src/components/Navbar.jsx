@@ -34,6 +34,9 @@ export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ Carts, setCarts ] = useState([]);
   const [ userProfile, setUserProfile ] = useState([]);
+  const token = Cookies.get('token');
+  const tokenId = Cookies.get('userId');
+  const tokenUsername = Cookies.get('username');
 
   const user = useSelector((state) => state.user.currentUser);
 
@@ -47,6 +50,8 @@ export default function Nav() {
   const handleLogout = () => {
     dispatch(logout());
     Cookies.remove('token');
+    Cookies.remove('userId');
+    Cookies.remove('username');
     navigate("/", { replace : true });
   }
 
@@ -62,24 +67,24 @@ export default function Nav() {
     getUserProfile();
   }, [])
 
-  console.log(userProfile)
   
+
   return (
     <>
       <Box bg={useColorModeValue('white', 'gray.800')} color={useColorModeValue('gray.600', 'white')} px={4} shadow={'md'}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box as='a' href="/">Logo</Box>
+          <Box as='a' href="/">Bumi Baureksa Pratama</Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              { user ?
+              { user || token || tokenId || tokenUsername ?
               <Flex gap="10px">
-                <a href={`/cart/${user._id}`}>
+                <a href={`/cart/${tokenId}`}>
                 <IconButton
                   icon={<BsFillCartFill />}
                   />
                 </a>
-                <a href={`/user/wishlist/${user._id}`}>
+                <a href={`/user/wishlist/${tokenId}`}>
                 <IconButton
                   icon={<BsFillHeartFill />}
                   />
@@ -88,7 +93,7 @@ export default function Nav() {
               :
               null
               }
-              { user ? 
+              { user || token || tokenId || tokenUsername ? 
               // <p onClick={handleLogout}>{user.username}</p>
               <Menu>
                 <MenuButton
@@ -112,11 +117,11 @@ export default function Nav() {
                   </Center>
                   <br />
                   <Center>
-                    <p>{user.username}</p>
+                    <p>{tokenUsername}</p>
                   </Center>
                   <br />
                   <MenuDivider />
-                  <Link to={`/user/profile/${user._id}`}>
+                  <Link to={`/user/profile/${tokenId}`}>
                     <MenuItem>Account Settings</MenuItem>
                   </Link>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>

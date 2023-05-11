@@ -245,7 +245,7 @@ const Profile = () => {
           <ModalBody pb={6}>  
             <FormControl mt="10px">
               <FormLabel>Nomor HP</FormLabel>
-                <Input name="phoneNumber" type='phone' placeholder='0xxxxxxxxxxxx' onChange={handleChange} />
+                <Input name="phoneNumber" type='tel' placeholder='0xxxxxxxxxxxx' onChange={handleChange} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
@@ -269,12 +269,7 @@ const Profile = () => {
             </Flex>
           </Flex>
 
-          {/* <Flex ml="10px">
-            <Text>PROFILE</Text>
-          </Flex> */}
-
           <Accordion allowMultiple defaultIndex={[0, 1, 2, 3]}>
-
           <AccordionItem isDisabled={true} defaultIsOpen={true}>
             <h2>
               <AccordionButton>
@@ -317,7 +312,9 @@ const Profile = () => {
             </AccordionPanel>
             <AccordionPanel pb={4}>
               <Box>
+              <Link to={`/order/history`}>
                 <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Daftar Transaksi</Text>
+              </Link>
               </Box>
             </AccordionPanel>
           </AccordionItem>
@@ -344,8 +341,6 @@ const Profile = () => {
               </Box>
             </AccordionPanel>
           </AccordionItem>
-
-          
         </Accordion>
         </Flex>
 
@@ -413,8 +408,8 @@ const Profile = () => {
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalNumber}>Ubah</Text>
             </HStack>
           </Flex>
-         </Flex>  
-        </Flex>      
+         </Flex>    
+        </Flex>   
     </Container>
       )
     })}

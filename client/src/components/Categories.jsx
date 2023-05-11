@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Divider, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { categories } from '../data'
 import CategoryItem from './CategoryItem';
@@ -15,12 +15,18 @@ const Container = styled.div`
 
 const Categories = () => {
   return (
-    <Flex flexDirection="row" alignItems="center" flexWrap="wrap" gap="10px" mt="20px">
+    <Flex flexDirection="column">
+      <Flex mt="50px">
+        <Text padding="30px 0 0 30px" fontSize="3xl" as="b">Categories</Text>
+      </Flex>
+
+      <Flex alignItems="center" flexWrap="wrap" gap="30px" mt="5px">
       {categories.map((item) => (
         <CategoryItem item={item} key={item.id} />
         ))}
+      </Flex>
+      <Divider mt="10px" size="xl" />
     </Flex>
-
   )
 }
 

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';  
 import { popularProducts } from '../data';
 import Product from './Product';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import styled from 'styled-components';
 import axios from 'axios';
 
 const Container = styled.div`
-    padding: 20px;
+    padding: 30px;
     display: flex;
     flex-wrap: wrap;
-    margin-top: -20px;
+    margin-top: -130px;
 `
 
 const Products = ({cat,filter,sort}) => {
@@ -20,7 +20,7 @@ const Products = ({cat,filter,sort}) => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get( cat ? `https://e-commerce-production-25ef.up.railway.app/product/all?category=${cat}` : "https://e-commerce-production-25ef.up.railway.app/product/all");
+        const response = await axios.get( cat ? `http://localhost:5000/product/all?category=${cat}` : "http://localhost:5000/product/all");
         setProducts(response.data);
       }catch(err) {
 
@@ -57,11 +57,13 @@ const Products = ({cat,filter,sort}) => {
   }, [sort]);
 
   return (
-    <Container>
+    <Flex flexDirection="column" padding="30px" mt="-30px">
+      <Flex flexWrap="wrap">
         { cat 
         ? filteredProducts.map((item) => ( <Product item={item} key={item.id} />)) 
         : products.slice(0, 8).map((item) => ( <Product item={item} key={item.id} />))}
-    </Container>
+      </Flex>
+    </Flex>
   )
 }
 

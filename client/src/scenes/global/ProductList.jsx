@@ -27,6 +27,8 @@ const ProductList = () => {
   const [ filter, setFilter ] = useState({});
   const [ sort, setSort ] = useState("Newest");
 
+  console.log(cat)
+
 
   const handleFilters = (e) => {
     const value = e.target.value
@@ -55,39 +57,30 @@ const ProductList = () => {
       <Text margin="20px" fontSize="35px" fontWeight="bold">{cat}</Text>
         { isSmallerThan666 ? 
         <Flex flexDirection="row" justifyContent="space-between" alignItems="center" margin="20px">
+          { cat === "Automotive" ? 
           <Flex flexDirection="row">
             <FilterText>Filter Products</FilterText>
-         
-            <Select name="categories" width="140px" mt="-3px" ml="5px" onChange={handleFilters}>
-              <option value='SC' selected>All</option> :
-              <option value='Automotive'>Automotive</option>
-              <option value='Construction'>Construction</option>
-              <option value='Health'>Health</option>
-            </Select>
-       
-            { filter.categories === "Automotive" ? 
-            <Select name="materials" width="140px" mt="-3px" ml="5px" onChange={handleFilters}>
+             <Select name="materials" width="180px" mt="-3px" ml="5px" onChange={handleFilters}>
               <option value='Material' onClick={deleteKey()}>Material</option>
               <option value='Rubber'>Rubber</option>
               <option value='Metal'>Metal</option>
-              <option value='Plastic'>Plastic</option>
+              <option value='Theromoplastic'>Theromoplastic</option>
               <option value='Polyurethane'>Polyurethane</option>
             </Select>
-            :
-            null
-            }
           </Flex>
+            :
+          null
+          }
 
           <Flex>
             <FilterText>Sort Products</FilterText>
-            <Select width="110px" mt="-3px" ml="5px" onChange={e => setSort(e.target.value) }>
+            <Select width="140px" mt="-3px" ml="5px" onChange={e => setSort(e.target.value) }>
               <option value='Newest'>Newest</option>
               <option value='Asc'>Price (ASC)</option>
               <option value='Desc'>Price (DESC)</option>
             </Select>
           </Flex>
         </Flex>
-
         :
         <Flex flexDirection="column" justifyContent="space-between" alignItems="center" margin="20px" width="0px 20px">
           <Flex flexDirection="row" alignSelf="flex-start">
@@ -118,6 +111,9 @@ const ProductList = () => {
           </Flex>
         </Flex>
         }
+      <Flex padding="0 0 20px 20px">
+        <Text>Rubber release agents are designed to act as a physical barrier between the rubber compound (elastomer) and the mold surface. All rubber mold release agents should strive for nonstick and lubricity properties. Depending on your application needs, Busama Chem will design the appropriate power that the rubber release agent must provide for your case</Text>
+      </Flex>
       <Products cat={cat} filter={filter} sort={sort} />
       <Newsletter />
       <Footer />

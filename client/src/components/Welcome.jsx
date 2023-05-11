@@ -138,7 +138,7 @@ export default function Welcome() {
 
             <FormControl isRequired>
               <FormLabel>Phone Number</FormLabel>
-              <Input name="phoneNumber" type='phone' placeholder='0xxxxxxxxxxxxx' onChange={handleChange} />
+              <Input name="phoneNumber" type='tel' placeholder='0xxxxxxxxxxxxx' onChange={handleChange} />
             </FormControl>
 
             <FormControl isRequired>

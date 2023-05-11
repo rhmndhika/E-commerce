@@ -1,51 +1,21 @@
 export const categories = [
     {
       id: 1,
-      img: "https://media.istockphoto.com/id/162264253/id/foto/eksperimen-lab.jpg?s=612x612&w=0&k=20&c=eKCaHKhdmdYInzwiUFGwaKFMN5qECgqCEQnh0qXj4mA=",
-      title: "Rubber",
-      cat: "Rubber"
+      img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
+      title: "Automotive",
+      cat: "Automotive"
     },
     {
       id: 2,
       img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Polythurane",
-      cat: "Polythurane"
+      title: "Construction",
+      cat: "Construction"
     },
-    {
-      id: 3,
+      {
+      id: 2,
       img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Composite",
-      cat: "Composite"
-    },
-    {
-      id: 4,
-      img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Thermoplastic",
-      cat: "Thermoplastic"
-    },
-    {
-      id: 5,
-      img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Metal Casting",
-      cat: "Metal Casting"
-    },
-    {
-      id: 6,
-      img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Concrete",
-      cat: "Concrete"
-    },
-    {
-      id: 7,
-      img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Anti Rust Solutiion",
-      cat: "Anti-Rust-Solution"
-    },
-    {
-      id: 8,
-      img: "https://img.freepik.com/free-photo/adult-holding-basket-with-cleaning-products_23-2148521032.jpg?size=626&ext=jpg",
-      title: "Industrial Cleaner",
-      cat: "Industrial-Cleaner"
+      title: "Others",
+      cat: "Others"
     },
   ];
 

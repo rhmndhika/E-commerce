@@ -21,6 +21,9 @@ const ProductSchema = new mongoose.Schema({
     materials : {
         type: String
     },
+    materialsDesc : {
+        type: String
+    },
     price : {
         type: Number,
         require: true

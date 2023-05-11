@@ -68,6 +68,7 @@ export default function Carousel() {
       height={'500px'}
       width={'full'}
       overflow={'hidden'}
+      padding="30px"
       >
       {/* CSS files for react-slick */}
       <link
@@ -115,6 +116,7 @@ export default function Carousel() {
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
+            objectFit="cover"
             backgroundImage={`url(${card.image})`}>
             {/* This is the block you need to change, to customize the caption */}
             <Container size="container.lg" height="600px" position="relative">

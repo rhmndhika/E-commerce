@@ -127,7 +127,7 @@ const Product = () => {
   }, []);
 
 
-  const isProductInWishlist = wishlist.some((item) => item.productId._id === product._id);
+  const isProductInWishlist = wishlist?.some((item) => item.productId._id === product._id);
 
   const handleClick = () => {
     toast.success('Added to Cart', {
@@ -231,8 +231,7 @@ const Product = () => {
                   {product.desc}
                 </TabPanel>
                 <TabPanel>
-                  {/* {product.benefits} */}
-                  Benefits
+                  {product.materialsDesc}
                 </TabPanel>
               </TabPanels>
             </Tabs>
