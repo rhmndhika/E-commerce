@@ -422,7 +422,7 @@ const Profile = () => {
             <AccordionPanel pb={4}>
               <Box>
               <Link to={`/order/history`}>
-                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Order Transaction</Text>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Order History</Text>
               </Link>
               </Box>
             </AccordionPanel>

@@ -5,7 +5,6 @@ import Invoice from '../../components/Invoice'
 const Invoices = () => {
   return (
     <div>
-        <Navbar />
         <Invoice />
     </div>
   )

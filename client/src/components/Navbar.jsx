@@ -73,7 +73,7 @@ export default function Nav() {
     <>
       <Box bg={useColorModeValue('white', 'gray.800')} color={useColorModeValue('gray.600', 'white')} px={4} shadow={'md'}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box as='a' href="/">Bumi Baureksa Pratama</Box>
+          <Box as='a' href="/"><Text as="b">Bumi Baureksa Pratama</Text></Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>

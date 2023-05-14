@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const CartModel = require('./Cart')
 
 const OrderSchema = new mongoose.Schema({
     userId : {
@@ -31,6 +32,12 @@ const OrderSchema = new mongoose.Schema({
     }
 
 }, { timestamps: true })
+
+OrderSchema.post('save', async function (doc, next) {
+    // remove cart data for the user who made the order
+    await CartModel.deleteMany({ userId: doc.userId })
+    next();
+})
 
 const OrderModel = mongoose.model("orders", OrderSchema)
 module.exports = OrderModel

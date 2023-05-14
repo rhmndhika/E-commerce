@@ -2,16 +2,18 @@ const express = require("express");
 const router = express.Router();
 const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
 const Order = require("../models/Order");
+const Cart = require("../models/Cart");
 
 
-
-const createOrder = async (req, res) => {
+const createOrder = async (req, res, next) => {
 
     const newOrder = new Order(req.body)
 
     try {
         const saveOrder = await newOrder.save();
+        await Cart.deleteMany({ userId: doc.userId })
         res.status(200).json(saveOrder);
+        next();
     } catch (err) {
         res.status(500).json(err);
     }

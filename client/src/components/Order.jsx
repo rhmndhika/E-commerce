@@ -39,6 +39,7 @@ const Order = () => {
     const tokenUserId = Cookies.get('userId');
     const [ orderHistory, setOrderHistory ] = useState([]);
 
+   
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { 
         isOpen: isOpenModalReview, 
@@ -76,31 +77,39 @@ const Order = () => {
     <>
     { orderHistory.map((order) => {
     return (
-    <Container shadow="lg" maxW='container.sm' borderRadius="10px" overflow="hidden" height="300px" overflowY="auto">
+    <Container shadow="lg" maxW='container.lg' borderRadius="10px" overflow="hidden" height="300px" overflowY="auto">
     <ModalTransaction data={selectedItemId} isOpen={isOpen} onOpen={handleOpenModal} onClose={handleCloseModal} id={order._id} />
     <Flex flexDirection="column" justifyContent='center' alignItems="center">
-        <Flex flexDirection="row" alignSelf="flex-start" gap="30px" flexWrap="wrap" mt="40px">
-            <Stack direction="row">
-                <BsBag />
+        <Flex flexDirection="row" justifyContent="space-between" alignSelf="flex-start" flexWrap="wrap" mt="40px" width="100%">
+            <Flex gap="30px">
+                <Stack direction="row">
+                    <BsBag />
+                    <Text>
+                        Shooping
+                    </Text>
+                </Stack>
+
                 <Text>
-                    Shooping
+                    {moment(order.createdAt).format('MMMM Do YYYY')}
                 </Text>
-            </Stack>
 
-            <Text>
-                {moment(order.createdAt).format('MMMM Do YYYY')}
-            </Text>
+                <Badge>
+                    <Text mt="4px">
+                    {order.status}
+                    </Text>
+                </Badge>
+            </Flex>
 
-            <Badge>
-                <Text mt="4px">
-                {order.status}
-                </Text>
-            </Badge>
+            <Flex gap="10px">
+                <Text as="b">Invoice No : </Text> 
+                <Link to={`/order/history/detail/${order._id}`} onClick={() => {
+                    window.open('/order/history/detail/'+order._id, '_blank');
+                }}>
+                    <Text cursor="pointer" color="green">{order._id}</Text>
+                </Link>
+            </Flex>
         </Flex>
 
-        <Text alignSelf="flex-start" mt="10px">
-            <Text as="b">Invoice No</Text> : {order._id}
-        </Text>
 
         {order.products.map((productItem) => {
             return (

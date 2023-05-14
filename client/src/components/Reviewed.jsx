@@ -43,7 +43,7 @@ const Reviewed = () => {
     getProductReviewed();
   }, [id])
 
-  const total = productReviewed?.order.products[0].quantity * productReviewed?.product.price
+  const total = productReviewed?.order?.products[0].quantity * productReviewed?.product?.price
 
 
   return (
@@ -72,7 +72,6 @@ const Reviewed = () => {
             />
               <Text as="b">{productReviewed?.product.title}</Text>
               {/* <Text>quantity item x  $ price</Text> */}
-              <Text as="b">Total Belanja : $ {total} </Text>
               <Text>Rating</Text>
               <Flex flexDirection="column" >
                 <HStack spacing="1">
