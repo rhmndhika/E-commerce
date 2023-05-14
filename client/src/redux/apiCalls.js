@@ -14,6 +14,8 @@ export const login = async (dispatch, user, notify) => {
                 Cookies.set('token', response.data.accessToken, { expires: 3 });
                 Cookies.set('userId', response.data._id, { expires: 3 });
                 Cookies.set('username', response.data.username, { expires: 3 });
+                Cookies.set('email', response.data.email, { expires: 3 });
+                console.log(response)
                 dispatch(setModal(true));
                 notify();
                 setTimeout(() => {
@@ -33,9 +35,10 @@ export const login = async (dispatch, user, notify) => {
 }
 
 export const addToCart = async (dispatch, product, quantity, user) => {
+    const tokenUserId = Cookies.get('userId');
     try {
         const res = await userMethod.post("/cart/create", {
-            userId: product.user,
+            userId: tokenUserId,
             products: product,
             bill: product.quantity * product.price
         })

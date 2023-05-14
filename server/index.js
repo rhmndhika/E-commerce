@@ -70,6 +70,7 @@ const orderRoute = require("./routes/order.js");
 const stripeRoute = require("./routes/stripe.js");
 const profileRoute = require("./routes/profile.js");
 const wishlistRoute = require("./routes/wishlist.js");
+const reviewRoute = require("./routes/review.js");
 
 app.use(authRoute);
 app.use(userRoute);
@@ -79,6 +80,7 @@ app.use(orderRoute);
 app.use(stripeRoute);
 app.use(profileRoute);
 app.use(wishlistRoute);
+app.use(reviewRoute);
 
 
 app.listen(process.env.PORT || port, () => {

@@ -22,17 +22,21 @@ import {
   FormErrorMessage,
   FormHelperText,
   Input,
-  Select
+  Select,
+  InputGroup,
+  InputLeftAddon
 } from '@chakra-ui/react';
 import { userMethod } from '../useFetch'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
+import Cookies from 'js-cookie';
 
 export default function Welcome() {
 
   const user = useSelector((state) => state.user.currentUser);
+  const tokenUserId = Cookies.get('userId');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ show, setShow ] = useState(false);
   const [ inputs, setInputs ] = useState({
@@ -60,7 +64,7 @@ export default function Welcome() {
     e.preventDefault();
     try{
         await userMethod.post("profile/create", {
-          userId : user._id,
+          userId : tokenUserId,
           fullname : inputs.fullname,
           email: inputs.email,
           phoneNumber: inputs.phoneNumber,
@@ -101,14 +105,14 @@ export default function Welcome() {
   useEffect(() => {
     const getUserProfile = async () => {
         try{
-            const response = await userMethod.get(`/profile/${user._id}`);
+            const response = await userMethod.get(`/profile/${tokenUserId}`);
             setUserProfile(response.data);
         } catch (err) {
             console.log(err);
         } 
     }
     getUserProfile();
-  }, [user._id])
+  }, [tokenUserId])
 
 
 
@@ -138,26 +142,31 @@ export default function Welcome() {
 
             <FormControl isRequired>
               <FormLabel>Phone Number</FormLabel>
-              <Input name="phoneNumber" type='tel' placeholder='0xxxxxxxxxxxxx' onChange={handleChange} />
+              <InputGroup>
+                <InputLeftAddon children='+62' />
+                <Input name="phoneNumber" type='tel' placeholder='Phone number' onChange={handleChange} />
+              </InputGroup>
             </FormControl>
+
+            
 
             <FormControl isRequired>
               <FormLabel>Gender</FormLabel>
               <Select name="gender" placeholder='Gender' onChange={handleChange}>
-                <option value='male'>Male</option>
-                <option value='female'>Female</option>
+                <option value='Male'>Male</option>
+                <option value='Female'>Female</option>
               </Select>
             </FormControl>
 
             <FormControl isRequired>
               <FormLabel>Do you work for the company</FormLabel>
               <Select name="available" placeholder='Choose..' onChange={handleChange}>
-                <option value='yes'>Yes</option>
-                <option value='no'>No</option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
               </Select>
             </FormControl>
             
-            { inputs.available === "yes"  ?
+            { inputs.available === "Yes"  ?
             <FormControl isRequired>
               <FormLabel>What Company</FormLabel>
               <Input name="company" type='text' placeholder='Perusahaan' onChange={handleChange} />

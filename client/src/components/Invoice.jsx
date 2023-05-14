@@ -10,17 +10,21 @@ import {
     Td,
     TableContainer,
     Button,
+    FormControl, FormLabel, Grid, GridItem, Heading, Input, useColorModeValue, Center 
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch'
 import { useParams } from 'react-router-dom'
 import { jsPDF } from "jspdf"
 import moment from 'moment'
+import Cookies from 'js-cookie';
 
 const Invoice = () => {
 
     const [ userOrder, setUserOrder ] = useState(null);
+    const [ userProfile, setUserProfile ] = useState(null);
     const { id } = useParams();
     const [ Prices, setPrices ] = useState(null);
+    const tokenUserId = Cookies.get('userId');
 
     const pdfRef = useRef(null);
     const handleDownload = () => {
@@ -48,75 +52,139 @@ const Invoice = () => {
        
   return (
     <>
-    <Button mt="30px" justifyContent="center" left="45%" onClick={handleDownload} colorScheme='teal'>Download</Button>
+    <Center>
+        <Button mt="30px" onClick={handleDownload} colorScheme='teal'>Download</Button>
+    </Center>
     { userOrder === null ? <p>Loading...</p> : 
-    <Container mt="30px" shadow="lg"  maxW='container.sm' centerContent>
-        <Flex flexDirection="column" justifyContent="center" alignItems="center" ref={pdfRef}>
-        <Flex justifyContent="center" alignItems="center" flexDirection="row">
-                <Flex flexDirection="row" justifyContent="space-around" gap="180px">
-                    <Flex width="170px">
-                        <Box>
-                            <Text>Your Company</Text>
-                            <Text>Your Name</Text>
-                            <Text>Company Address</Text>
-                            <Text>City, State, Zip</Text>
-                            <Text>Country</Text>
-                        </Box>
-                    </Flex>
-                    <Flex width="150px">
-                        <Box>
-                            <Text fontSize="40px" fontWeight="bold">INVOICE</Text>
-                        </Box>
-                    </Flex>
-                </Flex>
-        </Flex>
-        <Flex justifyContent="center" alignItems="center" flexDirection="row">
-            <Flex flexDirection="row" justifyContent="space-around"  mt="20px">
-                <Flex width="350px">
-                    <Box>
-                        <Text>Bill To :</Text>
-                        <Text>{userOrder.userId}</Text>
-                        <Text>{userOrder.address.city}, {userOrder.address.postal_code}</Text>
-                        <Text>{userOrder.address.country}</Text>
-                    </Box>
-                </Flex>
-                <Flex width="150px">
-                    <Box>
-                        <Text>Invoice: {userOrder._id}</Text>
-                        <Text>Invoice Date: {moment(userOrder.createdAt).format('MMMM Do YYYY')}</Text>
-                    </Box>
-                </Flex>
-            </Flex>
-        </Flex>
-        <TableContainer padding="30px">
-        <Table variant='simple'>
-            <Thead>
-            <Tr>
-                <Th>Item Description</Th>
-                <Th>Quantity</Th>
-                <Th>Amount</Th>
-            </Tr>
-            </Thead>
-            { userOrder.products.map((product) => {
-                return (
-            <Tbody>
-            <Tr>
-                <Td>{product.productId.title}</Td>
-                <Td>{product.quantity}</Td>
-                <Td>$ {product.productId.price}</Td>
-            </Tr>
-            </Tbody>
-                )
-            })}
-        </Table>
-        </TableContainer>
-        <Flex justifyContent="flex-end" alignItems="center" flexDirection="row" padding="10px">
+    <Container shadow="lg" ref={pdfRef}>
+    <Box p={4}>
+    <Heading size="md" mb={4} mt="40px">
+    Invoice
+    </Heading>
+        <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+        <GridItem>
             <Box>
-                <Text>Total : $ {userOrder.amount}</Text>
+            <Text mb={2}>From:</Text>
+            <Text fontWeight="bold">Your Company Name</Text>
+            <Text>123 Main Street</Text>
+            <Text>City, State 12345</Text>
+            <Text>Phone: 123-456-7890</Text>
             </Box>
-        </Flex>
-        </Flex>
-   </Container>
+        </GridItem>
+        <GridItem>
+            <Box>
+            {/* <Text mb={2}>To:</Text>
+            <Text fontWeight="bold">Customer Name</Text>
+            <Text>456 Second Street</Text>
+            <Text>City, State 23456</Text>
+            <Text>Phone: 234-567-8901</Text> */}
+            </Box>
+        </GridItem>
+        <GridItem>
+            <Box>
+            <Text mb={2}>Invoice Date:</Text>
+            <Text fontWeight="bold">May 11, 2023</Text>
+            </Box>
+        </GridItem>
+        </Grid>
+        <Table mt={6} size="sm">
+        <Thead>
+            <Tr>
+            <Th>Item</Th>
+            <Th>Quantity</Th>
+            <Th>Price</Th>
+            </Tr>
+        </Thead>
+        { userOrder.products.map((product) => {
+        return (
+        <Tbody>
+            <Tr>
+            <Td>{product.productId.title}</Td>
+            <Td>{product.quantity}</Td>
+            <Td>$ {product.productId.price}</Td>
+            </Tr>
+        </Tbody>
+          )
+        })}
+        </Table>
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6} mt={6}>
+        <GridItem>
+            <FormControl>
+            <FormLabel>Notes:</FormLabel>
+            <Input placeholder="Enter notes here" />
+            </FormControl>
+        </GridItem>
+        <GridItem>
+            <Box  p={4} borderRadius="md">
+            <Text mb={2}>Total:</Text>
+            <Text fontWeight="bold" fontSize="2xl">$ {userOrder.amount}</Text>
+            </Box>
+        </GridItem>
+        </Grid>
+    </Box>
+    </Container>
+    // <Container mt="30px" shadow="lg"  maxW='600px' centerContent height="500px">
+    //     <Flex flexDirection="column" alignItems="center" ref={pdfRef}>
+    //     <Flex justifyContent="center" alignItems="center" flexDirection="row">
+    //             <Flex flexDirection="row" gap="180px" mt="30px">
+    //                 <Flex width="170px">
+    //                     <Box>
+    //                         <Text>Your Company</Text>
+    //                         <Text>Your Name</Text>
+    //                         <Text>Company Address</Text>
+    //                         <Text>City, State, Zip</Text>
+    //                         <Text>Country</Text>
+    //                     </Box>
+    //                 </Flex>
+    //                 <Flex width="150px">
+    //                     <Box>
+    //                         <Text fontSize="40px" fontWeight="bold">INVOICE</Text>
+    //                     </Box>
+    //                 </Flex>
+    //             </Flex>
+    //     </Flex>
+    //     <Flex justifyContent="center"  alignItems="center" flexDirection="row">
+    //         <Flex flexDirection="row" justifyContent="space-around"  mt="20px">
+    //             <Flex width="350px">
+    //                 <Box>
+    //                 </Box>
+    //             </Flex>
+    //             <Flex width="150px">
+    //                 <Box>
+    //                     <Text>Invoice Date: {moment(userOrder.createdAt).format('MMMM Do YYYY')}</Text>
+    //                 </Box>
+    //             </Flex>
+    //         </Flex>
+    //     </Flex>
+    //     <TableContainer padding="30px" mt="30px">
+    //     <Table variant='simple'>
+    //         <Thead>
+    //         <Tr>
+    //             <Th>Item Description</Th>
+    //             <Th>Quantity</Th>
+    //             <Th>Amount</Th>
+    //         </Tr>
+    //         </Thead>
+    //         { userOrder.products.map((product) => {
+    //             return (
+    //         <Tbody>
+    //         <Tr>
+    //             <Td>{product.productId.title}</Td>
+    //             <Td>{product.quantity}</Td>
+    //             <Td>$ {product.productId.price}</Td>
+    //         </Tr>
+    //         </Tbody>
+    //             )
+    //         })}
+    //     </Table>
+    //     </TableContainer>
+    //     <Flex justifyContent="flex-end" alignItems="center" flexDirection="row" padding="10px">
+    //         <Box>
+    //             <Text>Total : $ {userOrder.amount}</Text>
+    //         </Box>
+    //     </Flex>
+    //     </Flex>
+    // </Container>
    }
    </>
   )

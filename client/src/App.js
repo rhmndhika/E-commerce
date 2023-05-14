@@ -15,6 +15,10 @@ import Invoices from './scenes/global/Invoices';
 import UserProfile from './scenes/global/UserProfile';
 import Welcome from './components/Welcome';
 import UserWishlist from './scenes/global/UserWishlist';
+import Testing from './scenes/global/Testing';
+import Reviewed from './components/Reviewed';
+import ReviewPage from './scenes/global/ReviewPage';
+import ReviewList from './scenes/global/ReviewList';
 
 
 function App() {
@@ -38,6 +42,10 @@ function App() {
         <Route path='/order/history/detail/:id' element={<Invoices />} />
         <Route path='/user/profile/:id' element={<UserProfile />} />
         <Route path='/user/wishlist/:id' element={<UserWishlist />} />
+        <Route path='/user/review/:id' element={<ReviewPage />} />
+        <Route path='/user/reviewList/:id' element={<ReviewList />} />
+        <Route path='/reviewed/:id' element={<Reviewed />} />
+        <Route path='/testing' element={<Testing />} />
       </Routes>
     </BrowserRouter>
   </ChakraProvider>

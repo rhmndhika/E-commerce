@@ -45,7 +45,7 @@ const deleteOrder = async (req, res) => {
 
 const getUserOrder = async (req, res) => {
     try {
-        const orders = await Order.find({ userId: req.params.userId })
+        const orders = await Order.find({ userId: req.params.userId }).populate('products.productId')
         
         res.status(200).json(orders);
     } catch(err) {

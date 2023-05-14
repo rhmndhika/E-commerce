@@ -12,76 +12,145 @@ import {
     Text,
     Flex,
     Button,
-    Badge
+    Badge,
+    Container,
+    Stack,
+    Image,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
-import TimeAgo from 'react-timeago'
-
+import Cookies from 'js-cookie';
+import { BsBag } from 'react-icons/bs'
+import moment from 'moment'
+import ModalTransaction from './ModalTransaction'
 
 const Order = () => {
 
-    const user = useSelector((state) => state.user.currentUser._id);
+    // const user = useSelector((state) => state.user.currentUser._id);
+    const tokenUserId = Cookies.get('userId');
     const [ orderHistory, setOrderHistory ] = useState([]);
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { 
+        isOpen: isOpenModalReview, 
+        onOpen: onOpenModalReview, 
+        onClose: onCloseModalReview 
+      } = useDisclosure();
+
+    const [selectedItemId, setSelectedItemId] = useState(null);
+
+    const handleOpenModal = (itemId) => {
+        setSelectedItemId(itemId);
+        onOpen();
+      };
+    
+      const handleCloseModal = () => {
+        setSelectedItemId(null);
+        onClose();
+      };
 
 
     useEffect(() => {
         const getOrderHistory = async () => {
             try{
-                const response = await userMethod.get(`/order/find/${user}`)
+                const response = await userMethod.get(`/order/find/${tokenUserId}`)
                 setOrderHistory(response.data);
             } catch (err) {
                 console.log(err);
             } 
         }
         getOrderHistory();
-    }, [])
+    }, [tokenUserId])
 
 
   return (
-    <TableContainer shadow="lg" margin="50px 15px 0 15px">
-        <Table variant="simple">
-            <Thead>
-            <Tr>
-                <Th>Order ID</Th>
-                <Th>Amount</Th>
-                <Th>Country</Th>
-                <Th>City</Th>
-                <Th>Status</Th>
-                <Th>Created</Th>
-                <Th>Action</Th>
-            </Tr>
-            </Thead>
-            { orderHistory.map((order) => {
+    <>
+    { orderHistory.map((order) => {
+    return (
+    <Container shadow="lg" maxW='container.sm' borderRadius="10px" overflow="hidden" height="300px" overflowY="auto">
+    <ModalTransaction data={selectedItemId} isOpen={isOpen} onOpen={handleOpenModal} onClose={handleCloseModal} id={order._id} />
+    <Flex flexDirection="column" justifyContent='center' alignItems="center">
+        <Flex flexDirection="row" alignSelf="flex-start" gap="30px" flexWrap="wrap" mt="40px">
+            <Stack direction="row">
+                <BsBag />
+                <Text>
+                    Shooping
+                </Text>
+            </Stack>
+
+            <Text>
+                {moment(order.createdAt).format('MMMM Do YYYY')}
+            </Text>
+
+            <Badge>
+                <Text mt="4px">
+                {order.status}
+                </Text>
+            </Badge>
+        </Flex>
+
+        <Text alignSelf="flex-start" mt="10px">
+            <Text as="b">Invoice No</Text> : {order._id}
+        </Text>
+
+        {order.products.map((productItem) => {
             return (
-            <Tbody>
-                <Tr>
-                    <Td>{order._id}</Td>
-                    <Td>$ {order.amount}</Td>
-                    <Td>{order.address.country}</Td>
-                    <Td>{order.address.city}</Td>
-                    { order.status == "delivered" ?
-                        <Td>  
-                            <Badge colorScheme='green'>{order.status}</Badge>
-                        </Td>
-                        :
-                        <Td>  
-                            <Badge>{order.status}</Badge>
-                        </Td>
-                    }
-                    <Td><TimeAgo date={order.createdAt} /></Td>
-                    <Td>
-                        <Link to={`/order/history/detail/${order._id}`}>
-                            <Button colorScheme='teal'>Check Invoice</Button>
-                        </Link>
-                    </Td>
-                </Tr>
-            </Tbody>
-                )
-            })}
-        </Table>
-    </TableContainer>
+             <>                
+            <Flex flexDirection="row" justifyContent="space-between" width="100%" mt="40px" flexWrap="wrap">
+                <Image
+                    boxSize='100px'
+                    objectFit='cover'
+                    src={productItem.productId.img}
+                    alt='Dan Abramov'
+                    fallbackSrc='https://via.placeholder.com/150'
+                />
+                
+                <Flex flexDirection="column" flex="2" ml="10px">
+                    <Text fontSize="lg" as="b">
+                        {productItem.productId.title}
+                    </Text>
+                    <Text>
+                    {productItem.quantity} x  $ {productItem.productId.price}
+                    </Text>
+                </Flex>
+            </Flex>
+
+            </>
+            )
+        })}
+            <Flex justifyContent="space-between" gap="20px" width="100%" mt="10px">
+                <Flex mt="8px" gap="10px">
+                    <Text as="b">
+                        Total Price
+                    </Text>
+                    <Text>
+                    $ {order.amount}
+                    </Text>
+                </Flex>
+
+                <Flex gap="20px">
+                <Text mt="8px" color='green' cursor="pointer" onClick={() => {
+                    handleOpenModal(order)
+                }}>See Detail Transaction</Text>
+                <Link to={`/user/review/${order._id}`}>
+                    <Button colorScheme='green'>Review</Button>
+                </Link>
+                </Flex>
+            </Flex>
+    </Flex>
+    </Container>
+        )
+    })}
+    </>
   )
 }
 

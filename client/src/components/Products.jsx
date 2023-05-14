@@ -57,7 +57,7 @@ const Products = ({cat,filter,sort}) => {
   }, [sort]);
 
   return (
-    <Flex flexDirection="column" padding="30px" mt="-30px">
+    <Flex flexDirection="column" padding="30px" mt="-60px">
       <Flex flexWrap="wrap">
         { cat 
         ? filteredProducts.map((item) => ( <Product item={item} key={item.id} />)) 

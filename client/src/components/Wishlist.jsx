@@ -23,18 +23,19 @@ import { userMethod } from '../useFetch';
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsBagHeartFill, BsHeartFill } from 'react-icons/bs';
 import { toast, ToastContainer } from 'react-toastify';
-
+import Cookies from 'js-cookie';
               
 
 const Wishlist = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [wishlistItems, setWishlistItems] = useState([]);
-  const user = useSelector((state) => state.user.currentUser);
+  // const user = useSelector((state) => state.user.currentUser);
+  const tokenUserId = Cookies.get('userId');
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await userMethod.get(`/wishlist/user/${user._id}`);
+        const response = await userMethod.get(`/wishlist/user/${tokenUserId}`);
         setWishlistItems(response.data);
       } catch (err) {
         console.log(err);
@@ -45,7 +46,7 @@ const Wishlist = () => {
 
   const deleteWishlistItem = async (id) => {
     try {
-      await userMethod.delete(`/wishlist/delete/${user._id}/${id}`).then((res) => {
+      await userMethod.delete(`/wishlist/delete/${tokenUserId}/${id}`).then((res) => {
         toast.success(res.data, {
           position: "top-right",
           autoClose: 3000,
@@ -74,7 +75,7 @@ const Wishlist = () => {
 
   const filteredItems = wishlistItems.filter((rProduct) => {
     const items = rProduct.products.filter((item) =>
-      item.productId.title.toLowerCase().includes(searchTerm.toLowerCase())
+      item?.productId.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     return items.length > 0;
   });

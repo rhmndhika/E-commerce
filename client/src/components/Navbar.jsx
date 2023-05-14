@@ -35,7 +35,7 @@ export default function Nav() {
   const [ Carts, setCarts ] = useState([]);
   const [ userProfile, setUserProfile ] = useState([]);
   const token = Cookies.get('token');
-  const tokenId = Cookies.get('userId');
+  const tokenUserId = Cookies.get('userId');
   const tokenUsername = Cookies.get('username');
 
   const user = useSelector((state) => state.user.currentUser);
@@ -58,7 +58,7 @@ export default function Nav() {
   useEffect(() => {
     const getUserProfile = async () => {
         try{
-            const response = await userMethod.get(`/profile/${user._id}`);
+            const response = await userMethod.get(`/profile/${tokenUserId}`);
             setUserProfile(response.data);
         } catch (err) {
             console.log(err);
@@ -77,14 +77,14 @@ export default function Nav() {
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              { user || token || tokenId || tokenUsername ?
+              { user || token || tokenUserId || tokenUsername ?
               <Flex gap="10px">
-                <a href={`/cart/${tokenId}`}>
+                <a href={`/cart/${tokenUserId}`}>
                 <IconButton
                   icon={<BsFillCartFill />}
                   />
                 </a>
-                <a href={`/user/wishlist/${tokenId}`}>
+                <a href={`/user/wishlist/${tokenUserId}`}>
                 <IconButton
                   icon={<BsFillHeartFill />}
                   />
@@ -93,7 +93,7 @@ export default function Nav() {
               :
               null
               }
-              { user || token || tokenId || tokenUsername ? 
+              { user || token || tokenUserId || tokenUsername ? 
               // <p onClick={handleLogout}>{user.username}</p>
               <Menu>
                 <MenuButton
@@ -121,7 +121,7 @@ export default function Nav() {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <Link to={`/user/profile/${tokenId}`}>
+                  <Link to={`/user/profile/${tokenUserId}`}>
                     <MenuItem>Account Settings</MenuItem>
                   </Link>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>

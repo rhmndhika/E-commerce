@@ -1,14 +1,18 @@
 import React from 'react';
 import { ReactNode } from 'react';
 import {
+  Avatar,
   Box,
   Container,
+  Flex,
+  Image,
   Link,
   SimpleGrid,
   Stack,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+
 
 const Logo = (props: any) => {
   return (
@@ -48,15 +52,16 @@ export default function LargeWithLogoLeft() {
           templateColumns={{ sm: '1fr 1fr', md: '2fr 1fr 1fr 1fr 1fr' }}
           spacing={8}>
           <Stack spacing={6}>
-            <Box>
-              <Logo color={useColorModeValue('gray.700', 'white')} />
-            </Box>
+            <Flex>
+              <Avatar objectFit='cover'  borderRadius='full' src="https://cdn.discordapp.com/attachments/1096677975782600754/1106109404492877855/LogoBBP-removebg-preview.png" />
+              <Text ml="10px" mt="10px" as="b">PT Bumi Baureksa Pratama</Text>
+            </Flex>
             <Text fontSize={'sm'} textAlign="justify">
-              {/* © 2022 Chakra Templates. All rights reserved */}
-            Ecommerce is a method of buying and selling goods and services online. 
-            The definition of ecommerce business can also include tactics like affiliate marketing. 
-            You can use ecommerce channels such as your own website, an established selling website like Amazon, 
-            or social media to drive online sales.
+              © 2023. All rights reserved<br></br>
+              PT Bumi Baureksa Pratama (PT BBP) is Producers of
+              Speciality Chemicals.
+              Our success is primarily based on customising client
+              requirements to create true commercial value for the client.
             </Text>
           </Stack>
           <Stack align={'flex-start'}>

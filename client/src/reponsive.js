@@ -25,6 +25,16 @@ export const isMobile490 = (props) => {
   `;
 };
 
+export const isMobile620 = (props) => {
+  return css`
+    @media only screen and (max-width: 620px) {
+      ${props}
+    }
+  `;
+};
+
+
+
 export const isTablet = (props) => {
   return css`
     @media only screen and (max-width: 704px) {
@@ -40,5 +50,14 @@ export const isTablet730 = (props) => {
     }
   `;
 };
+
+export const isTablet860 = (props) => {
+  return css`
+    @media only screen and (max-width: 860px) {
+      ${props}
+    }
+  `;
+};
+
 
 

@@ -6,7 +6,7 @@ const stripe = require("stripe")(process.env.STRIPE_KEY);
 const payment = (req, res) => {
 
     stripe.charges.create({
-        source: req.body.tokenId,
+        source: req.body.tokenUserId,
         amount: req.body.amount,
         currency: "usd",
     }, (stripeErr, stripeRes) => {

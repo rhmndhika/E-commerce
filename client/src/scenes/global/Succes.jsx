@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { userMethod } from '../../useFetch'
 import { removeItem } from '../../redux/cartRedux' 
 import { removeCartItem } from '../../redux/apiCalls'
+import Cookies from 'js-cookie';
 
 const Succes = () => {
   
@@ -12,7 +13,8 @@ const Succes = () => {
   const data = location.state.stripeData;
   const cart = location.state.products;
 
-  const currentUser = useSelector((state) => state.user.currentUser);
+  // const currentUser = useSelector((state) => state.user.currentUser);
+  const tokenUserId = Cookies.get('userId');
   const [ orderId, setOrderId ] = useState(null);
   const [ Prices, setPrices ] = useState(null);
 
@@ -21,7 +23,7 @@ const Succes = () => {
   useEffect(() => {
     const getPriceSummary = async () => {
         try{
-            const response = await userMethod.get(`/cart/summary/${currentUser._id}`)
+            const response = await userMethod.get(`/cart/summary/${tokenUserId}`)
             setPrices(response.data);
             console.log(Prices)
         } catch (err) {
@@ -29,19 +31,19 @@ const Succes = () => {
         } 
     }
     getPriceSummary();
-}, []);
+  }, []);
 
   useEffect(() => {
     const createOrder = async () => {
       try {
         const res = await userMethod.post("/order/create", {
-          userId: currentUser._id,
+          userId: tokenUserId,
           products: cart.map((item) => ({
             productId: item.products[0]._id,
             quantity: item.products[0].quantity,
           })),
           amount: Prices,
-          address: data.billing_details.address,
+          address: data.billing_details.address
         });
         setOrderId(res.data._id);
       } catch (err) {
@@ -49,7 +51,7 @@ const Succes = () => {
       }
     };
     data && createOrder();
-  }, [cart, data, currentUser, Prices]);
+  }, [cart, data, tokenUserId, Prices]);
 
   const deleteCart = async (cartId, itemId) => {
     try {

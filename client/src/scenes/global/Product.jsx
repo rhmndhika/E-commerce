@@ -27,6 +27,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { BiCart } from 'react-icons/bi'
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
 const Container = styled.div`
 `
 
@@ -89,9 +91,12 @@ const Product = () => {
   const [ product, setProduct ] = useState({});
   const [ quantity, setQuantity ] = useState(1);
   const [ wishlist, setWishlist ] = useState([]);
+  const [ show, setShow ] = useState(false);
 
-  const user = useSelector((state) => state.user?.currentUser?._id);
+  // const user = useSelector((state) => state.user?.currentUser?._id);
+  const tokenUserId = Cookies.get('userId');
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
     const getProduct = async () => {
@@ -99,23 +104,44 @@ const Product = () => {
         const res = await userMethod.get("/product/find/"+id);
         setProduct(res.data);
       } catch(err) {
-        console.log(err)
+        console.log(err);
+        toast.error(err.response.data, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
       }
     }
     getProduct();
   }, [id])
+
 
   useEffect(() => {
     let mounted = true;
     
     const getWishlist = async () => {
       try {
-        const response = await userMethod.get(`/wishlist/user/${user}`);
+        const response = await userMethod.get(`/wishlist/user/${tokenUserId}`);
         if (mounted) {
           setWishlist(response.data[0].products);
         }
       } catch (err) {
         console.log(err);
+        toast.error(err.response.data, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
       }
     };
   
@@ -126,8 +152,8 @@ const Product = () => {
     };
   }, []);
 
+  const isProductInWishlist = wishlist?.some((item) => item?.productId?._id === product?._id);
 
-  const isProductInWishlist = wishlist?.some((item) => item.productId._id === product._id);
 
   const handleClick = () => {
     toast.success('Added to Cart', {
@@ -140,7 +166,7 @@ const Product = () => {
       progress: undefined,
       theme: "light",
       });
-    addToCart(dispatch, ({ ...product, quantity, user }))
+    addToCart(dispatch, ({ ...product, quantity, tokenUserId }))
   }
 
   const increment = () => {
@@ -154,7 +180,7 @@ const Product = () => {
   const addtoWishlist = async () => {
     try {
       await userMethod.post("/wishlist/add", {
-        userId: user,
+        userId: tokenUserId,
         products: product._id
     }).then((res) => {
       toast.success(res.data, {
@@ -184,7 +210,7 @@ const Product = () => {
 
   const deleteWishlistItem = async () => {
     try {
-      await userMethod.delete(`/wishlist/delete/${user}/${product._id}`).then((res) => {
+      await userMethod.delete(`/wishlist/delete/${tokenUserId}/${product._id}`).then((res) => {
       toast.success(res.data, {
         position: "top-right",
         autoClose: 3000,
@@ -224,7 +250,7 @@ const Product = () => {
              <Tabs isFitted variant='enclosed' defaultIndex={0}>
               <TabList mb='1em'>
                 <Tab>Description</Tab>
-                <Tab>Benefits</Tab>
+                <Tab>Material Description</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -244,9 +270,9 @@ const Product = () => {
               <GrAdd onClick={increment} cursor="pointer" />
             </Flex>
           
-          { user ? 
+          { tokenUserId ? 
             <Flex gap="10px">
-              { isProductInWishlist ? 
+              { isProductInWishlist ?
               <Button  width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
                 onClick={deleteWishlistItem} leftIcon={<BsHeartFill />}>Remove from Wishlist</Button>
                :

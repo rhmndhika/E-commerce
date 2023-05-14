@@ -50,6 +50,8 @@ const ProductList = () => {
     fallback: false, 
   })
 
+  console.log(location)
+
   return (
     <>
     <Navbar />
@@ -112,7 +114,7 @@ const ProductList = () => {
         </Flex>
         }
       <Flex padding="0 0 20px 20px">
-        <Text>Rubber release agents are designed to act as a physical barrier between the rubber compound (elastomer) and the mold surface. All rubber mold release agents should strive for nonstick and lubricity properties. Depending on your application needs, Busama Chem will design the appropriate power that the rubber release agent must provide for your case</Text>
+        <Text>{}</Text>
       </Flex>
       <Products cat={cat} filter={filter} sort={sort} />
       <Newsletter />

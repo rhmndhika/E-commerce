@@ -19,7 +19,7 @@ const Payment = () => {
         const makeRequest = async () => {
             try {
                 const response = await axios.post("http://localhost:5000/checkout/payment", {
-                    tokenId: stripeToken.id,
+                    tokenUserId: stripeToken.id,
                     amount: 2000, 
                 });
                 console.log(response.data);

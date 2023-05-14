@@ -44,7 +44,6 @@ const updateUserProfile = async (req, res) => {
 
 }
 
-
 router.post("/profile/create", createUserProfile);
 router.get("/profile/:id", getUserProfile);
 router.put("/profile/update/:id", verifyTokenAndAuthorization, updateUserProfile);

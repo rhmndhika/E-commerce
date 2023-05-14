@@ -39,6 +39,8 @@ import moment from 'moment';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import app from "../firebase"
 import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = () => {
 
@@ -77,6 +79,8 @@ const Profile = () => {
   const [ file, setFile ] = useState(null);
   const [ userProfile, setUserProfile ] = useState([]);
   const { id } = useParams();
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ isModalLoading, setIsModalLoading ] = useState(false);
 
 
   const handleChange = (e) => {
@@ -87,9 +91,34 @@ const Profile = () => {
   
   const updateUserProfile = async () => {
     try{
-      await userMethod.put(`/profile/update/${id}`, inputs);
+      await userMethod.put(`/profile/update/${id}`, inputs).then((res) => {
+        setIsModalLoading(true);
+        toast.success('Updating', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+        setTimeout(() => {
+          setIsModalLoading(false);
+          window.location.reload();
+        }, 1500)
+      })
     } catch (err) {
-      console.log(err);
+      toast.error(err.response.data, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
     } 
   }
 
@@ -111,7 +140,8 @@ const Profile = () => {
     const storage = getStorage(app);
     const StorageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(StorageRef, file);
-
+    setIsLoading(true);
+  
     // Register three observers:
     // 1. 'state_changed' observer, called any time the state changes
     // 2. Error observer, called on failure
@@ -144,35 +174,72 @@ const Profile = () => {
           try{
             userMethod.put(`/profile/update/${id}`, {
               img: downloadURL
-            });
+            }).then((res) => {
+              setIsLoading(false);
+              toast.success('Profile photo has been uploaded, refreshing the page', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+              setTimeout(() => {
+                window.location.reload();
+              }, 1500)
+            })
           } catch (err) {
-            console.log(err);
+            toast.success(err.response.data, {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              });
           } 
         });
       }
     );
   }
 
+  console.log(userProfile)
+
 
   return (
     <div>
+    <ToastContainer />
     {/* Modal Update Nama */}
     <Modal closeOnOverlayClick={false} isOpen={isOpenModalName} onClose={onCloseModalName} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ubah Nama</ModalHeader>
+          <ModalHeader>Change Your Name</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>  
             <FormControl mt="10px">
-              <FormLabel>Nama</FormLabel>
-              <Input name="fullname" type='text' placeholder='Rahmandhika' onChange={handleChange} />
-              <FormHelperText>Nama dapat dilihat oleh pengguna lainnya</FormHelperText>
+              <FormLabel>Name</FormLabel>
+              <Input name="fullname" type='text' placeholder='John Doe' onChange={handleChange} />
+              <FormHelperText>Your name can be seen by other users</FormHelperText>
             </FormControl>
           </ModalBody>
           <ModalFooter>
+          { isModalLoading ? 
+            <Button
+              isLoading
+              loadingText='Saving'
+              colorScheme='teal'
+              >
+              Saving
+            </Button>  
+            :
             <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
-              Simpan
+              Save
             </Button>
+            }
           </ModalFooter>
         </ModalContent>
     </Modal>
@@ -180,18 +247,28 @@ const Profile = () => {
     <Modal closeOnOverlayClick={false} isOpen={isOpenModalDate} onClose={onCloseModalDate} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ubah Tanggal Lahir</ModalHeader>
+          <ModalHeader>Change Date of Birth</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>  
             <FormControl mt="10px">
-              <FormLabel>Nama</FormLabel>
+              <FormLabel>Date of Birth</FormLabel>
               <Input name="dateOfBirth" type='date' placeholder='29-10-2001' onChange={handleChange} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
+          { isModalLoading ? 
+            <Button
+              isLoading
+              loadingText='Saving'
+              colorScheme='teal'
+              >
+              Saving
+            </Button>  
+            :
             <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
-              Simpan
+              Save
             </Button>
+            }
           </ModalFooter>
         </ModalContent>
     </Modal>
@@ -199,21 +276,31 @@ const Profile = () => {
      <Modal closeOnOverlayClick={false} isOpen={isOpenModalGender} onClose={onCloseModalGender} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ubah Jenis Kelamin</ModalHeader>
+          <ModalHeader>Change Gender</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>  
             <FormControl mt="10px">
-              <FormLabel>Jenis Kelamin</FormLabel>
+              <FormLabel>Gender</FormLabel>
               <Select name="gender" onChange={handleChange}>
-                <option>Pria</option>
-                <option>Wanita</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </Select>
             </FormControl>
           </ModalBody>
           <ModalFooter>
+          { isModalLoading ? 
+            <Button
+              isLoading
+              loadingText='Saving'
+              colorScheme='teal'
+              >
+              Saving
+            </Button>  
+            :
             <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
-              Simpan
+              Save
             </Button>
+            }
           </ModalFooter>
         </ModalContent>
     </Modal>
@@ -221,7 +308,7 @@ const Profile = () => {
      <Modal closeOnOverlayClick={false} isOpen={isOpenModalEmail} onClose={onCloseModalEmail} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ubah Email</ModalHeader>
+          <ModalHeader>Change Email</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>  
             <FormControl mt="10px">
@@ -230,9 +317,19 @@ const Profile = () => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
+          { isModalLoading ? 
+            <Button
+              isLoading
+              loadingText='Saving'
+              colorScheme='teal'
+              >
+              Saving
+            </Button>  
+            :
             <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
-              Simpan
+              Save
             </Button>
+            }
           </ModalFooter>
         </ModalContent>
     </Modal>
@@ -240,18 +337,28 @@ const Profile = () => {
     <Modal closeOnOverlayClick={false} isOpen={isOpenModalNumber} onClose={onCloseModalNumber} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ubah Nomor HP</ModalHeader>
+          <ModalHeader>Change Phone Number</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>  
             <FormControl mt="10px">
-              <FormLabel>Nomor HP</FormLabel>
+              <FormLabel>Phone Number</FormLabel>
                 <Input name="phoneNumber" type='tel' placeholder='0xxxxxxxxxxxx' onChange={handleChange} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
+          { isModalLoading ? 
+            <Button
+              isLoading
+              loadingText='Saving'
+              colorScheme='teal'
+              >
+              Saving
+            </Button>  
+            :
             <Button colorScheme='teal' mr={3} onClick={updateUserProfile}>
-              Simpan
+              Save
             </Button>
+            }
           </ModalFooter>
         </ModalContent>
     </Modal>
@@ -274,7 +381,7 @@ const Profile = () => {
             <h2>
               <AccordionButton>
                 <Box as="span" flex='1' textAlign='left'>
-                  Kotak Masuk
+                 Inbox
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
@@ -286,12 +393,14 @@ const Profile = () => {
             </AccordionPanel>
             <AccordionPanel pb={4}>
               <Box>
-                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Ulasan</Text>
+                <Link to={`/user/reviewList/${id}`}>
+                  <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Review</Text>
+                </Link>
               </Box>
             </AccordionPanel>
             <AccordionPanel pb={4}>
               <Box>
-                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Diskusi Produk</Text>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Product Discussion</Text>
               </Box>
             </AccordionPanel>
           </AccordionItem>
@@ -300,20 +409,20 @@ const Profile = () => {
             <h2>
               <AccordionButton>
                 <Box as="span" flex='1' textAlign='left'>
-                  Pembelian
+                  Purchase
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
               <Box>
-                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Menunggu Pembayaran</Text>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Waiting for payment</Text>
               </Box>
             </AccordionPanel>
             <AccordionPanel pb={4}>
               <Box>
               <Link to={`/order/history`}>
-                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Daftar Transaksi</Text>
+                <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Order Transaction</Text>
               </Link>
               </Box>
             </AccordionPanel>
@@ -323,7 +432,7 @@ const Profile = () => {
             <h2>
               <AccordionButton>
                 <Box as="span" flex='1' textAlign='left'>
-                  Profil Saya
+                  My Profile
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
@@ -337,7 +446,7 @@ const Profile = () => {
             </AccordionPanel>
             <AccordionPanel pb={4}>
               <Box>
-                  <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Pengaturan</Text>
+                  <Text cursor="pointer" _hover={{backgroundColor: "#EFF1F3"}}>Setting</Text>
               </Box>
             </AccordionPanel>
           </AccordionItem>
@@ -365,47 +474,56 @@ const Profile = () => {
                   <Input type="file" id="file" variant={"unstyled"} padding="5px"
                   onChange={(e) => setFile(e.target.files[0])} />
                   :
+                  <>
+                  {isLoading ? 
+                   <Button
+                   isLoading
+                   loadingText='Uploading'>
+                   Submit
+                  </Button>  
+                  :
                   <Button onClick={handleClick}>Upload Photo</Button>
                   }
+                  </>
+                  }
                   <Text>
-                    Besar file: maksimum 10.000.000 bytes (10 Megabytes). 
-                    Ekstensi file yang diperbolehkan: .JPG .JPEG .PNG
+                  File size: 10,000,000 bytes (10 Megabytes) maximum. Allowed file extensions: .JPG .JPEG .PNG
                   </Text>
-                  <Button>Ubah Password</Button>
+                  <Button>Change Password</Button>
                </Stack>
               </CardBody>
             </Card>
           </Flex>
                   
           <Flex flexDirection="column" mt="-150px" justifyContent="center" flexGrow="1">
-           <Heading as='h3' size='md'>Biodata Diri</Heading>
-           <Heading as='h4' size='sm' mt="20px">Ubah Biodata Diri</Heading>
+           <Heading as='h3' size='md'>Personal Data</Heading>
+           <Heading as='h4' size='sm' mt="20px">Change Personal Data</Heading>
             <HStack spacing="50px" mt="20px">
-              <Text>Nama</Text>
+              <Text>Name</Text>
               <Text>{profile.fullname}</Text>
-              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalName} >Ubah</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalName}>Change</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
-              <Text>Tanggal Lahir</Text>
+              <Text>Date of Birth</Text>
               <Text>{moment(profile.dateOfBirth).format('MMMM Do YYYY')}</Text>
-              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalDate}>Ubah</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalDate}>Change</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
-              <Text>Jenis Kelamin</Text>
+              <Text>Gender</Text>
               <Text>{profile.gender}</Text>
-              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalGender}>Ubah</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalGender}>Change</Text>
             </HStack>
 
-            <Heading as='h4' size='sm' mt="20px">Ubah Kontak</Heading>
+            <Heading as='h4' size='sm' mt="20px">Change Contact</Heading>
             <HStack spacing="50px" mt="20px">
               <Text>Email</Text>
               <Text>{profile.email}</Text>
-              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalEmail}>Ubah</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalEmail}>Change</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
-              <Text>Nomor HP</Text>
-              <Text>{profile.phoneNumber}</Text>
-              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalNumber}>Ubah</Text>
+              <Text>Phone Number</Text>
+              <Text>+62 {profile.phoneNumber}</Text>
+              <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalNumber}>Change</Text>
             </HStack>
           </Flex>
          </Flex>    

@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar.jsx'
 import Footer from '../../components/Footer.tsx'
 import { GrAdd} from 'react-icons/gr'
 import { AiOutlineMinus} from 'react-icons/ai'
-import { isMobile490, isTablet730 } from '../../reponsive'
+import { isMobile620, isTablet860 } from '../../reponsive'
 import { useDispatch, useSelector } from 'react-redux'
 import StripeCheckout from 'react-stripe-checkout'
 import { useState } from 'react'
@@ -14,7 +14,8 @@ import { removeCartItem } from '../../redux/apiCalls.js'
 import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, getCartTotal, removeItem } from '../../redux/cartRedux.js'
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-  
+import Cookies from 'js-cookie';
+import { Text, Tooltip } from '@chakra-ui/react'
 
 const KEY =  "pk_test_51MuV3GECvrLW1LL9pTqGJ5eCINrDmbC81kIycSRw70xvBPx6KDHspuAxibLSQGprMc2TJzFKaRgowk8JwhMd7K6I00oOGcoFW4"
 
@@ -22,7 +23,7 @@ const Container = styled.div``
 
 const Wrapper = styled.div`
     padding: 20px;
-    ${isTablet730({ padding: "10px"})}
+    ${isTablet860({ padding: "10px"})}
 `
 const Title = styled.h1`
     font-weight: 300;
@@ -47,7 +48,7 @@ const TopButton = styled.button`
     border-radius: 5px;
 `
 const TopTexts = styled.div`
-    ${isTablet730({ display: "none"})}
+    ${isTablet860({ display: "none"})}
 `
 
 const TopText = styled.span`
@@ -59,7 +60,7 @@ const TopText = styled.span`
 const Bottom = styled.div`
     display: flex;
     justify-content: space-between;
-    ${isTablet730({ flexDirection: "column"})}
+    ${isTablet860({ flexDirection: "column"})}
 `
 
 const Info = styled.div`
@@ -69,7 +70,7 @@ const Info = styled.div`
 const Product = styled.div`
     display: flex;
     justify-content: space-between;
-    ${isMobile490({ flexDirection: "column"})}
+    ${isMobile620({ flexDirection: "column"})}
 `
 
 const ProductDetail = styled.div`
@@ -117,12 +118,12 @@ const ProductAmount = styled.div`
     font-size: 24px;
     margin: 5px;
     padding: 5px 15px;
-    ${isMobile490({ padding: "5px 15px"})}
+    ${isMobile620({ padding: "5px 15px"})}
 `
 const ProductPrice = styled.div`
     font-size: 30px;
     font-weight: 200;
-    ${isMobile490({ marginBottom: "20px"})}
+    ${isMobile620({ marginBottom: "20px"})}
 `
 
 const Hr = styled.hr`
@@ -156,7 +157,7 @@ const SummaryItemText = styled.span``;
 const SummaryItemPrice = styled.span``;
 
 const Button = styled.button`
-  width: 200px;
+  width: 150px;
   padding: 10px;
   background-color: #319795;
   color: white;
@@ -175,7 +176,7 @@ const CheckoutButton = styled.button`
 
 const Cart = () => {
 
-    const cart = useSelector(state=>state.cart);
+    // const cart = useSelector(state=>state.cart);
    
     const [ stripeToken, setStripeToken ] = useState(null);
     const navigate = useNavigate();
@@ -185,7 +186,9 @@ const Cart = () => {
     }
 
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.currentUser);
+    // const user = useSelector((state) => state.user.currentUser);
+    const tokenUserId = Cookies.get('userId');
+    const emailId = Cookies.get('email');
 
 
     const [ Carts, setCarts ] = useState([]);
@@ -195,10 +198,10 @@ const Cart = () => {
         const makeRequest = async () => {
             try{
                 const response = await userMethod.post("/checkout/payment", {
-                    tokenId: stripeToken.id,
+                    tokenUserId: stripeToken.id,
                     amount: Prices,
                 })
-                navigate("/success", { state: {stripeData: response.data, products: Carts.filter((item) => user._id === item.userId)} });
+                navigate("/success", { state: {stripeData: response.data, products: Carts.filter((item) => tokenUserId === item.userId)} });
             } catch (err) {
                 console.log(err);
             } 
@@ -209,42 +212,45 @@ const Cart = () => {
     useEffect(() => {
         const makeCartRequest = async () => {
             try{
-                const response = await userMethod.get(`/cart/find/${user._id}`)
+                const response = await userMethod.get(`/cart/find/${tokenUserId}`)
                 setCarts(response.data);
             } catch (err) {
                 console.log(err);
             } 
         }
         makeCartRequest();
-    }, [user])
-
+    }, [tokenUserId])
+    
+    console.log(Carts)
     useEffect(() => {
         const getPriceSummary = async () => {
             try{
-                const response = await userMethod.get(`/cart/summary/${user._id}`)
+                const response = await userMethod.get(`/cart/summary/${tokenUserId}`)
                 setPrices(response.data);
             } catch (err) {
                 console.log(err);
             } 
         }
         getPriceSummary();
-    }, [user])
+    }, [tokenUserId])
 
 
-    const deleteCart = async (cartId, itemId) => {
+    const deleteCart = async (cartId, userId) => {
         try {
           // Asynchronous call to backend, wait to resolve
           await dispatch(removeCartItem(cartId)).unwrap;
           // Now dispatch action to remove item from state
-          dispatch(removeItem(itemId));
+          dispatch(removeItem(cartId));
           const updatedCarts = Carts.filter((cartItem) => cartItem._id !== cartId);
           const updatedProducts = updatedCarts.map((cartItem) => ({
             ...cartItem,
-            products: cartItem.products.filter((product) => product._id !== itemId),
+            products: cartItem.products.filter((product) => product._id !== userId),
           }));
         
-          // Update the carts state with the updated products
-          setCarts(updatedProducts);
+          // Update the carts state with the updated products\
+          setTimeout(() => {
+            setCarts(updatedProducts);
+          }, 1000)
 
           notify();
         } catch(error) {
@@ -271,13 +277,13 @@ const Cart = () => {
         <Navbar />
         <ToastContainer />
         <Wrapper>
-            <Title>Your Bag</Title>
+            <Title>Your Cart</Title>
             <Top>
-                <Link to={`/productSingle/643a51326211f71905302abe`}>
+                <Link>
                     <TopButton>Continue Shopping</TopButton>
                 </Link>
                 <TopTexts>
-                    <TopText>Shooping Bag({Carts.filter((item) => user._id === item.userId).length})</TopText>
+                    <TopText>Shooping Cart({Carts.filter((item) => tokenUserId === item.userId).length})</TopText>
                     <Link to="/order/history">
                         <TopText>Order History</TopText>
                     </Link>
@@ -286,15 +292,18 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                {Carts.filter((item) => user._id === item.userId).map((product) => (
+                {Carts.map((product) => (
                     <>
-                    { user._id === product.userId ? 
+                    { tokenUserId === product.userId ? 
                     <Product>
                         <ProductDetail>
                             <Image src={product.products[0].img} alt="google"></Image>
                             <Details>
                                 <ProductName><b>Product:</b> {product.products[0].title}</ProductName>
-                                <ProductId><b>ID:</b> {product.products[0]._id}</ProductId>
+                                <Tooltip label={product.products[0].desc}>
+                                    <Text cursor="pointer" noOfLines={[1]}><b>Description:</b>  {product.products[0].desc}</Text>
+                                </Tooltip>
+                                {/* <ProductId><b>ID:</b> {product._id}</ProductId> */}
                                 <Button onClick={() => {
                                     deleteCart(product._id, product.products[0]._id)
                                 }}>Delete</Button>
@@ -336,7 +345,7 @@ const Cart = () => {
                         </SummaryItem>
                         <StripeCheckout 
                             name="Kimia shop" 
-                            email={user.email}
+                            email={emailId}
                             image="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png"
                             billingAddress
                             shippingAddress

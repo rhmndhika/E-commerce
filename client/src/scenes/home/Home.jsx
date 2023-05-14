@@ -14,10 +14,13 @@ const Home = () => {
    <div>
     <Navbar />
       <Slider />
+      {/* <Flex>
+        <Text padding="30px" fontSize="3xl" as="b">Categories</Text>
+      </Flex> */}
       <Categories />
-      <Flex mt="-100px">
-      <Text padding="30px" fontSize="3xl" as="b">Products</Text>
-      </Flex>
+      {/* <Flex mt="-100px">
+        <Text mt="30px" padding="30px" fontSize="3xl" as="b">Products</Text>
+      </Flex> */}
       <Products />
       <Newsletter />
       <Footer />
