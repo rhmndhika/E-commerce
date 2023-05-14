@@ -91,7 +91,7 @@ const Reviewed = () => {
                 {/* <Text>Bagikan foto-foto dari produk yang Anda terima</Text> */}
 
                 <Box py={6}>
-                <Text>Foto-foto</Text>
+                <Text>Products Pictures</Text>
                 <SimpleGrid columns={{ sm: 2, md: 3, lg: 4 }} spacing={6} mt={1}>
                 {productReviewed?.img.map((imageUrl, index) => (
                   <Image key={index} src={imageUrl} alt={`Image ${index + 1}`} />

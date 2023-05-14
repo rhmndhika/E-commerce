@@ -23,7 +23,10 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure
+    useDisclosure,
+    Input,
+    InputGroup,
+    InputLeftElement
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch'
 import { useSelector } from 'react-redux'
@@ -32,12 +35,21 @@ import Cookies from 'js-cookie';
 import { BsBag } from 'react-icons/bs'
 import moment from 'moment'
 import ModalTransaction from './ModalTransaction'
+import DatePicker from "react-datepicker";
+import { 
+    FaSearch
+  } from 'react-icons/fa';
 
 const Order = () => {
 
-    // const user = useSelector((state) => state.user.currentUser._id);
+    
     const tokenUserId = Cookies.get('userId');
     const [ orderHistory, setOrderHistory ] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredOrderHistory, setFilteredOrderHistory] = useState([]);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
 
    
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,7 +71,7 @@ const Order = () => {
         onClose();
       };
 
-
+      
     useEffect(() => {
         const getOrderHistory = async () => {
             try{
@@ -72,10 +84,56 @@ const Order = () => {
         getOrderHistory();
     }, [tokenUserId])
 
+    useEffect(() => {
+        let filteredOrders = [...orderHistory];
+        if (startDate) {
+          filteredOrders = filteredOrders.filter(
+            (order) => moment(order.createdAt).isSameOrAfter(startDate, 'day')
+          );
+        }
+        if (endDate) {
+          filteredOrders = filteredOrders.filter(
+            (order) => moment(order.createdAt).isSameOrBefore(endDate, 'day')
+          );
+        }
+        setFilteredOrderHistory(filteredOrders);
+      }, [orderHistory, startDate, endDate]);
+
+      const handleStartDateChange = (event) => {
+        const date = event.target.value;
+        if (date) {
+          setStartDate(moment(date));
+        } else {
+          setStartDate(null);
+        }
+      };
+    
+      const handleEndDateChange = (event) => {
+        const date = event.target.value;
+        if (date) {
+          setEndDate(moment(date));
+        } else {
+          setEndDate(null);
+        }
+      };
+    
+
 
   return (
     <>
-    { orderHistory.map((order) => {
+     <Flex justifyContent="center">
+         <Input
+          type="date"
+          placeholder="Start Date"
+          onChange={handleStartDateChange}
+        />
+        <Input
+          type="date"
+          placeholder="End Date"
+          onChange={handleEndDateChange}
+        />
+      </Flex>
+    {filteredOrderHistory.map((order) => {
     return (
     <Container shadow="lg" maxW='container.lg' borderRadius="10px" overflow="hidden" height="300px" overflowY="auto">
     <ModalTransaction data={selectedItemId} isOpen={isOpen} onOpen={handleOpenModal} onClose={handleCloseModal} id={order._id} />

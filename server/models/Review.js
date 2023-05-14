@@ -13,7 +13,7 @@ const ReviewShcema = new mongoose.Schema({
   },
   order : {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'orders',
+    ref: 'orders'
   },
   rating: {
     type: Number,

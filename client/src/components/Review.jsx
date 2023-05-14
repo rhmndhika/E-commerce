@@ -104,9 +104,7 @@ const Review = () => {
     setRating(value);
   };
 
-  
-  // userReview.filter((product) => product.product === item.productId._id)
-
+ 
   return (
     <Container shadow="lg" mt="30px" mb="50px" padding="10px">
       <Flex flexDirection="column" gap="20px" alignItems="center">
@@ -128,14 +126,10 @@ const Review = () => {
             />
               <Text as="b">{item.productId.title}</Text>
               <Text>{item.quantity} item x  $ {item.productId.price}</Text>
-              <Text as="b">Total Belanja : $ {total}</Text>
-              <Text>Bagaimana kualitas produk ini secara keseluruhan?</Text>
-              {userReview?.map((review) => review.product).includes(item.productId._id) && 
-              userReview?.map((review) => review.order).includes(userOrder._id)
+              <Text as="b">Total Spend : $ {total}</Text>
+              {userReview?.some(review => review.product._id === item.productId._id && review.order._id === userOrder._id)
               ?              
-              <>
               <Text>Reviewed</Text>
-              </>
               :
               <Flex flexDirection="column">
                 <HStack spacing="1">
@@ -149,11 +143,11 @@ const Review = () => {
                   ))}
                   <Text>{rating} out of 5 stars</Text>
                 </HStack>
-                <Text>Berikan ulasan untuk produk ini</Text>
-                <Textarea placeholder='Tulis deskripsi Anda mengenai produk ini' onChange={(e) => {
+                <Text mt="10px">Leave a review for this product</Text>
+                <Textarea placeholder='Write your review about this product' onChange={(e) => {
                   setComment(e.target.value);
                 }} />
-                <Text>Bagikan foto-foto dari produk yang Anda terima</Text>
+                <Text>Share photos of the products you receive</Text>
 
                 <Box py={6}>
                   <FormControl>
@@ -210,10 +204,10 @@ const Review = () => {
                 </Box>
                 
                 <Flex flexDirection="row" alignSelf="flex-end" gap="15px" padding="10px">
-                  <Button as="a" href="/order/history" width="150px" variant="outline">Batal</Button>
+                  <Button as="a" href="/order/history" width="150px" variant="outline">Cancel</Button>
                   <Button width="150px" variant="solid" colorScheme='teal' onClick={() => {
                     handleSubmit(item.productId._id)
-                  }}>Kirim</Button>
+                  }}>Send</Button>
                 </Flex>
               </Flex>
               }
