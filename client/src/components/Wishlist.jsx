@@ -180,7 +180,8 @@ const Wishlist = () => {
                   })}
               </>
             );
-          })
+          }
+          )
         ) : (
           <Text>No items found</Text>
         )}

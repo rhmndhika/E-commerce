@@ -36,7 +36,7 @@ function App() {
         <Route path='/productList/:category' element={<ProductList />} />
         <Route path='/productSingle/:id' element={<Product />} />
         <Route path='/cart/:id' element={<Cart />} />
-        <Route path='/pay' element={<Payment />} />
+        {/* <Route path='/pay' element={<Payment />} /> */}
         <Route path='/success' element={<Succes />} />
         <Route path='/order/history' element={<OrderHistory />} />
         <Route path='/order/history/detail/:id' element={<Invoices />} />
