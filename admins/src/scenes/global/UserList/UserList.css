@@ -1,0 +1,23 @@
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+  
+  .admin-table th 
+  .admin-table td {
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .admin-table th {
+    background-color: #f7fafc;
+  }
+  
+  .admin-table td {
+    background-color: #ffffff;
+  }
+  
+  .admin-table tr:last-child td {
+    border-bottom: none;
+  }

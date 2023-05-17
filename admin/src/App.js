@@ -10,17 +10,20 @@ import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import Login from "./pages/login/login";
+import Cookies from 'js-cookie';
 
 function App() {
 
   const admin = (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser?.isAdmin);
+  const token = Cookies.get('token');
+  const tokenUserId = Cookies.get('userId');
   return (
     <Router>
       <Switch>
         <Route path="/login">
           <Login />
         </Route>
-      { admin &&(
+      { tokenUserId &&(
       <>
       <Topbar />
       <div className="container">

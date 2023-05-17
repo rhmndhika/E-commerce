@@ -19,7 +19,7 @@ const createUserProfile = async (req, res) => {
 const getUserProfile = async (req, res) => {
 
     try {
-        const profile = await Profile.find({ userId : req.params.id })
+        const profile = await Profile.find({ userId : req.params.id }).populate('userId')
         
         res.status(200).json(profile);
     } catch(err) {
@@ -31,13 +31,25 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     
     try {
+      if (req.body.updatedProfile) {
+
+        const updatedUserProfile = await Profile.findOneAndUpdate({ userId: req.params.id },
+          {
+            $set: req.body.updatedProfile,
+          },
+          { new: true }
+          );
+          res.status(200).json(updatedUserProfile);
+        } else {
+          
         const updatedUserProfile = await Profile.findOneAndUpdate({ userId: req.params.id },
           {
             $set: req.body,
           },
           { new: true }
-        );
-        res.status(200).json(updatedUserProfile);
+          );
+          res.status(200).json(updatedUserProfile);
+        }
       } catch (err) {
         res.status(500).json(err);
       }

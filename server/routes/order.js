@@ -3,7 +3,7 @@ const router = express.Router();
 const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
-
+const mongoose = require('mongoose')
 
 const createOrder = async (req, res, next) => {
 
@@ -58,7 +58,7 @@ const getUserOrder = async (req, res) => {
 const getUserSingleOrder = async (req, res) => {
     try {
 
-        const orders = await Order.findById(req.params.id).populate('products.productId')
+        const orders = await Order.findById(req.params.id).populate('products.productId').populate('userId', '_id email isAdmin username')
         
         res.status(200).json(orders);
     } catch(err) {
@@ -70,45 +70,85 @@ const getUserSingleOrder = async (req, res) => {
 const getAllOrder = async (req, res) => {
     
     try {
-        const orders = await Order.find({});
+        const orders = await Order.find().populate('products.productId').populate('userId', '_id email isAdmin username')
         res.status(200).json(orders);
     } catch (err) {
         res.status(500).json(err);
     }
 }
 
+// const getMonthlyIncome = async (req, res) => {
+//     const productId = req.query.pid;
+//     // const productId = req.params.id;
+//     const date = new Date();
+//     const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
+//     const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+
+//     console.log(productId)
+
+//     try {
+
+//         const income = await Order.aggregate([
+//             { $match: { createdAt: { $gte: previousMonth }, ...(productId && {
+//                 products: {
+//                     $elementMatch: { productId }
+//                 },
+//             }) } },
+//             {
+//                 $project: {
+//                     month: { $month : "$createdAt" },
+//                     sales: "$amount"
+//                 },
+//             },
+//             {
+//                 $group:{
+//                     _id: "$month",
+//                     total: { $sum: "$sales" },
+//                 },
+//             },
+//         ]);
+//         res.status(200).json(income);
+//     } catch (err) {
+//         res.status(500).json(err);
+//         console.log(err);
+//     }
+// }
+
 const getMonthlyIncome = async (req, res) => {
     const productId = req.query.pid;
     const date = new Date();
-    const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
-    const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+    const lastMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+    const previousMonth = new Date(lastMonth.getFullYear(), lastMonth.getMonth() - 1, 1);
 
     try {
-
         const income = await Order.aggregate([
-            { $match: { createdAt: { $gte: previousMonth }, ...(productId && {
-                products: {
-                    $elementMatch: { productId }
-                },
-            }) } },
+            {
+                $match: {
+                    createdAt: { $gte: previousMonth },
+                    ...(productId && { "products.productId": mongoose.Types.ObjectId(productId) })
+                }
+            },
             {
                 $project: {
-                    month: { $month : "$createdAt" },
+                    month: { $month: "$createdAt" },
                     sales: "$amount"
                 },
             },
             {
-                $group:{
+                $group: {
                     _id: "$month",
                     total: { $sum: "$sales" },
                 },
             },
         ]);
+
         res.status(200).json(income);
     } catch (err) {
         res.status(500).json(err);
+        console.log(err);
     }
-}
+};
+
 
 
 router.post("/order/create", verifyToken, createOrder);

@@ -191,7 +191,7 @@ const Profile = () => {
               }, 1500)
             })
           } catch (err) {
-            toast.success(err.response.data, {
+            toast.error(err.response.data, {
               position: "top-right",
               autoClose: 3000,
               hideProgressBar: false,
