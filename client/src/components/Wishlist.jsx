@@ -57,7 +57,9 @@ const Wishlist = () => {
           progress: undefined,
           theme: "light",
         });
-        console.log(res);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
       });
     } catch (err) {
       toast.error(err.response.data, {

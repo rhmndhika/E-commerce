@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { userRequest } from "../../useFetch";
 import moment from 'moment'
 import "./WidgetLg.css";
+import { Link } from "react-router-dom";
 
 export default function WidgetLg() {
   const Button = ({ type }) => {
@@ -26,6 +27,7 @@ export default function WidgetLg() {
       <h3 className="widgetLgTitle">Latest transactions</h3>
       <table className="widgetLgTable">
         <tr className="widgetLgTr">
+          <th className="widgetLgTh">Order ID</th>
           <th className="widgetLgTh">Customer</th>
           <th className="widgetLgTh">Date</th>
           <th className="widgetLgTh">Amount</th>
@@ -33,9 +35,12 @@ export default function WidgetLg() {
         </tr>
         { orders.map((order) => (
         <tr className="widgetLgTr" key={order._id}>
-          <td className="widgetLgUser">
-            <span className="widgetLgName">{order.userId._id}</span>
-          </td>
+          <Link to={`/transaction/detail/${order._id}`}>
+            <td className="widgetLgUser">
+              <span className="widgetLgName">{order._id}</span>
+            </td>
+          </Link>
+          <td className="widgetLgAmount">{order.userId.username}</td>
           <td className="widgetLgDate">{moment(order?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</td>
           <td className="widgetLgAmount">{order.amount}</td>
           <td className="widgetLgStatus">

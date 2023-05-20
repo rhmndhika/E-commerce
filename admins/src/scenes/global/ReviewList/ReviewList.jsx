@@ -11,32 +11,33 @@ import {
 } from '@chakra-ui/react'
 import { Link, useParams } from 'react-router-dom'
 import moment from 'moment'
-import { userMethod } from '../../useFetch'
+import { userRequest } from '../../../useFetch'
 import { StarIcon } from "@chakra-ui/icons"
-import Navbar from '../../components/Navbar'
+import Sidebar from '../../../components/Sidebar/Sidebar.tsx'
+import Cookies from 'js-cookie';
 
 const ReviewList = () => {
 
-  const { id } = useParams();
-  const [ reviewList, setReviewList ] = useState([]);
+    const tokenUserId = Cookies.get('userId');
+    const [ reviewList, setReviewList ] = useState([]);
 
+    useEffect(() => {
+        const getReviewList = async () => {
+            try{
+                const response = await userRequest.get(`/product/getreview`)
+                setReviewList(response.data);
+            } catch (err) {
+                console.log(err);
+            } 
+        }
+        getReviewList();
+    }, [tokenUserId])
 
-  useEffect(() => {
-    const getReviewList = async () => {
-        try{
-            const response = await userMethod.get(`/products/${id}/reviews`)
-            setReviewList(response.data);
-        } catch (err) {
-            console.log(err);
-        } 
-    }
-    getReviewList();
-}, [id])
-
+    console.log(reviewList)
+    
   return (
-    <>
-    <Navbar />
-    <Text fontWeight="bold" fontSize="30px" margin="20px">
+    <Sidebar>
+<Text fontWeight="bold" fontSize="30px" margin="20px">
         Review History
     </Text>
     { reviewList?.map((listItem) => {
@@ -53,7 +54,7 @@ const ReviewList = () => {
           </Link>
 
           <Text alignSelf="flex-start" mt="10px">
-              <Text as="b">Pesanan diterima :</Text> {moment(listItem.order?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+              <Text as="b">Order received :</Text> {moment(listItem.order?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
           </Text>
         </Flex>
         <Divider />    
@@ -89,7 +90,7 @@ const ReviewList = () => {
                 </Flex>
 
                 <Flex gap="20px">
-                <Link to={`/reviewed/${listItem._id}`}>
+                <Link to={`/reviewList/${listItem._id}`}>
                     <Button colorScheme='green'>See Review</Button>
                 </Link>
                 </Flex>
@@ -98,7 +99,7 @@ const ReviewList = () => {
     </Container>
          )
     })} 
-    </>
+    </Sidebar>
   )
 }
 

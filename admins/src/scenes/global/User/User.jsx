@@ -53,6 +53,7 @@ export default function User() {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ file, setFile ] = useState(null);
+  const [newImageFile, setNewImageFile] = useState(null);
  
     //   const users = useSelector((state) => state.user.userList.find((item) => item._id === userId));
   const users = useSelector((state) => state.user.currentUser);
@@ -72,7 +73,7 @@ export default function User() {
 
   console.log(inputsProfile)
 
- 
+
   const handleUpdate = (e) => {
     e.preventDefault();
 
@@ -100,84 +101,74 @@ export default function User() {
     getUserById();
 }, [userId])
 
+console.log(user)
+
 const handleClick = (e) => {
     e.preventDefault();
-    const fileName = new Date().getTime() + file.name;
-    const storage = getStorage(app);
-    const StorageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(StorageRef, file);
+
+    if (newImageFile) {
+      // Upload the new image file
+      const fileName = new Date().getTime() + newImageFile.name;
+      const storage = getStorage(app);
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, newImageFile);
   
-    // Register three observers:
-    // 1. 'state_changed' observer, called any time the state changes
-    // 2. Error observer, called on failure
-    // 3. Completion observer, called on successful completion
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-          default:
-        }
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            const updatedProfile = { ...inputsProfile, img: downloadURL };
-          try{
-            userRequest.put(`/profile/update/${userId}`, {
-                updatedProfile
-            }).then((res) => {
-                toast({
-                    title: 'User Profile Updated',
-                    status: 'success',
-                    duration: 9000,
-                    isClosable: true,
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Handle upload progress
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+        },
+        () => {
+          // Image upload is complete
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              // Create a new product object with the updated image URL
+              const updatedProfile = { ...inputsProfile, img: downloadURL };
+              // Call the updateProduct function with the updated product
+              try{
+                userRequest.put(`/profile/update/${userId}`, {
+                    updatedProfile
+                }).then((res) => {
+                    toast({
+                        title: 'User Profile Updated',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                    setTimeout(() => window.location.reload(), 2000);
                 })
-            //   setIsLoading(false);
-            //   toast.success('Profile photo has been uploaded, refreshing the page', {
-            //     position: "top-right",
-            //     autoClose: 3000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: false,
-            //     draggable: true,
-            //     progress: undefined,
-            //     theme: "light",
-            //     });
-            //   setTimeout(() => {
-            //     window.location.reload();
-            //   }, 1500)
+              } catch (err) {
+                console.log(err)
+              } 
             })
-          } catch (err) {
-            // toast.success(err.response.data, {
-            //   position: "top-right",
-            //   autoClose: 3000,
-            //   hideProgressBar: false,
-            //   closeOnClick: true,
-            //   pauseOnHover: false,
-            //   draggable: true,
-            //   progress: undefined,
-            //   theme: "light",
-            //   });
-            console.log(err)
-          } 
-        });
-      }
-    );
+            .catch((error) => {
+              // Handle error while retrieving the image URL
+              console.log(error);
+            });
+        }
+      );
+    } else {
+      // No new image file, update the product with other fields only
+      const updatedProfile = { ...inputsProfile };
+      try{
+        userRequest.put(`/profile/update/${userId}`, {
+            updatedProfile
+        }).then((res) => {
+            toast({
+                title: 'User Profile Updated',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+            setTimeout(() => window.location.reload(), 2000);
+        })
+      } catch (err) {
+        console.log(err)
+      } 
+    }
   }
 
 
@@ -197,27 +188,18 @@ const handleClick = (e) => {
                 <Stack direction={['column', 'row']} spacing={6}>
                     <Center>
                     <Avatar size="xl" src={user[0]?.img}>
-                        <AvatarBadge
-                        as={IconButton}
-                        size="sm"
-                        rounded="full"
-                        top="-10px"
-                        colorScheme="red"
-                        aria-label="remove Image"
-                        icon={<SmallCloseIcon />}
-                        />
                     </Avatar>
                     </Center>
                     <Center w="full">
                     <Input type="file" id="file" variant={"unstyled"} padding="5px"
-                    onChange={(e) => setFile(e.target.files[0])} />
+                    onChange={(e) => setNewImageFile(e.target.files[0])} />
                     </Center>
                 </Stack>
             </FormControl>
             <FormControl id="userName" mt="10px">
                 <FormLabel>Fullname</FormLabel>
                 <Input
-                    placeholder="Fullname"
+                    defaultValue={user[0]?.fullname}
                     _placeholder={{ color: 'gray.500' }}
                     type="text"
                     name="fullname" 
@@ -227,7 +209,7 @@ const handleClick = (e) => {
             <FormControl id="email" mt="10px">
                 <FormLabel>Email address</FormLabel>
                 <Input
-                    placeholder="your-email@example.com"
+                    defaultValue={user[0]?.email}
                     _placeholder={{ color: 'gray.500' }}
                     type="email"
                     name="email" 
@@ -254,7 +236,7 @@ const handleClick = (e) => {
             <FormControl id="phoneNumber" mt="10px">
                 <FormLabel>Phone Number</FormLabel>
                 <Input
-                    placeholder="08xxxx"
+                    defaultValue={user[0]?.phoneNumber}
                     _placeholder={{ color: 'gray.500' }}
                     type="tel"
                     name="phoneNumber" 
@@ -296,7 +278,7 @@ const handleClick = (e) => {
         <Flex>
             <Text fontSize="2xl" as="b">User Profile</Text>
         </Flex>
-        <Flex flexDirection="row" justifyContent="center" width="100%" mt="20px" gap="10px" flexWrap={{ base: 'wrap', md: 'nowrap' }}>
+        <Flex flexDirection="row" justifyContent="center" mt="20px" gap="10px" flexWrap={{ base: 'wrap', md: 'nowrap' }}>
             <Flex  width="50%" padding="20px" shadow="lg">
                 { users && 
                 <Flex flexDirection="column">
@@ -304,7 +286,6 @@ const handleClick = (e) => {
                         <Avatar src={user[0]?.img} fallbackSrc='https://via.placeholder.com/150' />
                         <Flex flexDirection="column" alignItems="center" mt="10px">
                             <Text fontWeight="600">{user[0]?.fullname}</Text>
-                            {/* <Text fontWeight="300">{users._id}</Text> */}
                         </Flex>
                         <hr></hr>
                     </Flex>
@@ -377,12 +358,12 @@ const handleClick = (e) => {
                 <Flex flexDirection="column" mt="10px">
                     <FormControl>
                         <FormLabel>Username</FormLabel>
-                        <Input type="text" name="username" placeholder={user[0]?.userId.username} onChange={handleInput} />
+                        <Input type="text" name="username" defaultValue={user[0]?.userId.username} onChange={handleInput} />
                     </FormControl>
 
                     <FormControl mt="10px">
                         <FormLabel>Email</FormLabel>
-                        <Input type="email" name="email" placeholder={user[0]?.userId.email}  onChange={handleInput} />
+                        <Input type="email" name="email" defaultValue={user[0]?.userId.email}  onChange={handleInput} />
                     </FormControl>
 
                     <FormControl mt="10px">

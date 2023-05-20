@@ -14,36 +14,33 @@ import { StarIcon, CloseIcon, AddIcon } from "@chakra-ui/icons"
 import { useParams } from 'react-router'
 import moment from 'moment'
 import Cookies from 'js-cookie';
-import { userMethod } from '../useFetch'
-import Navbar from './Navbar'
-import Footer from './Footer.tsx'
+import { userRequest } from '../../useFetch'
+import Sidebar from '../Sidebar/Sidebar.tsx'
 
 const Reviewed = () => {
-  
-  const tokenUserId = Cookies.get('userId');
-  const { id } = useParams();
-  const [ images, setImages ] = useState([]);
-  const [ rating, setRating ] = useState(0);
-  const [ productReviewed, setProductReviewed ] = useState(null);
+    
+    const tokenUserId = Cookies.get('userId');
+    const { id } = useParams();
+    const [ images, setImages ] = useState([]);
+    const [ rating, setRating ] = useState(0);
+    const [ productReviewed, setProductReviewed ] = useState(null);
 
-  useEffect(() => {
-    const getProductReviewed = async () => {
-        try{
-            const response = await userMethod.get(`/products/reviewed/${id}`)
-            setProductReviewed(response?.data);
-        } catch (err) {
-            console.log(err);
-        } 
-    }
-    getProductReviewed();
-  }, [id])
-
-  const total = productReviewed?.order?.products[0].quantity * productReviewed?.product?.price
-
+    useEffect(() => {
+        const getProductReviewed = async () => {
+            try{
+                const response = await userRequest.get(`/products/reviewed/${id}`)
+                setProductReviewed(response?.data);
+            } catch (err) {
+                console.log(err);
+            } 
+        }
+        getProductReviewed();
+      }, [id])
+    
+      const total = productReviewed?.order?.products[0].quantity * productReviewed?.product?.price
 
   return (
-    <>
-    <Navbar />
+    <Sidebar>
     <Text fontWeight="bold" fontSize="30px" margin="20px">
         Reviewed Product
     </Text>
@@ -98,8 +95,7 @@ const Reviewed = () => {
         })}  */}
       </Flex>
     </Container>
-    <Footer />
-    </>
+    </Sidebar>
   )
 }
 

@@ -27,6 +27,20 @@ const getUserProfile = async (req, res) => {
     }
 }
 
+const getAllProfile = async (req, res) => {
+
+  const query = req.query.new
+
+  try {
+      const profiles = query ? await Profile.find().sort({_id: -1}).limit(5).populate('userId') : await Profile.find({}).populate('userId');
+      
+      res.status(200).json(profiles);
+  } catch(err) {
+      res.status(500).json(err)
+  }
+}
+
+
 
 const updateUserProfile = async (req, res) => {
     
@@ -58,6 +72,7 @@ const updateUserProfile = async (req, res) => {
 
 router.post("/profile/create", createUserProfile);
 router.get("/profile/:id", getUserProfile);
+router.get("/profiles", verifyTokenAndAdmin, getAllProfile);
 router.put("/profile/update/:id", verifyTokenAndAuthorization, updateUserProfile);
 
 module.exports = router;

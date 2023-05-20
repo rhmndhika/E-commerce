@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Box,
   IconButton,
@@ -12,6 +12,7 @@ import {
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
 // And react-slick as our Carousel Lib
 import Slider from 'react-slick';
+import { Link } from 'react-router-dom';
 
 // Settings for the slider
 const settings = {
@@ -31,6 +32,8 @@ export default function Carousel() {
   // change the state
   const [slider, setSlider] = useState([]);
 
+  const sliderIdRef = useRef(0);
+
   // These are the breakpoints which changes the position of the
   // buttons as the screen size changes
   const top = useBreakpointValue({ base: '90%', md: '50%' });
@@ -40,26 +43,13 @@ export default function Carousel() {
   // This can be static or loaded from a server
   const cards = [
     {
-      title: 'Design Projects 1',
+      title: 'Release Agent',
       text:
-        "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
+        "A release agent (also mold release agent, release coating, or mold release coating) is a chemical used to prevent other materials from bonding to surfaces.",
       image:
         'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-    },
-    {
-      title: 'Design Projects 2',
-      text:
-        "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
-      image:
-        'https://images.unsplash.com/photo-1438183972690-6d4658e3290e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2274&q=80',
-    },
-    {
-      title: 'Design Projects 3',
-      text:
-        "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
-      image:
-        'https://images.unsplash.com/photo-1507237998874-b4d52d1dd655?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-    },
+      href: '/carouselcontent1'
+    }
   ];
 
   return (
@@ -83,7 +73,7 @@ export default function Carousel() {
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
       />
       {/* Left Icon */}
-      <IconButton
+      {/* <IconButton
         aria-label="left-arrow"
         variant="ghost"
         position="absolute"
@@ -93,9 +83,9 @@ export default function Carousel() {
         zIndex={2}
         onClick={() => slider?.slickPrev()}>
         <BiLeftArrowAlt size="40px" />
-      </IconButton>
+      </IconButton> */}
       {/* Right Icon */}
-      <IconButton
+      {/* <IconButton
         aria-label="right-arrow"
         variant="ghost"
         position="absolute"
@@ -105,7 +95,7 @@ export default function Carousel() {
         zIndex={2}
         onClick={() => slider?.slickNext()}>
         <BiRightArrowAlt size="40px" />
-      </IconButton>
+      </IconButton> */}
       {/* Slider */}
       <Slider {...settings} ref={(slider) => setSlider(slider)}>
         {cards.map((card, index) => (
@@ -127,9 +117,11 @@ export default function Carousel() {
                 position="absolute"
                 top="50%"
                 transform="translate(0, -50%)">
+                <Link to={card.href}>
                 <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
                   {card.title}
                 </Heading>
+                </Link>
                 <Text fontSize={{ base: 'md', lg: 'lg' }} color="GrayText">
                   {card.text}
                 </Text>
@@ -141,52 +133,3 @@ export default function Carousel() {
     </Box>
   );
 }
-// import { Flex, Img, Text } from '@chakra-ui/react';
-// import React from 'react';
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Navigation } from "swiper";
-// // Import Swiper styles
-// import "swiper/css";
-// import "swiper/css/navigation";
-// import 'swiper/swiper.min.css';
-
-// const Slider = () => {
-
-//   const dataSlider = [
-//     {
-//       image : "https://fashion-slider.uiinitiative.com/images/nike.jpg",
-//       text : "NIKE"
-//     },
-//     {
-//       image : "https://fashion-slider.uiinitiative.com/images/nike.jpg",
-//       text : "NIKE"
-//     },
-//     {
-//       image : "https://fashion-slider.uiinitiative.com/images/nike.jpg",
-//       text : "NIKE"
-//     },
-//   ]
-
-//   return (
-//     <Flex>
-//     <Swiper
-//       navigation={true} modules={[Navigation]} className="mySwiper" 
-//       >
-//         {dataSlider.map((item, index) => {
-//           return (
-//           <SwiperSlide key={index}>
-//             <Flex alignItems="center" justifyContent="center">
-//               <Flex position="relative">
-//                   <Img width="100%" height="fit-content" objectFit="cover" src={item.image} />
-//               </Flex>
-//               <Text fontSize="150px" marginLeft="150px" position="absolute">{item.text}</Text>
-//             </Flex>
-//           </SwiperSlide>
-//           )
-//         })}
-//     </Swiper>
-//     </Flex>
-//   )
-// }
-
-// export default Slider;

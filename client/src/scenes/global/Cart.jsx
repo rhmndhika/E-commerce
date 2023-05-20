@@ -250,6 +250,7 @@ const Cart = () => {
           // Update the carts state with the updated products\
           setTimeout(() => {
             setCarts(updatedProducts);
+            window.location.reload();
           }, 1000)
 
           notify();
@@ -258,6 +259,7 @@ const Cart = () => {
           console.log(error);
         }
     };
+    
 
     const notify = () => {
         toast.success('Item has been deleted', {

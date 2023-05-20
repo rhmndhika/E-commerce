@@ -6,6 +6,7 @@ import Chart from "../../components/Chart/Chart";
 import FeaturedInfo from "../../components/FeaturedInfo/FeatureInfo";
 import WidgetSm from "../../components/Widget/WidgetSm";
 import WidgetLg from "../../components/Widget/WidgetLg";
+import { Flex } from "@chakra-ui/react";
 
 export default function Home() {
 
@@ -52,10 +53,10 @@ export default function Home() {
     <div className="home">
       <FeaturedInfo />
       <Chart data={userStats} title="User Analytics" grid dataKey="Active User"/>
-      <div className="homeWidgets">
+      <Flex m="20px" flexWrap="wrap">
         <WidgetSm />
         <WidgetLg />
-      </div>
+      </Flex>
     </div>
     </Sidebar>
   );

@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const dotenv =  require("dotenv");
-
+const nodemailer = require('nodemailer');
 
 dotenv.config();
 
@@ -17,13 +17,14 @@ dbConnect();
 
 app.set('trust proxy', 1)
 
-app.use(
-  cors({
-  origin: ["http://localhost:3000", "http://localhost:5000"], 
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true,
-  optionsSuccessStatus : 200
-}));
+// app.use(
+//   cors({
+//   origin: ["http://localhost:3000", "http://localhost:5000"], 
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   credentials: true,
+//   optionsSuccessStatus : 200
+// }));
+app.use(cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -47,19 +48,19 @@ app.use(bodyParser.urlencoded({extended: true}));
 //   resave: false
 // }))
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000", "http://localhost:5000");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000", "http://localhost:5000");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+//   );
+//   res.setHeader("Access-Control-Allow-Credentials", "true");
+//   next();
+// });
 
 
 const authRoute = require("./routes/auth.js");
@@ -81,6 +82,8 @@ app.use(stripeRoute);
 app.use(profileRoute);
 app.use(wishlistRoute);
 app.use(reviewRoute);
+
+
 
 
 app.listen(process.env.PORT || port, () => {

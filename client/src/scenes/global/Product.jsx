@@ -193,6 +193,9 @@ const Product = () => {
         progress: undefined,
         theme: "light",
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
     })
     } catch (err) {
       toast.error(err.response.data, {
@@ -221,6 +224,9 @@ const Product = () => {
         progress: undefined,
         theme: "light",
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
     })
     } catch (err) {
       toast.error(err.response.data, {
@@ -263,7 +269,7 @@ const Product = () => {
             </Tabs>
             </Desc>
             <Price>$ {product.price}</Price>
-          <Flex margin="10px 0 0 5px" justifyContent="space-between" alignItems="center"  mt="30px">
+          <Flex margin="10px 0 0 5px" justifyContent="space-between" alignItems="center"  mt="30px" flexWrap="wrap">
             <Flex>
               <AiOutlineMinus onClick={decrement} cursor="pointer" />
               <Amount>{quantity}</Amount>
@@ -271,16 +277,16 @@ const Product = () => {
             </Flex>
           
           { tokenUserId ? 
-            <Flex gap="10px">
+            <Flex gap="10px" mt="20px">
               { isProductInWishlist ?
-              <Button  width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
+              <Button  width="190px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
                 onClick={deleteWishlistItem} leftIcon={<BsHeartFill />}>Remove from Wishlist</Button>
                :
-              <Button width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
+              <Button width="190px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
                 onClick={addtoWishlist} leftIcon={<BsHeart />}>Add to Wishlist</Button>
               }
 
-              <Button width="200px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
+              <Button width="190px" padding="15px" colorScheme='teal' variant='solid'  cursor="pointer" fontWeight="500" 
               onClick={handleClick} leftIcon={<BiCart />}>Add to Cart</Button>
             </Flex>
             :

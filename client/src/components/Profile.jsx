@@ -82,6 +82,27 @@ const Profile = () => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isModalLoading, setIsModalLoading ] = useState(false);
 
+  const [email, setEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Make an API call to the backend
+      const response = await userMethod.post('/users/change-password', {
+        email,
+        newPassword,
+      });
+
+      setMessage(response.data.message);
+    } catch (error) {
+      setMessage('Error: Unable to change password');
+      console.error(error);
+    }
+  };
+
 
   const handleChange = (e) => {
     setInputs((prev) => {
@@ -222,7 +243,7 @@ const Profile = () => {
           <ModalBody pb={6}>  
             <FormControl mt="10px">
               <FormLabel>Name</FormLabel>
-              <Input name="fullname" type='text' placeholder='John Doe' onChange={handleChange} />
+              <Input name="fullname" type='text' defaultValue={userProfile[0]?.fullname} onChange={handleChange} />
               <FormHelperText>Your name can be seen by other users</FormHelperText>
             </FormControl>
           </ModalBody>
@@ -313,7 +334,7 @@ const Profile = () => {
           <ModalBody pb={6}>  
             <FormControl mt="10px">
               <FormLabel>Email</FormLabel>
-                <Input name="email" type='email' placeholder='email@email.com' onChange={handleChange} />
+                <Input name="email" type='email' defaultValue={userProfile[0]?.email} onChange={handleChange} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
@@ -342,7 +363,7 @@ const Profile = () => {
           <ModalBody pb={6}>  
             <FormControl mt="10px">
               <FormLabel>Phone Number</FormLabel>
-                <Input name="phoneNumber" type='tel' placeholder='0xxxxxxxxxxxx' onChange={handleChange} />
+                <Input name="phoneNumber" type='tel' defaultValue={userProfile[0]?.phoneNumber} onChange={handleChange} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
@@ -489,45 +510,70 @@ const Profile = () => {
                   <Text>
                   File size: 10,000,000 bytes (10 Megabytes) maximum. Allowed file extensions: .JPG .JPEG .PNG
                   </Text>
-                  <Button>Change Password</Button>
+                  {/* <Button>Change Password</Button> */}
+                  <div>
+                  <h2>Change Password</h2>
+                  {message && <p>{message}</p>}
+                  <form onSubmit={handleSubmit}>
+                    <div>
+                      <label htmlFor="email">Email:</label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="newPassword">New Password:</label>
+                      <input
+                        type="password"
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                    </div>
+                    <button type="submit">Change Password</button>
+                  </form>
+                </div>
                </Stack>
               </CardBody>
             </Card>
           </Flex>
                   
-          <Flex flexDirection="column" mt="-150px" justifyContent="center" flexGrow="1">
+          <Flex flexDirection="column" mt="-50px" justifyContent="center">
            <Heading as='h3' size='md'>Personal Data</Heading>
            <Heading as='h4' size='sm' mt="20px">Change Personal Data</Heading>
             <HStack spacing="50px" mt="20px">
-              <Text>Name</Text>
+              <Text>Name :</Text>
               <Text>{profile.fullname}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalName}>Change</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
-              <Text>Date of Birth</Text>
+              <Text>Date of Birth :</Text>
               <Text>{moment(profile.dateOfBirth).format('MMMM Do YYYY')}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalDate}>Change</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
-              <Text>Gender</Text>
+              <Text>Gender :</Text>
               <Text>{profile.gender}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalGender}>Change</Text>
             </HStack>
 
             <Heading as='h4' size='sm' mt="20px">Change Contact</Heading>
             <HStack spacing="50px" mt="20px">
-              <Text>Email</Text>
+              <Text>Email :</Text>
               <Text>{profile.email}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalEmail}>Change</Text>
             </HStack>
             <HStack spacing="50px" mt="20px">
-              <Text>Phone Number</Text>
+              <Text>Phone Number :</Text>
               <Text>+62 {profile.phoneNumber}</Text>
               <Text color="teal" as="b" cursor="pointer" onClick={onOpenModalNumber}>Change</Text>
             </HStack>
           </Flex>
          </Flex>    
-        </Flex>   
+      </Flex>   
     </Container>
       )
     })}

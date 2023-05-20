@@ -48,7 +48,7 @@ const createReview = async (req, res) => {
 const getAllReview = async (req, res) => {
 
     try {
-        const review = await Review.find({})
+        const review = await Review.find({}).populate('product').populate('user').populate('order')
         res.status(200).json(review);
     } catch(err) {
         res.status(500).json(err);

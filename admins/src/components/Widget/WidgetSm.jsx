@@ -11,10 +11,22 @@ export default function WidgetSm() {
 
   const [ users, setUsers ] = useState([]);
 
+  // useEffect(() => {
+  //   const getUsers = async () => {
+  //     try {
+  //       const res = await userRequest.get("/users/?new=true")
+  //       setUsers(res.data);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   getUsers();
+  // }, [])
+
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await userRequest.get("/users/?new=true")
+        const res = await userRequest.get("/profiles/?new=true")
         setUsers(res.data);
       } catch (err) {
         console.log(err);
@@ -35,9 +47,9 @@ export default function WidgetSm() {
             className="widgetSmImg"
             />
           <div className="widgetSmUser">
-            <span className="widgetSmUsername">{user.username}</span>
+            <span className="widgetSmUsername">{user.userId.username}</span>
           </div>
-          <Link to={`/user/${user._id}`}>
+          <Link to={`/user/${user.userId._id}`}>
             <Button leftIcon={<MdVisibility />} className="widgetSmButton">
               Display
             </Button>

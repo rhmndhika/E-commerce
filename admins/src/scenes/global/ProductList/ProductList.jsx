@@ -255,6 +255,7 @@ export default function ProductList  ()  {
                 <FormControl id="materials" mt="10px">
                     <FormLabel>Materials</FormLabel>
                     <Input
+                        placeholder="Knit"
                         type="text"
                         name="materials"
                         onChange={handleChange}

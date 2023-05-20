@@ -65,7 +65,9 @@ export default function Nav() {
         } 
     }
     getUserProfile();
-  }, [])
+  }, [tokenUserId])
+
+  console.log(userProfile)
 
   
 
@@ -104,7 +106,7 @@ export default function Nav() {
                   minW={0}>
                   <Avatar
                     size={'sm'}
-                    src={userProfile.img}
+                    src={userProfile[0]?.img}
                   />
                 </MenuButton>
                 <MenuList alignItems={'center'}>
@@ -112,12 +114,12 @@ export default function Nav() {
                   <Center>
                     <Avatar
                       size={'2xl'}
-                      src={userProfile.img}
+                      src={userProfile[0]?.img}
                     />
                   </Center>
                   <br />
                   <Center>
-                    <p>{tokenUsername}</p>
+                    <p>{userProfile[0]?.userId.username}</p>
                   </Center>
                   <br />
                   <MenuDivider />

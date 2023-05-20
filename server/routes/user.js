@@ -2,7 +2,26 @@ const express = require("express");
 const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
 const router = express.Router();
 const CryptoJs = require("crypto-js");
+const nodemailer = require('nodemailer');
 const User = require("../models/User");
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      type: "OAuth2",
+      user: process.env.EMAIL,
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      refreshToken: process.env.REFRESH_TOKEN
+    }
+  });
+  
+  transporter.verify((err, success) => {
+    err
+    ? console.log(err)
+    : console.log(`=== Server is ready to take messages: ${success} ===`);
+  });
+  
 
 const updateUser = async (req, res) => {
     if (req.body.password) {
@@ -87,12 +106,49 @@ const getUserStats = async (req, res) => {
     }
 }
 
+const changeUserPassword = async (req, res) => {
+    const { email, newPassword } = req.body;
 
+    try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+  
+      // Generate a random encryption key and IV
+      const encryptionKey = CryptoJs.lib.WordArray.random(32);
+      const iv = CryptoJs.lib.WordArray.random(16);
+  
+      // Encrypt the new password using AES
+      const encryptedPassword = CryptoJs.AES.encrypt(newPassword, encryptionKey, { iv }).toString();
+  
+      // Decrypt the password (just for demonstration purposes)
+      const decryptedPassword = CryptoJs.AES.decrypt(encryptedPassword, encryptionKey, { iv }).toString(CryptoJs.enc.Utf8);
+  
+      // Update the user's password
+      user.password = encryptedPassword;
+      await user.save();
+  
+      // Send email notification
+      const mailOptions = {
+        from: process.env.EMAIL, // Replace with your Gmail email address
+        to: email,
+        subject: 'Password Change Notification',
+        text: 'Your password has been successfully changed.',
+      };
+  
+      await transporter.sendMail(mailOptions);
+  
+      res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+}
 
 router.put("/users/update/:id", verifyTokenAndAuthorization, updateUser);
 router.delete("/users/delete/:id", verifyTokenAndAuthorization, deleteUser);
 router.get("/users/find/:id", verifyTokenAndAuthorization, getUser);
 router.get("/users", verifyTokenAndAdmin, getAllUser);
 router.get("/users/stats", verifyTokenAndAdmin, getUserStats);
+router.post("/users/change-password", verifyToken, changeUserPassword);
 
 module.exports = router
