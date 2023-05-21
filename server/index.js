@@ -72,6 +72,7 @@ const stripeRoute = require("./routes/stripe.js");
 const profileRoute = require("./routes/profile.js");
 const wishlistRoute = require("./routes/wishlist.js");
 const reviewRoute = require("./routes/review.js");
+const recommendationRoute = require("./routes/recommendation.js");
 
 app.use(authRoute);
 app.use(userRoute);
@@ -82,7 +83,7 @@ app.use(stripeRoute);
 app.use(profileRoute);
 app.use(wishlistRoute);
 app.use(reviewRoute);
-
+app.use(recommendationRoute);
 
 
 

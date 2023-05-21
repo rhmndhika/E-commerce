@@ -31,7 +31,9 @@ import {
   FormErrorMessage,
   FormHelperText,
   Select,
-  Skeleton
+  Skeleton,
+  InputGroup,
+  InputRightElement
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch';
 import { useParams } from 'react-router';
@@ -41,6 +43,8 @@ import app from "../firebase"
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import Cookies from 'js-cookie';
 
 const Profile = () => {
 
@@ -74,7 +78,13 @@ const Profile = () => {
     onClose: onCloseModalNumber 
   } = useDisclosure();
 
-  
+  const { 
+    isOpen: isOpenModalChangePassword, 
+    onOpen: onOpenModalChangePassword, 
+    onClose: onCloseModalChangePassword 
+  } = useDisclosure();
+
+  const tokenUsername = Cookies.get('username');
   const [ inputs, setInputs ] = useState({});
   const [ file, setFile ] = useState(null);
   const [ userProfile, setUserProfile ] = useState([]);
@@ -82,24 +92,36 @@ const Profile = () => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isModalLoading, setIsModalLoading ] = useState(false);
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [ showCurrentPassword, setShowCurrentPassword ] = useState(false);
+  const [ showNewPassword, setShowNewPassword ] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Make an HTTP request to the backend
     try {
-      // Make an API call to the backend
-      const response = await userMethod.post('/users/change-password', {
-        email,
-        newPassword,
-      });
-
-      setMessage(response.data.message);
+      await userMethod.post('/change-password', {
+        username: tokenUsername,
+        currentPassword,
+        newPassword
+      }).then((response) => {
+        toast.success(response.data, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      })
     } catch (error) {
-      setMessage('Error: Unable to change password');
-      console.error(error);
+      setMessage('An error occurred. Please try again.');
     }
   };
 
@@ -163,15 +185,9 @@ const Profile = () => {
     const uploadTask = uploadBytesResumable(StorageRef, file);
     setIsLoading(true);
   
-    // Register three observers:
-    // 1. 'state_changed' observer, called any time the state changes
-    // 2. Error observer, called on failure
-    // 3. Completion observer, called on successful completion
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log("Upload is " + progress + "% done");
@@ -186,11 +202,8 @@ const Profile = () => {
         }
       },
       (error) => {
-        // Handle unsuccessful uploads
       },
       () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           try{
             userMethod.put(`/profile/update/${id}`, {
@@ -228,12 +241,70 @@ const Profile = () => {
     );
   }
 
-  console.log(userProfile)
-
 
   return (
     <div>
     <ToastContainer />
+     {/* Modal Change password */}
+    <Modal closeOnOverlayClick={false} isOpen={isOpenModalChangePassword} onClose={onCloseModalChangePassword} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Change Password</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>  
+            <FormControl mt="10px">
+              <FormLabel>Username</FormLabel>
+              <Input type='text' id="username" value={tokenUsername} isRequired/>
+            </FormControl>
+            <FormControl mt="10px">
+              <FormLabel>Current Password</FormLabel>
+              <InputGroup>
+                <Input type={showCurrentPassword ? 'text' : 'password'} id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} isRequired/>
+                <InputRightElement h={'full'}>
+                    <Button
+                      variant={'ghost'}
+                      onClick={() =>
+                        setShowCurrentPassword((showPassword) => !showPassword)
+                      }>
+                      {showCurrentPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl mt="10px">
+              <FormLabel>New Password</FormLabel>
+              <InputGroup>
+                <Input type={showNewPassword ? 'text' : 'password'} id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} isRequired/>
+                <InputRightElement h={'full'}>
+                    <Button
+                      variant={'ghost'}
+                      onClick={() =>
+                        setShowNewPassword((showPassword) => !showPassword)
+                      }>
+                      {showNewPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl> 
+          </ModalBody>
+          <ModalFooter>
+          { isModalLoading ? 
+            <Button
+              isLoading
+              loadingText='Saving'
+              colorScheme='teal'
+              >
+              Saving
+            </Button>  
+            :
+            <Button colorScheme='teal' mr={3} onClick={handleSubmit}>
+              Save
+            </Button>
+            }
+          </ModalFooter>
+          {message && <p>{message}</p>}
+        </ModalContent>
+    </Modal>
     {/* Modal Update Nama */}
     <Modal closeOnOverlayClick={false} isOpen={isOpenModalName} onClose={onCloseModalName} isCentered>
         <ModalOverlay />
@@ -510,32 +581,7 @@ const Profile = () => {
                   <Text>
                   File size: 10,000,000 bytes (10 Megabytes) maximum. Allowed file extensions: .JPG .JPEG .PNG
                   </Text>
-                  {/* <Button>Change Password</Button> */}
-                  <div>
-                  <h2>Change Password</h2>
-                  {message && <p>{message}</p>}
-                  <form onSubmit={handleSubmit}>
-                    <div>
-                      <label htmlFor="email">Email:</label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="newPassword">New Password:</label>
-                      <input
-                        type="password"
-                        id="newPassword"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                      />
-                    </div>
-                    <button type="submit">Change Password</button>
-                  </form>
-                </div>
+                  <Button onClick={onOpenModalChangePassword}>Change Password</Button>
                </Stack>
               </CardBody>
             </Card>

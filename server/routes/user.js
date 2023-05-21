@@ -4,6 +4,7 @@ const router = express.Router();
 const CryptoJs = require("crypto-js");
 const nodemailer = require('nodemailer');
 const User = require("../models/User");
+const { v4: uuidv4 } = require('uuid');
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -107,48 +108,157 @@ const getUserStats = async (req, res) => {
 }
 
 const changeUserPassword = async (req, res) => {
-    const { email, newPassword } = req.body;
+    const { username, currentPassword, newPassword } = req.body;
 
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username });
+
+    // If the user doesn't exist, return an error
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    // Decrypt the stored password and compare it with the current password
+    const decryptedPassword = CryptoJs.AES.decrypt(
+      user.password,
+      process.env.PASS_SEC
+    ).toString(CryptoJs.enc.Utf8);
+
+    if (decryptedPassword !== currentPassword) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    // Encrypt the new password
+    const encryptedPassword = CryptoJs.AES.encrypt(
+      newPassword,
+      process.env.PASS_SEC
+    ).toString();
+
+    // Update the user's password
+    user.password = encryptedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const generateResetToken = () => {
+    // Generate a random token using a library like 'crypto' or 'uuid'
+    // For example, using the 'uuid' library:
+    const resetToken = uuidv4();
+  
+    return resetToken;
+};
+
+const initiatePasswordReset = async (req, res) => {
+    const { email } = req.body;
+  
     try {
-      // Find the user by email
+      // Check if the user with the given email exists
       const user = await User.findOne({ email });
   
-      // Generate a random encryption key and IV
-      const encryptionKey = CryptoJs.lib.WordArray.random(32);
-      const iv = CryptoJs.lib.WordArray.random(16);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
   
-      // Encrypt the new password using AES
-      const encryptedPassword = CryptoJs.AES.encrypt(newPassword, encryptionKey, { iv }).toString();
-  
-      // Decrypt the password (just for demonstration purposes)
-      const decryptedPassword = CryptoJs.AES.decrypt(encryptedPassword, encryptionKey, { iv }).toString(CryptoJs.enc.Utf8);
-  
-      // Update the user's password
-      user.password = encryptedPassword;
+      // Generate a reset token and store it in the user document
+      const resetToken = generateResetToken();
+      user.resetToken = resetToken;
+      user.resetTokenExpires = Date.now() + 3600000; // Token expiration time: 1 hour
       await user.save();
   
-      // Send email notification
+      // Create the reset password URL in your frontend website
+      const resetPasswordUrl = `http://localhost:3000/forgot-password/${resetToken}`;
+  
+      // Send a password reset email to the user
       const mailOptions = {
-        from: process.env.EMAIL, // Replace with your Gmail email address
+        from: 'your-email@gmail.com',
         to: email,
-        subject: 'Password Change Notification',
-        text: 'Your password has been successfully changed.',
+        subject: 'Password Reset',
+        html: `<p>Click the following link to reset your password:</p><a href="${resetPasswordUrl}">${resetPasswordUrl}</a>`
       };
   
-      await transporter.sendMail(mailOptions);
+      transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ message: 'Failed to send password reset email' });
+        }
+      });
   
-      res.json({ message: 'Password changed successfully' });
+      res.status(200).json({ message: 'Password reset email sent' });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Server Error' });
+      res.status(500).json({ message: 'Internal server error' });
     }
-}
+  };
+
+  const resetPassword = async (req, res) => {
+    const { resetToken, newPassword } = req.body;
+  
+    try {
+      // Find the user by reset token and check if it has expired
+      const user = await User.findOne({
+        resetToken,
+        resetTokenExpires: { $gt: Date.now() }
+      });
+  
+      if (!user) {
+        return res.status(400).json({ message: 'Invalid or expired reset token' });
+      }
+  
+      // Update the user's password
+      const encryptedPassword = CryptoJs.AES.encrypt(newPassword, process.env.PASS_SEC).toString();
+      user.password = encryptedPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpires = undefined;
+      await user.save();
+  
+      res.status(200).json({ message: 'Password reset successfully' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+// const resetPassword = async (req, res) => {
+//     const { resetToken, newPassword } = req.body;
+  
+//     try {
+//       // Find the user by reset token and check if it has expired
+//       const user = await User.findOne({
+//         resetToken,
+//         resetTokenExpires: { $gt: Date.now() }
+//       });
+  
+//       if (!user) {
+//         return res.status(400).json({ message: 'Invalid or expired reset token' });
+//       }
+  
+//       // Update the user's password
+//       user.password = newPassword;
+//       user.resetToken = undefined;
+//       user.resetTokenExpires = undefined;
+//       await user.save();
+  
+//       res.status(200).json({ message: 'Password reset successfully' });
+//     } catch (error) {
+//       console.log(error);
+//       res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
+  
+  
 
 router.put("/users/update/:id", verifyTokenAndAuthorization, updateUser);
 router.delete("/users/delete/:id", verifyTokenAndAuthorization, deleteUser);
 router.get("/users/find/:id", verifyTokenAndAuthorization, getUser);
 router.get("/users", verifyTokenAndAdmin, getAllUser);
 router.get("/users/stats", verifyTokenAndAdmin, getUserStats);
-router.post("/users/change-password", verifyToken, changeUserPassword);
+router.post("/change-password", changeUserPassword);
+router.post('/initiate-password-reset', initiatePasswordReset);
+router.post('/reset-password', resetPassword);
 
 module.exports = router

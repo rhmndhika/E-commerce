@@ -17,6 +17,7 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'
 
 export default function Signup() {
 
@@ -24,6 +25,7 @@ export default function Signup() {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ showPassword, setShowPassword ] = useState(false);
+  const navigate = useNavigate();
 
   const register = (e) => {
 
@@ -33,6 +35,7 @@ export default function Signup() {
         email : email,
         password : password
     }).then((response) => {
+      navigate("/signin", { replace : true });
     })
 }
 

@@ -19,6 +19,7 @@ import Reviewed from './components/Reviewed';
 import ReviewPage from './scenes/global/ReviewPage';
 import ReviewList from './scenes/global/ReviewList';
 import CarouselContent1 from './scenes/global/CarouselContent1';
+import ResetPassword from './components/ResetPasswod';
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         <Route path='/user/reviewList/:id' element={<ReviewList />} />
         <Route path='/reviewed/:id' element={<Reviewed />} />
         <Route path='/carouselcontent1' element={<CarouselContent1 />} />
+        <Route path='/forgot-password/:token' element={<ResetPassword />} />
         <Route path='/testing' element={<Testing />} />
       </Routes>
     </BrowserRouter>

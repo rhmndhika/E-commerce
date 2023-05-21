@@ -13,7 +13,15 @@ import {
     Text,
     useColorModeValue,
     InputGroup,
-    InputRightElement
+    InputRightElement,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure
   } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { login } from '../redux/apiCalls';
@@ -21,22 +29,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { setModal } from '../redux/global';
+import { publicRequest, userMethod } from '../useFetch';
   
-  export default function SignIn() {
+export default function SignIn() {
 
     const [ username, setUsername ] = useState('');
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ showPassword, setShowPassword ] = useState(false);
+    
+    const { isOpen, onOpen, onClose } = useDisclosure()   
+    const [ emailReset, setEmailReset ] = useState('');
+    const [ errMessage, setErrMessage ] = useState('');
 
     const modalValue = useSelector((state) => state.global.modal);
     const message = useSelector((state) => state.global.error);
 
     const notify = () => toast.success("Logging In", {
-      position: toast.POSITION.TOP_RIGHT
-    });
-
-    const notifyError = () => toast.error(message, {
       position: toast.POSITION.TOP_RIGHT
     });
  
@@ -53,8 +62,51 @@ import { setModal } from '../redux/global';
       
       login(dispatch, { username, password }, notify);
     }
+
+    const handleInitiateReset = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const response = await publicRequest.post('/initiate-password-reset', { email: emailReset });
+  
+        if (response.status === 200) {
+          setErrMessage('Password reset email sent');
+        }
+      } catch (error) {
+        console.log(error);
+          setErrMessage(error.response.data.message);
+      }
+    };
     
     return (
+    <>
+    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reset Password</ModalHeader>
+          <ModalCloseButton />
+          <form onSubmit={handleInitiateReset}>
+          <ModalBody pb={6}>
+            <FormLabel>Email:</FormLabel>
+            <Input
+              type="email"
+              id="email"
+              value={emailReset}
+              onChange={(e) => setEmailReset(e.target.value)}
+              required
+            />
+          {errMessage && <Text mt="10px">{errMessage}</Text>}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} type='submit'>
+              Send Reset Email
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
       <Flex
         minH={'100vh'}
         align={'center'}
@@ -103,7 +155,7 @@ import { setModal } from '../redux/global';
                   direction={{ base: 'column', sm: 'row' }}
                   align={'start'}
                   justify={'space-between'}>
-                  <Checkbox>Remember me</Checkbox>
+                  <Link onClick={onOpen} color={'red.400'}>Forgot Password</Link>
                   <Link href="/signup" color={'blue.400'}>SignUp</Link>
                 </Stack>
                 <Button
@@ -130,5 +182,6 @@ import { setModal } from '../redux/global';
           </Box>
         </Stack>
       </Flex>
+    </>
     );
   }

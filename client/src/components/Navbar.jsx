@@ -67,8 +67,6 @@ export default function Nav() {
     getUserProfile();
   }, [tokenUserId])
 
-  console.log(userProfile)
-
   
 
   return (

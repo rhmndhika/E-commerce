@@ -221,7 +221,6 @@ const Cart = () => {
         makeCartRequest();
     }, [tokenUserId])
     
-    console.log(Carts)
     useEffect(() => {
         const getPriceSummary = async () => {
             try{

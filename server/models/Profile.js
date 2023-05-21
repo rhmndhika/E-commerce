@@ -34,7 +34,11 @@ const ProfileSchema = new mongoose.Schema({
     },
     img : {
         type: String
-    }
+    },
+    wishlist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'wishlists',
+      },
 }, { timestamps: true })
 
 const ProfileModel = mongoose.model("profiles", ProfileSchema)

@@ -18,7 +18,13 @@ const UserSchema = new mongoose.Schema({
     isAdmin : {
         type: Boolean,
         default: false,
-    }
+    },
+    wishlist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'wishlists',
+    },
+    resetToken: String,
+    resetTokenExpires: Date,
 
 }, { timestamps: true })
 
