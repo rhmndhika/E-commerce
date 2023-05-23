@@ -101,134 +101,83 @@ export default function Product () {
       }, [productId, tokenUserId]);
       
 
-    //   const handleInput = (e) => {
-    //     setInputs((prev) => {
-    //       return { ...prev, [e.target.name]: e.target.value }
-    //     })
-    //   }
-
     const handleInput = (e) => {
         setInputs((prev) => {
           return { ...prev, [e.target.name]: e.target.value };
         });
-      };
+    };
       
-      
+    const handleCat = (e) => {
+      setCat(e.target.value.split(","));
+    }
 
-      const handleCat = (e) => {
-        setCat(e.target.value.split(","));
-      }
-
-      
-    //   const handleClick = (e) => {
-    //     e.preventDefault();
-    //     const fileName = new Date().getTime() + file.name;
-    //     const storage = getStorage(app);
-    //     const StorageRef = ref(storage, fileName);
-    //     const uploadTask = uploadBytesResumable(StorageRef, file);
-    
-    //     uploadTask.on(
-    //       "state_changed",
-    //       (snapshot) => {
-    //         const progress =
-    //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //         console.log("Upload is " + progress + "% done");
-    //         switch (snapshot.state) {
-    //           case "paused":
-    //             console.log("Upload is paused");
-    //             break;
-    //           case "running":
-    //             console.log("Upload is running");
-    //             break;
-    //           default:
-    //         }
-    //       },
-    //       (error) => {
-    //         // Handle unsuccessful uploads
-    //       },
-    //       () => {
-    //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-    //           const product = { ...inputs, img: downloadURL, categories: cat };
-    //           updateProduct(dispatch, product, productId).then(() => {
-    //             toast({
-    //                 title: 'Updating Product.',
-    //                 status: 'success',
-    //                 duration: 9000,
-    //                 isClosable: true,
-    //               })
-    //           })
-    //           setTimeout(window.location.reload(), 2000);
-    //         });
-    //       }
-    //     );
-    //   }
     const handleClick = async (e) => {
-        e.preventDefault();
-      
-        if (newImageFile) {
-          // Upload the new image file
-          const fileName = new Date().getTime() + newImageFile.name;
-          const storage = getStorage(app);
-          const storageRef = ref(storage, fileName);
-          const uploadTask = uploadBytesResumable(storageRef, newImageFile);
-      
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              // Handle upload progress
-            },
-            (error) => {
-              // Handle unsuccessful uploads
-            },
-            () => {
-              // Image upload is complete
-              getDownloadURL(uploadTask.snapshot.ref)
-                .then((downloadURL) => {
-                  // Create a new product object with the updated image URL
-                  const updatedProduct = { ...product, img: downloadURL, ...inputs };
-                  // Call the updateProduct function with the updated product
-                  updateProduct(dispatch, updatedProduct, productId)
-                    .then(() => {
-                      toast({
-                        title: 'Updating Product.',
-                        status: 'success',
-                        duration: 9000,
-                        isClosable: true,
+          e.preventDefault();
+        
+          if (newImageFile) {
+            // Upload the new image file
+            const fileName = new Date().getTime() + newImageFile.name;
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, newImageFile);
+        
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                // Handle upload progress
+              },
+              (error) => {
+                // Handle unsuccessful uploads
+              },
+              () => {
+                // Image upload is complete
+                getDownloadURL(uploadTask.snapshot.ref)
+                  .then((downloadURL) => {
+                    // Create a new product object with the updated image URL
+                    const updatedProduct = { ...product, img: downloadURL, ...inputs };
+                    // Call the updateProduct function with the updated product
+                    updateProduct(dispatch, updatedProduct, productId)
+                      .then(() => {
+                        toast({
+                          title: 'Updating Product.',
+                          status: 'success',
+                          duration: 9000,
+                          isClosable: true,
+                        });
+                        // Reload the page after a delay
+                        setTimeout(() => window.location.reload(), 2000);
+                      })
+                      .catch((error) => {
+                        // Handle error during product update
+                        console.log(error);
                       });
-                      // Reload the page after a delay
-                      setTimeout(() => window.location.reload(), 2000);
-                    })
-                    .catch((error) => {
-                      // Handle error during product update
-                      console.log(error);
-                    });
-                })
-                .catch((error) => {
-                  // Handle error while retrieving the image URL
-                  console.log(error);
+                  })
+                  .catch((error) => {
+                    // Handle error while retrieving the image URL
+                    console.log(error);
+                  });
+              }
+            );
+          } else {
+            // No new image file, update the product with other fields only
+            const updatedProduct = { ...product, ...inputs };
+            updateProduct(dispatch, updatedProduct, productId)
+              .then(() => {
+                toast({
+                  title: 'Updating Product.',
+                  status: 'success',
+                  duration: 9000,
+                  isClosable: true,
                 });
-            }
-          );
-        } else {
-          // No new image file, update the product with other fields only
-          const updatedProduct = { ...product, ...inputs };
-          updateProduct(dispatch, updatedProduct, productId)
-            .then(() => {
-              toast({
-                title: 'Updating Product.',
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
+                // Reload the page after a delay
+                setTimeout(() => window.location.reload(), 2000);
+              })
+              .catch((error) => {
+                // Handle error during product update
+                console.log(error);
               });
-              // Reload the page after a delay
-              setTimeout(() => window.location.reload(), 2000);
-            })
-            .catch((error) => {
-              // Handle error during product update
-              console.log(error);
-            });
-        }
-      };
+          }
+    };
       
 
 

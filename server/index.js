@@ -5,9 +5,7 @@ const port = 5000;
 const dbConnect = require("./db/dbConnect");
 const path = require('path');
 const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const MemoryStore = require('memorystore')(session)
 const dotenv =  require("dotenv");
 const nodemailer = require('nodemailer');
 
@@ -73,7 +71,7 @@ const profileRoute = require("./routes/profile.js");
 const wishlistRoute = require("./routes/wishlist.js");
 const reviewRoute = require("./routes/review.js");
 const recommendationRoute = require("./routes/recommendation.js");
-const categoryRoute = require("./routes/category.js");
+const categoriesRoute = require("./routes/categories.js");
 
 app.use(authRoute);
 app.use(userRoute);
@@ -85,7 +83,7 @@ app.use(profileRoute);
 app.use(wishlistRoute);
 app.use(reviewRoute);
 app.use(recommendationRoute);
-app.use(categoryRoute);
+app.use(categoriesRoute);
 
 
 

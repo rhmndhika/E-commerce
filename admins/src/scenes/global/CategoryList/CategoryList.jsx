@@ -63,7 +63,6 @@ const CategoryList = () => {
   });
   const [ file, setFile ] = useState(null);
 
-  console.log(inputs)
 
   const itemsPerPage = 5;
 
@@ -101,7 +100,7 @@ const CategoryList = () => {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           const category = { ...inputs, img: downloadURL };
-          userRequest.post("/category/create", category).then((res) => {
+          userRequest.post("/categories/create", category).then((res) => {
             toast({
               title: 'Creating New Product.',
               status: 'success',
@@ -115,18 +114,21 @@ const CategoryList = () => {
     );
   }
 
-  const handleDelete = () => {
-    // deleteProduct(dispatch, selectedId).then((res) => {
-    //     toast({
-    //         title: 'Product has been deleted',
-    //         status: 'success',
-    //         duration: 9000,
-    //         isClosable: true,
-    //     })
-    //     setTimeout(window.location.reload(), 2000);
-    // })
-    alert(selectedId)
-    setIsDialogOpen(false);
+  const handleDelete = async () => {
+    try {
+      await userRequest.delete(`/categories/delete/${selectedId}`).then((res) => {
+        toast({
+          title: res.data,
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+      })
+      setIsDialogOpen(false);
+      setTimeout(window.location.reload(), 2000);
+      })
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   const handleOpenDialog = (id) => {
@@ -147,7 +149,7 @@ const CategoryList = () => {
   useEffect(() => {
     const getCategoryList = async () => {
       try{
-        const response = await publicRequest.get("/category/all");
+        const response = await publicRequest.get("/categories/all");
         setCategoryList(response.data);
         setPaginatedData(response.data);
       } catch (err) {
@@ -269,7 +271,11 @@ const CategoryList = () => {
                 <Td>{actualIndex}</Td> 
                 <Td>{item._id}</Td>
                 <Td>
-                  <Image src={item.img} />
+                  <Image 
+                    boxSize='100px' 
+                    objectFit='cover'
+                    alt={item._id}
+                    src={item.img} />
                 </Td>
                 <Td>{item.cat}</Td>
                 <Td>

@@ -1,9 +1,10 @@
+import React, { useState, useEffect } from 'react';
 import { Divider, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
-import { categories } from '../data'
+// import { categories } from '../data'
 import CategoryItem from './CategoryItem';
 import styled from 'styled-components'
 import { mobile, isMobile } from '../reponsive'
+import { publicRequest } from '../useFetch';
 
 const Container = styled.div`
   display: flex;
@@ -13,23 +14,26 @@ const Container = styled.div`
   margin-top: 40px;
 `;
 
-{/* <Flex flexDirection="column" flexWrap="wrap">
-<Flex mt="50px">
-  <Text padding="30px 0 0 30px" fontSize="3xl" as="b">Categories</Text>
-</Flex>
-
-<Flex alignItems="center" gap="30px" mt="5px">
-{categories.map((item) => (
-  <CategoryItem item={item} key={item.id} />
-  ))}
-</Flex>
-<Divider mt="10px" size="xl" />
-</Flex> */}
 
 const Categories = () => {
+
+  const [ categories, setCategories ] = useState([]);
+
+  useEffect(() => {
+    const getOrderHistory = async () => {
+        try{
+            const response = await publicRequest.get("/categories/all")
+            setCategories(response.data);
+        } catch (err) {
+            console.log(err);
+        } 
+    }
+    getOrderHistory();
+}, [])
+
   return (
     <Container>
-      {categories.map((item) => (
+      {categories?.map((item) => (
         <CategoryItem item={item} key={item.id} />
         ))}
     </Container>

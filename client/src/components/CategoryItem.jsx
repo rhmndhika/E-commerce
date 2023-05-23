@@ -54,7 +54,7 @@ const CategoryItem = ({item}) => {
         objectFit="cover"
       />
       <Info>
-        <Title as={"mark"}>{item.title}</Title>
+        <Title as={"mark"}>{item.cat}</Title>
         <a href={`/productList/${item.cat}`}>
           <Button marginBottom="100px" padding="10px" backgroundColor="white" color="black" cursor="pointer" fontWeight="600">SHOP NOW</Button>
         </a>

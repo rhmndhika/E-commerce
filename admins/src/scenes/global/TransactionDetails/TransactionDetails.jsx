@@ -71,17 +71,6 @@ const TransactionDetails = () => {
         }
     }
 
-    // const pdfRef = useRef(null);
-    // const handleDownload = () => {
-    //   const content = pdfRef.current;
-    //   const doc = new jsPDF("p", "pt" , "a2");
-    //     doc.html(content,  {
-    //     callback: function (doc) {
-    //     doc.save('Document.pdf');
-    //     }
-    //   });
-    // };
-
   return (
     <Sidebar>
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
