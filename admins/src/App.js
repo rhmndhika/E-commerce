@@ -16,6 +16,8 @@ import TransactionDetails from './scenes/global/TransactionDetails/TransactionDe
 import Invoice from './components/Invoice/Invoice';
 import ReviewList from './scenes/global/ReviewList/ReviewList';
 import Reviewed from './components/Reviewed/Reviewed';
+import Category from './scenes/global/Category/Category';
+import CategoryList from './scenes/global/CategoryList/CategoryList';
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -78,6 +80,14 @@ function App() {
           <Route
             path="/reviewList/:id"
             element={renderProtectedRoute(<Reviewed />, '/reviewList/:id')}
+          />
+           <Route
+            path="/categoryList"
+            element={renderProtectedRoute(<CategoryList />, '/categoryList')}
+          />
+            <Route
+            path="/category/detail/:id"
+            element={renderProtectedRoute(<Category />, '/category/detail/:id')}
           />
         </Routes>
       </BrowserRouter>

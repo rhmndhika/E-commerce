@@ -71,7 +71,6 @@ export default function User() {
     })
   }
 
-  console.log(inputsProfile)
 
 
   const handleUpdate = (e) => {
@@ -280,7 +279,7 @@ const handleClick = (e) => {
         </Flex>
         <Flex flexDirection="row" justifyContent="center" mt="20px" gap="10px" flexWrap={{ base: 'wrap', md: 'nowrap' }}>
             <Flex  width="50%" padding="20px" shadow="lg">
-                { users && 
+                { user && user[0]?.fullname ?
                 <Flex flexDirection="column">
                     <Flex gap="10px">
                         <Avatar src={user[0]?.img} fallbackSrc='https://via.placeholder.com/150' />
@@ -350,6 +349,8 @@ const handleClick = (e) => {
                         </Flex>
                     </Flex>     
                 </Flex>
+                :
+                <Text as="b" fontSize="2xl">This user has not created a profile yet</Text>
                 }
             </Flex>
 

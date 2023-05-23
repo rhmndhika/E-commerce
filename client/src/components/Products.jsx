@@ -110,68 +110,105 @@ const Products = ({cat,filter,sort}) => {
   //   setFilteredProducts((prev) => selectionSort([...prev]));
   // }, [sort]);
   
+  // useEffect(() => {
+  //   const mergeSort = (arr) => {
+  //     if (arr.length <= 1) {
+  //       return arr;
+  //     }
+  
+  //     const mid = Math.floor(arr.length / 2);
+  //     const left = arr.slice(0, mid);
+  //     const right = arr.slice(mid);
+  
+  //     const merge = (left, right) => {
+  //       const sortedArr = [];
+  //       let leftIndex = 0;
+  //       let rightIndex = 0;
+  
+  //       while (leftIndex < left.length && rightIndex < right.length) {
+  //         if (sort === "Newest") {
+  //           if (left[leftIndex].createdAt <= right[rightIndex].createdAt) {
+  //             sortedArr.push(left[leftIndex]);
+  //             leftIndex++;
+  //           } else {
+  //             sortedArr.push(right[rightIndex]);
+  //             rightIndex++;
+  //           }
+  //         } else if (sort === "Asc") {
+  //           if (left[leftIndex].price <= right[rightIndex].price) {
+  //             sortedArr.push(left[leftIndex]);
+  //             leftIndex++;
+  //           } else {
+  //             sortedArr.push(right[rightIndex]);
+  //             rightIndex++;
+  //           }
+  //         } else {
+  //           if (left[leftIndex].price >= right[rightIndex].price) {
+  //             sortedArr.push(left[leftIndex]);
+  //             leftIndex++;
+  //           } else {
+  //             sortedArr.push(right[rightIndex]);
+  //             rightIndex++;
+  //           }
+  //         }
+  //       }
+  
+  //       while (leftIndex < left.length) {
+  //         sortedArr.push(left[leftIndex]);
+  //         leftIndex++;
+  //       }
+  
+  //       while (rightIndex < right.length) {
+  //         sortedArr.push(right[rightIndex]);
+  //         rightIndex++;
+  //       }
+  
+  //       return sortedArr;
+  //     };
+  
+  //     const sortedLeft = mergeSort(left);
+  //     const sortedRight = mergeSort(right);
+  //     return merge(sortedLeft, sortedRight);
+  //   };
+  
+  //   setFilteredProducts((prev) => mergeSort([...prev]));
+  // }, [sort]);
+  
   useEffect(() => {
-    const mergeSort = (arr) => {
-      if (arr.length <= 1) {
-        return arr;
-      }
-  
-      const mid = Math.floor(arr.length / 2);
-      const left = arr.slice(0, mid);
-      const right = arr.slice(mid);
-  
-      const merge = (left, right) => {
-        const sortedArr = [];
-        let leftIndex = 0;
-        let rightIndex = 0;
-  
-        while (leftIndex < left.length && rightIndex < right.length) {
-          if (sort === "Newest") {
-            if (left[leftIndex].createdAt <= right[rightIndex].createdAt) {
-              sortedArr.push(left[leftIndex]);
-              leftIndex++;
-            } else {
-              sortedArr.push(right[rightIndex]);
-              rightIndex++;
-            }
-          } else if (sort === "Asc") {
-            if (left[leftIndex].price <= right[rightIndex].price) {
-              sortedArr.push(left[leftIndex]);
-              leftIndex++;
-            } else {
-              sortedArr.push(right[rightIndex]);
-              rightIndex++;
-            }
-          } else {
-            if (left[leftIndex].price >= right[rightIndex].price) {
-              sortedArr.push(left[leftIndex]);
-              leftIndex++;
-            } else {
-              sortedArr.push(right[rightIndex]);
-              rightIndex++;
-            }
+    const insertionSort = (arr) => {
+      const n = arr.length;
+      for (let i = 1; i < n; i++) {
+        let j = i;
+        if (sort === "Newest") {
+          while (j > 0 && arr[j - 1].createdAt < arr[j].createdAt) {
+            // Swap arr[j] and arr[j-1]
+            const temp = arr[j];
+            arr[j] = arr[j - 1];
+            arr[j - 1] = temp;
+            j--;
+          }
+        } else if (sort === "Asc") {
+          while (j > 0 && arr[j - 1].price > arr[j].price) {
+            // Swap arr[j] and arr[j-1]
+            const temp = arr[j];
+            arr[j] = arr[j - 1];
+            arr[j - 1] = temp;
+            j--;
+          }
+        } else {
+          while (j > 0 && arr[j - 1].price < arr[j].price) {
+            // Swap arr[j] and arr[j-1]
+            const temp = arr[j];
+            arr[j] = arr[j - 1];
+            arr[j - 1] = temp;
+            j--;
           }
         }
-  
-        while (leftIndex < left.length) {
-          sortedArr.push(left[leftIndex]);
-          leftIndex++;
-        }
-  
-        while (rightIndex < right.length) {
-          sortedArr.push(right[rightIndex]);
-          rightIndex++;
-        }
-  
-        return sortedArr;
-      };
-  
-      const sortedLeft = mergeSort(left);
-      const sortedRight = mergeSort(right);
-      return merge(sortedLeft, sortedRight);
+      }
+      return arr;
     };
   
-    setFilteredProducts((prev) => mergeSort([...prev]));
+    setFilteredProducts((prev) => insertionSort([...prev]));
   }, [sort]);
   
 

@@ -43,6 +43,7 @@ import {
   GrTransaction
 } from 'react-icons/gr';
 import {
+  BiCategory,
   BiDollar
 } from 'react-icons/bi';
 import Cookies from 'js-cookie';
@@ -98,9 +99,9 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Product', icon: IoStorefrontOutline, href: '/productList' },
   { name: 'Transaction', icon: BiDollar, href: '/transactionList' },
   { name: 'Review', icon: MdOutlineRateReview, href: '/reviewList' },
+  { name: 'Category', icon: BiCategory, href: '/categoryList' },
   // { name: 'Settings', icon: FiSettings, href: '/favorites' },
 ];
-
 
 export default function Sidebar({
   children,

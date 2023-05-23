@@ -73,6 +73,7 @@ const profileRoute = require("./routes/profile.js");
 const wishlistRoute = require("./routes/wishlist.js");
 const reviewRoute = require("./routes/review.js");
 const recommendationRoute = require("./routes/recommendation.js");
+const categoryRoute = require("./routes/category.js");
 
 app.use(authRoute);
 app.use(userRoute);
@@ -84,6 +85,7 @@ app.use(profileRoute);
 app.use(wishlistRoute);
 app.use(reviewRoute);
 app.use(recommendationRoute);
+app.use(categoryRoute);
 
 
 

@@ -27,9 +27,7 @@ const ProductList = () => {
   const [ filter, setFilter ] = useState({});
   const [ sort, setSort ] = useState("Newest");
 
-  console.log(cat)
-
-
+  
   const handleFilters = (e) => {
     const value = e.target.value
     setFilter({
@@ -40,7 +38,7 @@ const ProductList = () => {
   }
 
   const deleteKey = () => {
-   if (filter.materials === "Material") {
+   if (filter.materials === "All") {
     delete filter.materials   
    }
   }
@@ -63,7 +61,7 @@ const ProductList = () => {
           <Flex flexDirection="row">
             <FilterText>Filter Products</FilterText>
              <Select name="materials" width="180px" mt="-3px" ml="5px" onChange={handleFilters}>
-              <option value='Material' onClick={deleteKey()}>Material</option>
+              <option value='All' onClick={deleteKey()}>All</option>
               <option value='Rubber'>Rubber</option>
               <option value='Metal'>Metal</option>
               <option value='Theromoplastic'>Theromoplastic</option>

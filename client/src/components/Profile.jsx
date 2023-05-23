@@ -101,31 +101,29 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Make an HTTP request to the backend
+  
     try {
-      await userMethod.post('/change-password', {
+      const response = await userMethod.post('/change-password', {
         username: tokenUsername,
         currentPassword,
-        newPassword
-      }).then((response) => {
-        toast.success(response.data, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          });
-      })
+        newPassword,
+      });
+      setIsModalLoading(true);
+      toast.success(response.data.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       setMessage('An error occurred. Please try again.');
     }
   };
-
-
+  
   const handleChange = (e) => {
     setInputs((prev) => {
       return { ...prev, [e.target.name]: e.target.value }
@@ -248,62 +246,64 @@ const Profile = () => {
      {/* Modal Change password */}
     <Modal closeOnOverlayClick={false} isOpen={isOpenModalChangePassword} onClose={onCloseModalChangePassword} isCentered>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Change Password</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>  
-            <FormControl mt="10px">
-              <FormLabel>Username</FormLabel>
-              <Input type='text' id="username" value={tokenUsername} isRequired/>
-            </FormControl>
-            <FormControl mt="10px">
-              <FormLabel>Current Password</FormLabel>
-              <InputGroup>
-                <Input type={showCurrentPassword ? 'text' : 'password'} id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} isRequired/>
-                <InputRightElement h={'full'}>
-                    <Button
-                      variant={'ghost'}
-                      onClick={() =>
-                        setShowCurrentPassword((showPassword) => !showPassword)
-                      }>
-                      {showCurrentPassword ? <ViewIcon /> : <ViewOffIcon />}
-                    </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-            <FormControl mt="10px">
-              <FormLabel>New Password</FormLabel>
-              <InputGroup>
-                <Input type={showNewPassword ? 'text' : 'password'} id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} isRequired/>
-                <InputRightElement h={'full'}>
-                    <Button
-                      variant={'ghost'}
-                      onClick={() =>
-                        setShowNewPassword((showPassword) => !showPassword)
-                      }>
-                      {showNewPassword ? <ViewIcon /> : <ViewOffIcon />}
-                    </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl> 
-          </ModalBody>
-          <ModalFooter>
-          { isModalLoading ? 
-            <Button
-              isLoading
-              loadingText='Saving'
-              colorScheme='teal'
-              >
-              Saving
-            </Button>  
-            :
-            <Button colorScheme='teal' mr={3} onClick={handleSubmit}>
-              Save
-            </Button>
-            }
-          </ModalFooter>
-          {message && <p>{message}</p>}
-        </ModalContent>
+        <form onSubmit={handleSubmit}>
+          <ModalContent>
+            <ModalHeader>Change Password</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>  
+              <FormControl mt="10px">
+                <FormLabel>Username</FormLabel>
+                <Input type='text' id="username" value={tokenUsername} isRequired/>
+              </FormControl>
+              <FormControl mt="10px">
+                <FormLabel>Current Password</FormLabel>
+                <InputGroup>
+                  <Input type={showCurrentPassword ? 'text' : 'password'} id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} isRequired/>
+                  <InputRightElement h={'full'}>
+                      <Button
+                        variant={'ghost'}
+                        onClick={() =>
+                          setShowCurrentPassword((showPassword) => !showPassword)
+                        }>
+                        {showCurrentPassword ? <ViewIcon /> : <ViewOffIcon />}
+                      </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <FormControl mt="10px">
+                <FormLabel>New Password</FormLabel>
+                <InputGroup>
+                  <Input type={showNewPassword ? 'text' : 'password'} id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} isRequired/>
+                  <InputRightElement h={'full'}>
+                      <Button
+                        variant={'ghost'}
+                        onClick={() =>
+                          setShowNewPassword((showPassword) => !showPassword)
+                        }>
+                        {showNewPassword ? <ViewIcon /> : <ViewOffIcon />}
+                      </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl> 
+            </ModalBody>
+            <ModalFooter>
+            { isModalLoading ? 
+              <Button
+                isLoading
+                loadingText='Updating'
+                colorScheme='teal'
+                >
+                Updating
+              </Button>  
+              :
+              <Button type="submit" colorScheme='teal' mr={3}>
+                Update
+              </Button>
+              }
+            </ModalFooter>
+            {message && <p>{message}</p>}
+          </ModalContent>
+        </form>
     </Modal>
     {/* Modal Update Nama */}
     <Modal closeOnOverlayClick={false} isOpen={isOpenModalName} onClose={onCloseModalName} isCentered>

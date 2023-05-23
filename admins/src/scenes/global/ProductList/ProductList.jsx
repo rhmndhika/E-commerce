@@ -243,14 +243,13 @@ export default function ProductList  ()  {
                   />
                  <FormHelperText as="i" ml="5px">Price are in dollars.</FormHelperText>
               </FormControl>
-              <FormControl id="categores" mt="10px" isRequired>
+              <FormControl id="categories" mt="10px" isRequired>
                 <FormLabel>Categories</FormLabel>
-                  <Input
-                    placeholder="Shoes"
-                    type="text"
-                    name="categories"
-                    onChange={handleChange}
-                  />
+                  <Select name="categories" defaultValue="Automotive" onChange={handleChange}>
+                    <option value="Automotive">Automotive</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Others">Others</option>
+                  </Select>
               </FormControl>
                 <FormControl id="materials" mt="10px">
                     <FormLabel>Materials</FormLabel>
@@ -271,7 +270,7 @@ export default function ProductList  ()  {
               </FormControl>
               <FormControl mt="10px" isRequired>
                   <FormLabel>In Stock</FormLabel>
-                  <Select name="inStock" onChange={handleChange}>
+                  <Select name="inStock" defaultValue="true" onChange={handleChange}>
                       <option value="true">True</option>
                       <option value="false">False</option>
                   </Select>

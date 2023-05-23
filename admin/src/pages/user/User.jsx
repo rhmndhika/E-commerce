@@ -18,7 +18,7 @@ export default function User() {
   const userId = location.pathname.split("/")[2];
   const dispatch = useDispatch();
   const [ inputs, setInputs ] = useState({});
-
+  
   const users = useSelector((state) => state.user.userList.find((item) => item._id === userId));
 
   const handleInput = (e) => {

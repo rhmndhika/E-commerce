@@ -237,7 +237,7 @@ export default function Product () {
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create your account</ModalHeader>
+          <ModalHeader>Update Product</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Flex flexDirection="column">
@@ -290,7 +290,7 @@ export default function Product () {
                     />
                 </FormControl>
                 <FormControl id="categores" mt="10px">
-                    <FormLabel>Categories</FormLabel>
+                    {/* <FormLabel>Categories</FormLabel>
                     <Input
                         _placeholder={{ color: 'gray.500' }}
                         type="text"
@@ -298,7 +298,13 @@ export default function Product () {
                         defaultValue={product.categories}
                         value={inputs.categories}
                         onChange={handleInput}
-                    />
+                    /> */}
+                  <FormLabel>Categories</FormLabel>
+                  <Select name="categories" defaultValue="Automotive" onChange={handleInput}>
+                    <option value="Automotive">Automotive</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Others">Others</option>
+                  </Select>
                 </FormControl>
                 <FormControl id="materials" mt="10px">
                     <FormLabel>Materials</FormLabel>
@@ -366,6 +372,11 @@ export default function Product () {
                     <Text py='2'>
                         {product?.desc}
                     </Text>
+
+                    Category:
+                    <Text ml="5px" py='2' as="b">
+                      {product?.categories}
+                    </Text><br></br>
 
                     <Text py='2' as="b">
                         {product?.materials}

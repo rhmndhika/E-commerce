@@ -7,19 +7,34 @@ const jwt = require("jsonwebtoken");
 
 
 const Register = async (req, res) => {
-    const newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: CryptoJs.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
-    });
-
+    const { username, email, password } = req.body;
+  
     try {
-        const savedUser = await newUser.save();
-        res.status(201).json(savedUser);
+      // Check if the username or email already exists in the database
+      const existingUser = await User.findOne({
+        $or: [{ username: username }, { email: email }],
+      });
+  
+      if (existingUser) {
+        // Either username or email is already taken
+        return res.status(400).json({ message: 'Username or email is already taken.' });
+      }
+  
+      // Create a new user
+      const newUser = new User({
+        username: username,
+        email: email,
+        password: CryptoJs.AES.encrypt(password, process.env.PASS_SEC).toString(),
+      });
+  
+      // Save the new user to the database
+      const savedUser = await newUser.save();
+      res.status(201).json(savedUser);
     } catch (err) {
-        res.status(500).json(err);
+      res.status(500).json(err);
     }
-}
+  };
+  
 
 const Login = async (req, res) => {
     try {

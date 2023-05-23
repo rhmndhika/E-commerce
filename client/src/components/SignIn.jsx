@@ -21,7 +21,11 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure
+    useDisclosure,
+    Alert,
+    AlertIcon,
+    AlertTitle,
+    AlertDescription,
   } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { login } from '../redux/apiCalls';
@@ -173,9 +177,13 @@ export default function SignIn() {
                   disabled={isFetching}>
                   Sign in
                 </Button>
-                {error &&
-                <Text color="red">{message}</Text>
-                }
+                {error && (
+                  <Alert status="error" mt={4}>
+                    <AlertIcon />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{message}</AlertDescription>
+                  </Alert>
+                )}
               </Stack>
             </form>
             </Stack>
