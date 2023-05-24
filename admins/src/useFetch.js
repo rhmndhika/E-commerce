@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie'
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://e-commerce-production-25ef.up.railway.app";
 
 
 const token = Cookies.get('token');
