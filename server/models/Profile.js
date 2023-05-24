@@ -38,7 +38,27 @@ const ProfileSchema = new mongoose.Schema({
     wishlist: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'wishlists',
-      },
+    },
+    products : [
+        {
+            productId : {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "products"
+            },
+            quantity: {
+                type: Number,
+                default: 1
+            }
+        }
+    ],
+    reviews: [
+        { 
+            ratingId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "reviews"
+            } 
+        }
+    ]
 }, { timestamps: true })
 
 const ProfileModel = mongoose.model("profiles", ProfileSchema)

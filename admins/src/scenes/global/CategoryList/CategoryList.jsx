@@ -102,7 +102,7 @@ const CategoryList = () => {
           const category = { ...inputs, img: downloadURL };
           userRequest.post("/categories/create", category).then((res) => {
             toast({
-              title: 'Creating New Product.',
+              title: 'Creating New Category.',
               status: 'success',
               duration: 9000,
               isClosable: true,

@@ -45,9 +45,7 @@ const ReviewList = () => {
     <Container shadow="lg" maxW='container.sm' borderRadius="10px" overflow="hidden" height="270px" overflowY="auto" mb="20px">
     <Flex flexDirection="column" justifyContent='center' alignItems="center">
         <Flex justifyContent="space-between" width="100%" gap="30px" flexWrap="wrap" mt="20px">
-          <Link to={`/order/history/detail/${listItem.order?._id}`} onClick={() => {
-                    window.open('/order/history/detail/'+listItem.order?._id, '_blank');
-                }}>
+          <Link to={`/order/history/detail/${listItem.order?._id}`} target='_blank'>
             <Text alignSelf="flex-start" mt="10px" color="green" cursor="pointer">
                 {listItem?.order?._id}
             </Text>

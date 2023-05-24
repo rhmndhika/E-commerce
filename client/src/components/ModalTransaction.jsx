@@ -43,9 +43,7 @@ const ModalTransaction = ({ data, isOpen, onClose, id }) => {
 
             <Flex flexDirection="row" justifyContent="space-between">
                 <Text>No. Invoice</Text>     
-                <Link to={`/order/history/detail/${data?._id}`} onClick={() => {
-                  window.open('/order/history/detail/'+data?._id, '_blank');
-                  }}>
+                <Link to={`/order/history/detail/${data?._id}`} target='_blank'>
                   <Text color="green" cursor="pointer">{data?._id}</Text>        
                 </Link>
             </Flex>

@@ -195,9 +195,7 @@ const Order = () => {
           
                   <Flex gap="10px">
                       <Text as="b">Invoice No : </Text> 
-                      <Link to={`/order/history/detail/${order._id}`} onClick={() => {
-                          window.open('/order/history/detail/'+order._id, '_blank');
-                      }}>
+                      <Link to={`/order/history/detail/${order._id}`} target='_blank'>
                           <Text cursor="pointer" color="green">{order._id}</Text>
                       </Link>
                   </Flex>
