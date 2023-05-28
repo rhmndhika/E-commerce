@@ -33,7 +33,11 @@ import {
   Select,
   Skeleton,
   InputGroup,
-  InputRightElement
+  InputRightElement,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react'
 import { userMethod } from '../useFetch';
 import { useParams } from 'react-router';
@@ -119,8 +123,11 @@ const Profile = () => {
         progress: undefined,
         theme: "light",
       });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500)
     } catch (error) {
-      setMessage('An error occurred. Please try again.');
+      setMessage(error.response.data.message);
     }
   };
   
@@ -301,7 +308,12 @@ const Profile = () => {
               </Button>
               }
             </ModalFooter>
-            {message && <p>{message}</p>}
+            {message && 
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{message}</AlertDescription>
+            </Alert>}
           </ModalContent>
         </form>
     </Modal>

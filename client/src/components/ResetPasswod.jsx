@@ -29,6 +29,9 @@ const ResetPassword = () => {
 
       if (response.status === 200) {
         setMessage('Password reset successfully');
+        setTimeout(() => {
+          navigate("/", { replace : true });
+        }, 1000)
       }
     } catch (error) {
       console.log(error);

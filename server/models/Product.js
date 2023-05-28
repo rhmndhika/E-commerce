@@ -31,7 +31,13 @@ const ProductSchema = new mongoose.Schema({
     inStock : {
         type: Boolean,
         default: true
-    }
+    },
+    reviews: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'reviews'
+        }
+      ]
 }, { timestamps: true })
 
 const ProductModel = mongoose.model("products", ProductSchema)

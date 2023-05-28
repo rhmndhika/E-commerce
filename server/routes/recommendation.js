@@ -1,23 +1,58 @@
 const express = require('express');
 const router = express.Router();
 const { verifyToken } = require("./verifyToken");
-const { getItemBasedRecommendations } = require('./recommendationUtils');
+const {
+  calculateItemSimilarity,
+  generateItemRecommendations
+} = require('./recommendationUtils');
+const ReviewModel = require('../models/Review');
+
+
 
 const getRecommendation = async (req, res) => {
-    try {
-        const productId = req.params.productId;
-        const limit = 5; // Number of recommendations
-    
-        // Get recommendations based on item-based collaborative filtering
-        const recommendations = await getItemBasedRecommendations(productId, limit);
-    
-        res.json(recommendations);
-      } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'An error occurred' });
-      }
+
+ // Calculate the dot product of two vectors
+ try {
+  const targetUser = '6430ecb9adbbf765790dfab5'; // Replace with your target user ID
+
+  // Retrieve all reviews
+  const reviews = await ReviewModel.find({});
+
+  // Convert reviews into a suitable data structure
+  const userItemRatings = {};
+  reviews.forEach((review) => {
+    const { user, product, rating } = review;
+    if (!userItemRatings[user]) {
+      userItemRatings[user] = {};
+    }
+    userItemRatings[user][product] = rating;
+  });
+
+
+
+  // Calculate item-item similarity matrix
+  const itemSimilarityMatrix = calculateItemSimilarity(userItemRatings);
+
+  console.log("YO", itemSimilarityMatrix)
+
+
+  // Generate recommendations for the target user
+  const recommendations = generateItemRecommendations(targetUser, userItemRatings, itemSimilarityMatrix);
+
+  res.json({
+    targetUser,
+    userItemRatings,
+    itemSimilarityMatrix,
+    recommendations
+  });
+} catch (error) {
+  console.error('Error fetching recommendations:', error);
+  res.status(500).json({ error: 'Error fetching recommendations' });
 }
 
-router.get('/recommendations/:productId', verifyToken, getRecommendation);
+}
+
+
+router.get('/recommendations', getRecommendation);
   
 module.exports = router;

@@ -46,7 +46,7 @@ const deleteProduct = async (req, res) => {
 
 const getProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
+        const product = await Product.findById(req.params.id).populate('reviews')
         
         res.status(200).json(product);
     } catch(err) {
@@ -62,14 +62,14 @@ const getAllProduct = async (req, res) => {
         let products;
 
         if(queryNew) {
-            products = await Product.find({}).sort({ createdAt: -1}).limit(5);
+            products = await Product.find({}).sort({ createdAt: -1}).limit(5).populate('reviews');
         } else if (queryCategory) {
             products = await Product.find({categories: {
                 $in: [queryCategory],
             },
-        });
+        }).populate('reviews');
         } else {
-            products = await Product.find({});
+            products = await Product.find({}).populate('reviews');
         }
   
         res.status(200).json(products);

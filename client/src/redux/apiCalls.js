@@ -11,7 +11,7 @@ export const login = async (dispatch, user, notify) => {
     try {
          await publicRequest.post("/login", user).then((response) => {
             if (response) {
-                Cookies.set('token', response.data.accessToken, { expires: 3 });
+                    
                 Cookies.set('userId', response.data._id, { expires: 3 });
                 Cookies.set('username', response.data.username, { expires: 3 });
                 Cookies.set('email', response.data.email, { expires: 3 });

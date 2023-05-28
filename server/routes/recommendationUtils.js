@@ -1,141 +1,134 @@
 const ProductModel = require('../models/Product');
 const ReviewModel = require('../models/Review');
 
+let tampung = null
 
-// Calculate similarity between two products
-async function calculateSimilarity(productId1, productId2) {
-    // Retrieve reviews for the two products
-    const reviews1 = await ReviewModel.find({ product: productId1 });
-    const reviews2 = await ReviewModel.find({ product: productId2 });
-  
-    // Calculate the intersection of users who reviewed both products
-    const users1 = reviews1.map((review) => review.user.toString());
-    const users2 = reviews2.map((review) => review.user.toString());
-    const commonUsers = users1.filter((user) => users2.includes(user));
-  
-    // Calculate the sum of squared differences in ratings
-    let sumSquaredDiff = 0;
-    for (const user of commonUsers) {
-      const rating1 = reviews1.find((review) => review.user.toString() === user).rating;
-      const rating2 = reviews2.find((review) => review.user.toString() === user).rating;
-      const diff = rating1 - rating2;
-      sumSquaredDiff += diff * diff;
-    }
-  
-    // Calculate the similarity score using the inverse of the sum of squared differences
-    const similarity = 1 / (1 + Math.sqrt(sumSquaredDiff));
-    return similarity;
-  }
-  
-  // Get recommendations based on item-based collaborative filtering
-  async function getItemBasedRecommendations(productId, limit) {
-    // Retrieve all products
-    const products = await ProductModel.find();
-  
-    // Calculate similarity between the given product and all other products
-    const similarities = [];
-    for (const product of products) {
-      if (product._id.toString() !== productId) {
-        const similarity = await calculateSimilarity(productId, product._id.toString());
-        similarities.push({ product: product._id.toString(), similarity });
-      }
-    }
-  
-    // Sort the similarities in descending order
-    similarities.sort((a, b) => b.similarity - a.similarity);
-  
-    // Get the top recommended products
-    const recommendations = [];
-    for (let i = 0; i < limit && i < similarities.length; i++) {
-      const similarProduct = await ProductModel.findById(similarities[i].product);
-      recommendations.push(similarProduct);
-    }
-  
-    return recommendations;
-  }
-  
-  module.exports = {
-    calculateSimilarity,
-    getItemBasedRecommendations,
-  };
+function calculateCosineSimilarity(vectorA, vectorB) {
+  const dotProduct = vectorA.reduce((sum, value, index) => sum + value * vectorB[index], 0);
+  const magnitudeA = Math.sqrt(vectorA.reduce((sum, value) => sum + Math.pow(value, 2), 0));
+  const magnitudeB = Math.sqrt(vectorB.reduce((sum, value) => sum + Math.pow(value, 2), 0));
+  return dotProduct / (magnitudeA * magnitudeB);
+}
 
+// const calculateItemSimilarity = (userItemRatings) => {
+//   console.log(userItemRatings)
+//   const itemSimilarityMatrix = {};
 
-// const express = require("express");
-// const router = express.Router();
+//   // Iterate over each item
+//   Object.keys(userItemRatings).forEach((itemA) => {
+//     itemSimilarityMatrix[itemA] = {};
 
-// const UserModel = require('../models/User');
-// const WishlistModel = require('../models/Wishlist');
-// const ProductModel = require('../models/Product');
-// const { verifyToken } = require("./verifyToken");
+//     // Iterate over each other item (excluding itemA)
+//     Object.keys(userItemRatings).forEach((itemB) => {
+//       if (itemA !== itemB) {
+//         const ratingsA = [];
+//         const ratingsB = [];
 
-
-// const getRecommendationProduct = async (req, res) => {
-//     const userId = req.params.id;
-
-//     try {
-//         const recommendations = await generateContentBasedRecommendations(userId);
-//         res.status(200).json(recommendations);
-//       } catch (error) {
-//         console.log('Failed to generate recommendations:', error.message);
-//         res.status(500).json({ message: 'Failed to generate recommendations' });
-//       }
-// }
-
-// // Assuming you have the ProductModel, UserModel, and WishlistModel imported
-
-// // Recommendation algorithm function
-// async function generateContentBasedRecommendations(userId) {
-//     try {
-//       // Find the user's wishlist
-//       const wishlist = await WishlistModel.findOne({ userId: userId }).populate('products.productId');
-  
-//       if (!wishlist) {
-//         return [];
-//       }
-  
-//       const userWishlist = wishlist.products.map((product) => product.productId);
-  
-//       // Retrieve all products
-//       const allProducts = await ProductModel.find();
-  
-//       // Implement content-based filtering algorithm based on categories and materials
-//       const recommendations = [];
-  
-//       for (const wishlistProduct of userWishlist) {
-//         const { categories, materials } = wishlistProduct;
-  
-//         // Get products with similar categories
-//         const similarProductsByCategory = allProducts.filter((product) => {
-//           return (
-//             product._id.toString() !== wishlistProduct._id.toString() &&
-//             product.categories.some((category) => categories.includes(category))
-//           );
+//         // Iterate over each user and fetch ratings for itemA and itemB
+//         Object.keys(userItemRatings[itemA]).forEach((user) => {
+//           if (userItemRatings[user] && userItemRatings[user][itemA] && userItemRatings[user][itemB]) {
+//             ratingsA.push(userItemRatings[user][itemA]);
+//             ratingsB.push(userItemRatings[user][itemB]);
+//           }
 //         });
-  
-//         recommendations.push(...similarProductsByCategory);
-  
-//         // Get products with the same material
-//         if (materials) {
-//           const similarProductsByMaterial = allProducts.filter((product) => {
-//             return (
-//               product._id.toString() !== wishlistProduct._id.toString() &&
-//               product.materials === materials
-//             );
-//           });
-  
-//           recommendations.push(...similarProductsByMaterial);
-//         }
+
+//         console.log("ratingsA", ratingsA);
+//         console.log("ratingsB", ratingsB);
+
+//         // Calculate cosine similarity between itemA and itemB based on ratings
+//         const similarity = calculateCosineSimilarity(ratingsA, ratingsB);
+//         itemSimilarityMatrix[itemA][itemB] = similarity;
+
+//         console.log("similarity", similarity);
 //       }
-  
-//       // Deduplicate and limit the number of recommendations
-//       const uniqueRecommendations = Array.from(new Set(recommendations));
-//       return uniqueRecommendations.slice(0, 5);
-//     } catch (error) {
-//       console.log(error);
-//       throw new Error('Failed to generate recommendations');
-//     }
-//   }
-  
-// router.get("/recommendations/:id", getRecommendationProduct);
-// module.exports = router;
+//     });
+//   });
+
+//   return itemSimilarityMatrix;
+// };
+
+const calculateItemSimilarity = (userItemRatings) => {
+  const itemSimilarityMatrix = {};
+
+  // Iterate over each user
+  Object.keys(userItemRatings).forEach((user) => {
+    const userRatings = userItemRatings[user];
+
+    // Iterate over each item rated by the user
+    Object.keys(userRatings).forEach((itemA) => {
+      itemSimilarityMatrix[itemA] = {};
+
+      // Iterate over other items (excluding itemA)
+      Object.keys(userRatings).forEach((itemB) => {
+        if (itemA !== itemB) {
+          if (!itemSimilarityMatrix[itemA][itemB]) {
+            itemSimilarityMatrix[itemA][itemB] = 0;
+          }
+
+          // Calculate similarity between itemA and itemB based on user ratings
+          itemSimilarityMatrix[itemA][itemB] += 1;
+        }
+      });
+    });
+  });
+
+  tampung = itemSimilarityMatrix
+  return itemSimilarityMatrix;
+};
+
+
+const generateItemRecommendations = (targetUser, userItemRatings, itemSimilarityMatrix) => {
+  const targetUserRatings = userItemRatings[targetUser];
+  const recommendationScores = {};
+
+
+  if (!targetUserRatings || !itemSimilarityMatrix) {
+    // Handle the case when targetUserRatings or itemSimilarityMatrix is undefined or null
+    return [];
+  }
+
+  // Iterate over each item rated by the target user
+  Object.keys(targetUserRatings).forEach((itemA) => {
+    const ratingA = targetUserRatings[itemA];
+
+    // Check if itemA exists in the itemSimilarityMatrix
+    if (itemSimilarityMatrix[itemA]) {
+      // Iterate over similar items to itemA
+      Object.keys(itemSimilarityMatrix[itemA]).forEach((itemB) => {
+        const similarity = itemSimilarityMatrix[itemA][itemB];
+
+        // Calculate recommendation score
+        if (!targetUserRatings[itemB]) {
+          if (!recommendationScores[itemB]) {
+            recommendationScores[itemB] = {
+              score: 0,
+              totalSimilarity: 0
+            };
+          }
+          recommendationScores[itemB].score += ratingA * similarity;
+          recommendationScores[itemB].totalSimilarity += similarity;
+        }
+      });
+    }
+  });
+
+  // Calculate weighted average and sort recommendations
+  const recommendations = Object.keys(recommendationScores)
+    .map((item) => ({
+      item,
+      score: recommendationScores[item].score / recommendationScores[item].totalSimilarity
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  return recommendations;
+};
+
+
+
+module.exports = {
+  calculateItemSimilarity,
+  generateItemRecommendations
+};
+
+
 
