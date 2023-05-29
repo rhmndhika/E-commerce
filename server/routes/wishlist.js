@@ -82,7 +82,7 @@ const getUserWishlist = async (req, res) => {
 
 router.post("/wishlist/add", verifyToken , createWishlist);
 router.delete("/wishlist/delete/:userId/:productId", verifyToken , deleteUserWishlist);
-router.get("/wishlist/user/:id", verifyTokenAndAuthorization , getUserWishlist);
+router.get("/wishlist/user/:id", verifyToken , getUserWishlist);
 
 
 module.exports = router
