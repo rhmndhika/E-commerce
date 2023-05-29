@@ -2,7 +2,7 @@ import axios from 'axios';
 import { store } from './redux/store';
 import Cookies from 'js-cookie'
 
-const BASE_URL = "https://e-commerce-production-25ef.up.railway.app";
+const BASE_URL = "http://localhost:5000";
 
 // const user = store.getState().user.currentUser.accessToken;
 const TOKEN = (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser?.accessToken);
