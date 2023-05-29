@@ -41,6 +41,7 @@ const Reviewed = () => {
   const total = productReviewed?.order?.products[0].quantity * productReviewed?.product?.price
 
 
+
   return (
     <>
     <Navbar />

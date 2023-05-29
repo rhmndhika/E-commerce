@@ -99,6 +99,12 @@ const handleClick = async (e) => {
           })
           .catch((error) => {
             // Handle error while retrieving the image URL
+            toast({
+              title: 'Error',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
             console.log(error);
           });
       }
@@ -118,6 +124,12 @@ const handleClick = async (e) => {
     })
       .catch((error) => {
         // Handle error during product update
+        toast({
+          title: 'Error',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
         console.log(error);
       });
   }

@@ -82,15 +82,7 @@ const TransactionList = () => {
     
     const handleDelete = () => {
         // Perform the delete operation for the selected ID here
-        deleteProduct(dispatch, selectedId).then((res) => {
-            toast({
-                title: 'Product has been deleted',
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
-            })
-            setTimeout(window.location.reload(), 2000);
-        })
+        deleteProduct(dispatch, selectedId, toast);
         setIsDialogOpen(false);
     };
     

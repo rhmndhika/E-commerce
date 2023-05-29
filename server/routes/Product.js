@@ -4,18 +4,35 @@ const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = requir
 const Product = require("../models/Product");
 
 
+// const addProduct = async (req, res) => {
+
+//     const newProduct = new Product(req.body)
+
+//     try {
+//         const saveProduct = await newProduct.save();
+//         res.status(200).json(saveProduct);
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+
+// }
 const addProduct = async (req, res) => {
-
-    const newProduct = new Product(req.body)
-
+    const newProduct = new Product(req.body);
+  
     try {
-        const saveProduct = await newProduct.save();
-        res.status(200).json(saveProduct);
+      // Check if the same product already exists
+      const existingProduct = await Product.findOne({ title: req.body.title });
+      if (existingProduct) {
+        return res.status(409).json({ message: 'Product already exists' });
+      }
+  
+      // Save the new product
+      const savedProduct = await newProduct.save();
+      res.status(200).json(savedProduct);
     } catch (err) {
-        res.status(500).json(err);
+      res.status(500).json(err);
     }
-
-}
+  };
 
 const updateProduct = async (req, res) => {
     

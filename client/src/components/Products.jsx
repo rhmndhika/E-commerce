@@ -213,8 +213,8 @@ const Products = ({cat,filter,sort}) => {
   
 
   return (
-    <Flex flexDirection="column" padding="30px" mt="-60px">
-      <Flex flexWrap="wrap">
+    <Flex flexDirection="column" padding="30px" mt="-60px" >
+      <Flex flexWrap="wrap" justifyContent="center" alignItems="center">
         { cat 
         ? filteredProducts.map((item) => ( <Product item={item} key={item.id} />)) 
         : products.slice(0, 8).map((item) => ( <Product item={item} key={item.id} />))}

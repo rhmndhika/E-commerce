@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
 
-export const login = async (dispatch, user) => {
+export const login = async (dispatch, user, toast) => {
     dispatch(loginStart());
     try {
       await publicRequest.post("/login", user).then((res) => {
@@ -14,17 +14,24 @@ export const login = async (dispatch, user) => {
         Cookies.set('userId', res.data._id, { expires: 3 });
         Cookies.set('username', res.data.username, { expires: 3 });
         Cookies.set('email', res.data.email, { expires: 3 });
-        console.log("Cookies set:", {
-          token: res.data.accessToken,
-          userId: res.data._id,
-          username: res.data.username,
-          email: res.data.email
+        toast({
+            title: 'Logging In',
+            status: 'success',
+            duration: 1000,
+            isClosable: true,
         });
-        dispatch(loginSuccess(res.data));
+        setTimeout(() => {
+            dispatch(loginSuccess(res.data));
+        }, 1000)
       });
     } catch (err) {
-      console.error("Login error:", err);
       dispatch(loginFailure());
+      toast({
+        title: "Please input the correct password!",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+    });
     }
   }
   
@@ -39,33 +46,72 @@ export const getProduct = async (dispatch) => {
     }
 }
 
-export const deleteProduct = async (dispatch, id) => {
+export const deleteProduct = async (dispatch, id, toast) => {
     dispatch(deleteProductStart());
     try {
-        const res = await userRequest.delete(`/product/delete/${id}`);
-        dispatch(deleteProductSuccess(id));
+        const res = await userRequest.delete(`/product/delete/${id}`).then((res) => {
+            toast({
+                title: 'Product has been deleted',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+            dispatch(deleteProductSuccess(id));
+            setTimeout(() => {
+                window.location.reload()
+            }, 1000)
+        })
     } catch (err) {
         dispatch(deleteProductFailure());
     }
 }
 
-export const updateProduct = async (dispatch, product, id) => {
+export const updateProduct = async (dispatch, product, id, toast) => {
     dispatch(updateProductStart());
     try {
-        const res = await userRequest.put(`/product/update/${id}`, product);
-        dispatch(updateProductSuccess({ product, id }));
+        const res = await userRequest.put(`/product/update/${id}`, product).then((res) => {
+            toast({
+                title: 'Updating Product.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              });
+            dispatch(updateProductSuccess({ product, id }));
+            setTimeout(() => {
+                window.location.reload()
+            }, 1000)
+        })
     } catch (err) {
         dispatch(updateProductFailure());
+        toast({
+            title: "Error",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+        });
     }
 }
 
-export const addProduct = async (dispatch, product) => {
+export const addProduct = async (dispatch, product, toast) => {
     dispatch(addProductStart());
     try {
-        const res = await userRequest.post("/product/add", product);
-        dispatch(addProductSuccess(res.data));
+        const res = await userRequest.post("/product/add", product).then((res) => {
+            dispatch(addProductSuccess(res.data));
+            toast({
+                title: 'Creating New Product.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
+            dispatch(loginSuccess(res.data));
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000)
+        })
     } catch (err) {
         dispatch(addProductFailure());
+        alert("Product Already Exist")
+        console.log(err)
     }
 }
 
@@ -79,21 +125,41 @@ export const getUserList = async (dispatch) => {
     }
 }
 
-export const deleteUser= async (dispatch, id) => {
+export const deleteUser= async (dispatch, id, toast) => {
     dispatch(deleteUsersStart());
     try {
-        const res = await userRequest.delete(`/users/delete/${id}`);
-        dispatch(deleteUsersSuccess(id));
+        const res = await userRequest.delete(`/users/delete/${id}`).then((res) => {
+            toast({
+                title: 'User deleted',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+            dispatch(deleteUsersSuccess(id));
+            setTimeout(() => {
+                window.location.reload()
+            }, 1000)
+        })
     } catch (err) {
         dispatch(deleteUsersFailure());
     }
 }
 
-export const updateUser = async (dispatch, user, id) => {
+export const updateUser = async (dispatch, user, id, toast) => {
     dispatch(updateUsersStart());
     try {
-        const res = await userRequest.put(`/users/update/${id}`, user);
-        dispatch(updateUsersSuccess({ user, id }));
+        const res = await userRequest.put(`/users/update/${id}`, user).then((res) => {
+            toast({
+                title: 'Account updated.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+            dispatch(updateUsersSuccess({ user, id }));
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000)
+        })
     } catch (err) {
         dispatch(updateUsersFailure());
     }

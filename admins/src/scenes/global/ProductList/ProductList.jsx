@@ -81,15 +81,7 @@ export default function ProductList  ()  {
     
     const handleDelete = () => {
         // Perform the delete operation for the selected ID here
-        deleteProduct(dispatch, selectedId).then((res) => {
-            toast({
-                title: 'Product has been deleted',
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
-            })
-            setTimeout(window.location.reload(), 2000);
-        })
+        deleteProduct(dispatch, selectedId, toast);
         setIsDialogOpen(false);
     };
     
@@ -166,15 +158,7 @@ export default function ProductList  ()  {
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               const product = { ...inputs, img: downloadURL };
-              addProduct(dispatch, product).then(() => {
-                toast({
-                  title: 'Creating New Product.',
-                  status: 'success',
-                  duration: 9000,
-                  isClosable: true,
-                });
-                setTimeout(() => window.location.reload(), 2000);
-              })
+              addProduct(dispatch, product, toast);
             });
           }
         );

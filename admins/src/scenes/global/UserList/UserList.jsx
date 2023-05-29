@@ -47,14 +47,7 @@ export default function UserList() {
 
   const handleDelete = () => {
     // Perform the delete operation for the selected ID here
-    deleteUser(dispatch, selectedId).then((res) => {
-        toast({
-            title: 'User deleted',
-            status: 'success',
-            duration: 9000,
-            isClosable: true,
-        })
-    })
+    deleteUser(dispatch, selectedId, toast);
     setIsDialogOpen(false);
   };
 

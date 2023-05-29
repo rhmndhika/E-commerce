@@ -136,18 +136,7 @@ export default function Product () {
                     // Create a new product object with the updated image URL
                     const updatedProduct = { ...product, img: downloadURL, ...inputs };
                     // Call the updateProduct function with the updated product
-                    updateProduct(dispatch, updatedProduct, productId)
-                      .then(() => {
-                        toast({
-                          title: 'Updating Product.',
-                          status: 'success',
-                          duration: 9000,
-                          isClosable: true,
-                        });
-                        // Reload the page after a delay
-                        setTimeout(() => window.location.reload(), 2000);
-                      })
-                      .catch((error) => {
+                    updateProduct(dispatch, updatedProduct, productId, toast).catch((error) => {
                         // Handle error during product update
                         console.log(error);
                       });
@@ -161,18 +150,7 @@ export default function Product () {
           } else {
             // No new image file, update the product with other fields only
             const updatedProduct = { ...product, ...inputs };
-            updateProduct(dispatch, updatedProduct, productId)
-              .then(() => {
-                toast({
-                  title: 'Updating Product.',
-                  status: 'success',
-                  duration: 9000,
-                  isClosable: true,
-                });
-                // Reload the page after a delay
-                setTimeout(() => window.location.reload(), 2000);
-              })
-              .catch((error) => {
+            updateProduct(dispatch, updatedProduct, productId, toast).catch((error) => {
                 // Handle error during product update
                 console.log(error);
               });

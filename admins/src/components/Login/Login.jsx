@@ -12,6 +12,7 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  useToast
 } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/apiCall';
@@ -21,10 +22,11 @@ export default function Login() {
   const [ username, setUsername ] = useState("");
   const [ password, setPassword ] = useState("");
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    login(dispatch, { username, password });
+    login(dispatch, { username, password }, toast);
   }
   
   return (
@@ -40,6 +42,7 @@ export default function Login() {
             to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
           </Text>
         </Stack>
+        <form onSubmit={handleLogin}>
         <Box
           rounded={'lg'}
           bg={useColorModeValue('white', 'gray.700')}
@@ -49,12 +52,12 @@ export default function Login() {
             <FormControl id="email">
               <FormLabel>Username</FormLabel>
               <Input type="text" onChange={(e) => {
-            setUsername(e.target.value)}}  />
+            setUsername(e.target.value)}} isRequired required/>
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
               <Input type="password" onChange={(e) => {
-            setPassword(e.target.value)}} />
+            setPassword(e.target.value)}} isRequired required />
             </FormControl>
             <Stack spacing={10}>
               <Stack
@@ -65,17 +68,19 @@ export default function Login() {
                 <Link color={'blue.400'}>Forgot password?</Link>
               </Stack>
               <Button
+                type='submit'
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
                 }}
-                onClick={handleLogin}>
+                >
                 Sign in
               </Button>
             </Stack>
           </Stack>
         </Box>
+      </form>
       </Stack>
     </Flex>
   );

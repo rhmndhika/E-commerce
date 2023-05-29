@@ -236,14 +236,21 @@ const Order = () => {
                           $ {order.amount}
                           </Text>
                       </Flex>
-          
+                      
                       <Flex gap="20px">
                       <Text mt="8px" color='green' cursor="pointer" onClick={() => {
                           handleOpenModal(order)
                       }}>See Detail Transaction</Text>
+                       {order.status === "pending" ?
+                      //  null
+                       <Link to={`/user/review/${order._id}`}>
+                          <Button colorScheme='green'>Review</Button>
+                      </Link>
+                       :
                       <Link to={`/user/review/${order._id}`}>
                           <Button colorScheme='green'>Review</Button>
                       </Link>
+                      }
                       </Flex>
                   </Flex>
           </Flex>

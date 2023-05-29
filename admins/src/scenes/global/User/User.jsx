@@ -77,15 +77,8 @@ export default function User() {
     e.preventDefault();
 
     const user = { ...inputs };
-    updateUser(dispatch, user, userId).then(() => {
-        toast({
-            title: 'Account updated.',
-            status: 'success',
-            duration: 9000,
-            isClosable: true,
-          })
-    })
-    setTimeout(window.location.reload(), 2000);
+    updateUser(dispatch, user, userId, toast);
+    // setTimeout(window.location.reload(), 2000);
   }
 
   useEffect(() => {

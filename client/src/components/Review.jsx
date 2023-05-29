@@ -20,7 +20,8 @@ import { useParams } from 'react-router'
 import { publicRequest, userMethod } from '../useFetch'
 import moment from 'moment'
 import Cookies from 'js-cookie';
-
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import app from "../firebase"
 
 const Review = () => {
 
@@ -32,6 +33,7 @@ const Review = () => {
   const [ userOrder, setUserOrder ] = useState(null);
   const [ userReview, setUserReview ] = useState(null);
   const toast = useToast();
+  const [ file, setFile ] = useState([]);
 
   const [ rProductId, setRProductId ] = useState([]);
 
@@ -66,6 +68,8 @@ const Review = () => {
     const urls = files.map((file) => URL.createObjectURL(file));
     setImages([...urls]);
   };
+
+  console.log(file)
   
 
   const handleRemoveImage = (index) => {
@@ -76,29 +80,58 @@ const Review = () => {
 
 
   const handleSubmit = async (productId) => {
-    try {
-       await userMethod.post("/product/review", {
-        user: tokenUserId,
-        product: productId,
-        order: id,
-        rating,
-        comment,
-        img: images
-       }).then((res) => {
-        toast({
-          title: "Review Sent",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500)
-       })
-    } catch (err) {
-      console.log(err);
+    const downloadURLs = [];
+  
+    for (let i = 0; i < file.length; i++) {
+      const currentFile = file[i];
+      const fileName = new Date().getTime() + currentFile.name;
+      const storage = getStorage(app);
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, currentFile);
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Track upload progress if needed
+        },
+        (error) => {
+          console.error("Upload error:", error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          downloadURLs.push(downloadURL);
+  
+          if (downloadURLs.length === file.length) {
+            // All images have been uploaded and download URLs are available
+            try {
+              userMethod.post("/product/review", {
+                user: tokenUserId,
+                product: productId,
+                order: id,
+                rating,
+                comment,
+                img: downloadURLs
+              }).then((res) => {
+                toast({
+                  title: "Review Sent",
+                  status: "success",
+                  duration: 3000,
+                  isClosable: true,
+                });
+                // setTimeout(() => {
+                //   window.location.reload();
+                // }, 1500);
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        }
+      );
     }
   };
+  
+  
 
   const handleRatingClick = (value) => {
     setRating(value);
@@ -156,7 +189,8 @@ const Review = () => {
                       type="file"
                       multiple
                       accept="image/*"
-                      onChange={handleImageChange}
+                      // onChange={handleImageChange}
+                      onChange={(e) => setFile(e.target.files)}
                     />
                   </FormControl>
                 <SimpleGrid columns={{ sm: 2, md: 3, lg: 4 }} spacing={6} mt={6}>
@@ -176,7 +210,7 @@ const Review = () => {
                     </Box>
                   ))}
 
-                  { images.length < 8 && (
+                  {/* { images.length < 8 && (
                     <Box
                       borderWidth="1px"
                       borderColor="gray.300"
@@ -190,22 +224,22 @@ const Review = () => {
                       <AddIcon mb={2} />
                       Add more images
                     </Box>
-                  )}
+                  )} */}
                 </SimpleGrid>
 
-                  <Input
+                  {/* <Input
                     id="input-images"
                     type="file"
                     multiple
                     accept="image/*"
                     display="none"
                     onChange={handleImageChange}
-                  />
+                  /> */}
                 </Box>
                 
                 <Flex flexDirection="row" alignSelf="flex-end" gap="15px" padding="10px">
                   <Button as="a" href="/order/history" width="150px" variant="outline">Cancel</Button>
-                  <Button width="150px" variant="solid" colorScheme='teal' onClick={() => {
+                  <Button type="submit" width="150px" variant="solid" colorScheme='teal' onClick={() => {
                     handleSubmit(item.productId._id)
                   }}>Send</Button>
                 </Flex>
