@@ -134,6 +134,12 @@ const handleClick = (e) => {
                 })
               } catch (err) {
                 console.log(err)
+                toast({
+                  title: err.response.data,
+                  status: 'error',
+                  duration: 5000,
+                  isClosable: true,
+                })
               } 
             })
             .catch((error) => {
@@ -159,6 +165,12 @@ const handleClick = (e) => {
         })
       } catch (err) {
         console.log(err)
+        toast({
+          title: err.response.data,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+      })
       } 
     }
   }

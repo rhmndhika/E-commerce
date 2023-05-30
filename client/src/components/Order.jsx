@@ -241,7 +241,7 @@ const Order = () => {
                       <Text mt="8px" color='green' cursor="pointer" onClick={() => {
                           handleOpenModal(order)
                       }}>See Detail Transaction</Text>
-                       {order.status === "pending" ?
+                       {order.status === "pending" || item.status === "Pending"  ?
                       //  null
                        <Link to={`/user/review/${order._id}`}>
                           <Button colorScheme='green'>Review</Button>

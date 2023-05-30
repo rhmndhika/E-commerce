@@ -34,22 +34,53 @@ const addProduct = async (req, res) => {
     }
   };
 
-const updateProduct = async (req, res) => {
+// const updateProduct = async (req, res) => {
     
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-          },
-          { new: true }
-        );
-        res.status(200).json(updatedProduct);
-      } catch (err) {
-        res.status(500).json(err);
-      }
+//     try {
+//         const updatedProduct = await Product.findByIdAndUpdate(
+//           req.params.id,
+//           {
+//             $set: req.body,
+//           },
+//           { new: true }
+//         );
+//         res.status(200).json(updatedProduct);
+//       } catch (err) {
+//         res.status(500).json(err);
+//       }
+// }
 
-}
+const updateProduct = async (req, res) => {
+  try {
+    // Find the product to be updated
+    const productToUpdate = await Product.findById(req.params.id);
+
+    if (!productToUpdate) {
+      return res.status(404).json('Product not found');
+    }
+
+    // Check if the updated category already exists
+    const existingProduct = await Product.findOne({
+      category: req.body.category,
+      _id: { $ne: productToUpdate._id } // Exclude the current product from the check
+    });
+    if (existingProduct) {
+      return res.status(409).json('Product with the updated category already exists');
+    }
+
+    // Update the product
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedProduct);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
 
 const deleteProduct = async (req, res) => {
   
@@ -57,7 +88,7 @@ const deleteProduct = async (req, res) => {
         await Product.findByIdAndDelete(req.params.id);
         res.status(200).json("Product has been deleted..");
     } catch(err) {
-        res.status(500).json(err)
+        res.status(500).json(err);
     }
 }
 

@@ -78,7 +78,7 @@ const CategoryList = () => {
     const storage = getStorage(app);
     const StorageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(StorageRef, file);
-
+  
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -96,6 +96,7 @@ const CategoryList = () => {
         }
       },
       (error) => {
+        alert(error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -108,12 +109,20 @@ const CategoryList = () => {
               isClosable: true,
             });
             setTimeout(() => window.location.reload(), 2000);
-          })
+          }).catch((err) => {
+            console.log(err)
+            toast({
+              title: err.response.data,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          });
         });
       }
     );
-  }
-
+  };
+  
   const handleDelete = async () => {
     try {
       await userRequest.delete(`/categories/delete/${selectedId}`).then((res) => {
@@ -127,7 +136,13 @@ const CategoryList = () => {
       setTimeout(window.location.reload(), 2000);
       })
     } catch (err) {
-      console.log(err)
+      console.log(err);
+      toast({
+        title: err.response.data ,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 

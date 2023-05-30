@@ -100,7 +100,7 @@ const handleClick = async (e) => {
           .catch((error) => {
             // Handle error while retrieving the image URL
             toast({
-              title: 'Error',
+              title: error.response.data,
               status: 'error',
               duration: 9000,
               isClosable: true,
@@ -123,9 +123,10 @@ const handleClick = async (e) => {
       setTimeout(() => window.location.reload(), 2000);
     })
       .catch((error) => {
+        console.log(error)
         // Handle error during product update
         toast({
-          title: 'Error',
+          title: error.response.data,
           status: 'error',
           duration: 9000,
           isClosable: true,

@@ -28,7 +28,8 @@ const Reviewed = () => {
     useEffect(() => {
         const getProductReviewed = async () => {
             try{
-                const response = await userRequest.get(`/products/reviewed/${id}`)
+                const response = await userRequest.get(`/products/reviewed/${id}`);
+                console.log(response)
                 setProductReviewed(response?.data);
             } catch (err) {
                 console.log(err);
@@ -53,6 +54,7 @@ const Reviewed = () => {
         <>
           <Flex flexDirection="row" gap="10px" width="100%">
             <Flex flexDirection="column" gap="10px" flexWrap="wrap">
+            <Text>By : {productReviewed?.user.username}</Text>
             <Image
               boxSize='100px'
               objectFit='cover'

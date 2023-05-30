@@ -25,13 +25,23 @@ export const login = async (dispatch, user, toast) => {
         }, 1000)
       });
     } catch (err) {
+        console.log(err)
       dispatch(loginFailure());
-      toast({
-        title: "Please input the correct password!",
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-    });
+      if (err.response?.data?.message === "Wrong Username!") {
+          toast({
+            title: "Wrong Username!",
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
+      } else if (err.response?.data?.message === "Please input the correct password!") {
+        toast({
+            title: "Please input the correct password!",
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
+    }
     }
   }
   
@@ -62,6 +72,12 @@ export const deleteProduct = async (dispatch, id, toast) => {
             }, 1000)
         })
     } catch (err) {
+        toast({
+            title: err.response.data,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        })
         dispatch(deleteProductFailure());
     }
 }
@@ -84,9 +100,9 @@ export const updateProduct = async (dispatch, product, id, toast) => {
     } catch (err) {
         dispatch(updateProductFailure());
         toast({
-            title: "Error",
+            title: err.response.data,
             status: 'error',
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
         });
     }
@@ -109,8 +125,14 @@ export const addProduct = async (dispatch, product, toast) => {
             }, 2000)
         })
     } catch (err) {
+        console.log(err)
         dispatch(addProductFailure());
-        alert("Product Already Exist")
+        toast({
+            title: err.response.data,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
         console.log(err)
     }
 }
@@ -142,6 +164,12 @@ export const deleteUser= async (dispatch, id, toast) => {
         })
     } catch (err) {
         dispatch(deleteUsersFailure());
+        toast({
+            title: err.response.data,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
     }
 }
 
@@ -162,6 +190,12 @@ export const updateUser = async (dispatch, user, id, toast) => {
         })
     } catch (err) {
         dispatch(updateUsersFailure());
+        toast({
+            title: err.response.data,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
     }
 }
 

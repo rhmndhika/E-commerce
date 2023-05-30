@@ -267,7 +267,7 @@ const TransactionList = () => {
                 <Td>{item.userId.username}</Td>
                 <Td>$ {item.amount}</Td>
                 <Td>{moment(item.createdAt).format('MMMM Do YYYY')}</Td>
-                { item.status === "pending" ? 
+                { item.status === "pending" || item.status === "Pending"  ? 
                 <Td>
                     <Badge color="#2a7ade">
                     {item.status}

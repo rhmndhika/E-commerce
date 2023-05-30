@@ -23,7 +23,8 @@ import { Table,
     FormControl,
     FormLabel,
     Input,
-    useToast
+    useToast,
+    Select
 } from '@chakra-ui/react';
 import Sidebar from '../../../components/Sidebar/Sidebar.tsx';
 import { useParams } from 'react-router';
@@ -67,6 +68,12 @@ const TransactionDetails = () => {
                 setTimeout(() => window.location.reload(), 2000);
             })
         } catch (err) {
+          toast({
+            title: err.reponse.data,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
             console.log(err);
         }
     }
@@ -80,20 +87,35 @@ const TransactionDetails = () => {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-                <FormLabel>Order Status</FormLabel>
-                <Input 
+                {/* <Input 
                   defaultValue={userOrder?.status}
                   onChange={(e) => {
                     setOrderStatus(e.target.value);
                   }}
-                />
+                /> */}
+                <FormControl id="status" mt="10px" isRequired>
+                  <FormLabel>Order Status</FormLabel>
+                  <Select name="status" placeholder='Order Status' onChange={(e) => {setOrderStatus(e.target.value);}}>
+                    <option value="Pending">Pending</option>
+                    <option value="Ready To Ship">Ready To Ship</option>
+                    <option value="In Transit">In Transit</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Canceled">Canceled</option>
+                  </Select>
+              </FormControl>
             </FormControl>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose} mr={3}>Cancel</Button>
+            {orderStatus.length <= 0 ?
+            <Button colorScheme='blue' isDisabled>
+              Save
+            </Button>
+            :
             <Button colorScheme='blue' onClick={updateorderStatus}>
               Save
             </Button>
+            }
           </ModalFooter>
         </ModalContent>
     </Modal>

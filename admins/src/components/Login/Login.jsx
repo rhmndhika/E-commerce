@@ -7,7 +7,6 @@ import {
   Input,
   Checkbox,
   Stack,
-  Link,
   Button,
   Heading,
   Text,
@@ -16,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/apiCall';
+import { Link } from "react-router-dom"
 
 export default function Login() {
 
@@ -64,7 +64,9 @@ export default function Login() {
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
                 justify={'space-between'}>
-                <Checkbox>Remember me</Checkbox>
+                <Link to="/register">
+                  Create Account
+                </Link>
                 <Link color={'blue.400'}>Forgot password?</Link>
               </Stack>
               <Button

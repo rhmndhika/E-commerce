@@ -18,6 +18,7 @@ import ReviewList from './scenes/global/ReviewList/ReviewList';
 import Reviewed from './components/Reviewed/Reviewed';
 import Category from './scenes/global/Category/Category';
 import CategoryList from './scenes/global/CategoryList/CategoryList';
+import Register from './components/Register/Register';
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -35,6 +36,7 @@ function App() {
             path="/"
             element={token ? <Navigate to="/home" replace={true} /> : <Login />}
           />
+          <Route path='/register' element={<Register />} />
           <Route
             path="/home"
             element={renderProtectedRoute(<Home />, '/home')}
