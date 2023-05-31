@@ -5,7 +5,7 @@ import Slider from '../../components/Slider';
 import Newsletter from '../../components/Newsletter';
 import Footer from '../../components/Footer.tsx';
 import Navbar from '../../components/Navbar.jsx'
-import { Flex, Text } from '@chakra-ui/react';
+import Search from '../../components/Search.jsx';
 
 
 const Home = () => {
@@ -14,13 +14,7 @@ const Home = () => {
    <div>
     <Navbar />
       <Slider />
-      {/* <Flex>
-        <Text padding="30px" fontSize="3xl" as="b">Categories</Text>
-      </Flex> */}
       <Categories />
-      {/* <Flex mt="-100px">
-        <Text mt="30px" padding="30px" fontSize="3xl" as="b">Products</Text>
-      </Flex> */}
       <Products />
       <Newsletter />
       <Footer />

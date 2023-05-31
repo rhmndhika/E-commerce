@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { publicRequest } from '../useFetch';
+import { publicRequest } from '../../useFetch'
 import { Button, Container, Flex, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 
 const ResetPassword = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
   const [resetToken, setResetToken] = useState('');
@@ -17,7 +18,7 @@ const ResetPassword = () => {
       setResetToken(token);
     } else {
       // Handle case when reset token is missing or invalid
-      navigate('/signin'); // Navigate to the forgot password page
+      navigate('/'); // Navigate to the forgot password page
     }
   }, [location, navigate]);
 

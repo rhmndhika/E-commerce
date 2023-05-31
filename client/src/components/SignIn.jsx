@@ -42,7 +42,7 @@ export default function SignIn() {
     const [ password, setPassword ] = useState('');
     const [ showPassword, setShowPassword ] = useState(false);
     
-    const { isOpen, onOpen, onClose } = useDisclosure()   
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [ emailReset, setEmailReset ] = useState('');
     const [ errMessage, setErrMessage ] = useState('');
 

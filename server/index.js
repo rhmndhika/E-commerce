@@ -5,9 +5,7 @@ const port = 5000;
 const dbConnect = require("./db/dbConnect");
 const path = require('path');
 const bodyParser = require('body-parser')
-const session = require('express-session');
 const dotenv =  require("dotenv");
-const nodemailer = require('nodemailer');
 
 dotenv.config();
 

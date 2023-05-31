@@ -17,7 +17,7 @@ import {
   Text,
   IconButton,
 } from '@chakra-ui/react';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { MoonIcon, Search2Icon, SunIcon } from '@chakra-ui/icons'
 import { BsFillCartFill, BsFillHeartFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
@@ -26,6 +26,7 @@ import { cartQuantitySelector } from '../redux/cartRedux';
 import Cookies from 'js-cookie';
 import { BiHeart } from 'react-icons/bi';
 import { userMethod } from '../useFetch';
+import Search from './Search';
 
 
 export default function Nav() {
@@ -74,11 +75,15 @@ export default function Nav() {
       <Box bg={useColorModeValue('white', 'gray.800')} color={useColorModeValue('gray.600', 'white')} px={4} shadow={'md'}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box as='a' href="/"><Text as="b">Bumi Baureksa Pratama</Text></Box>
-
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
               { user || token || tokenUserId || tokenUsername ?
               <Flex gap="10px">
+                <a href={`/testing`}>
+                <IconButton
+                  icon={<Search2Icon />}
+                  />
+                </a>
                 <a href={`/cart/${tokenUserId}`}>
                 <IconButton
                   icon={<BsFillCartFill />}

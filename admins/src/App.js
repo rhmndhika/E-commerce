@@ -19,6 +19,7 @@ import Reviewed from './components/Reviewed/Reviewed';
 import Category from './scenes/global/Category/Category';
 import CategoryList from './scenes/global/CategoryList/CategoryList';
 import Register from './components/Register/Register';
+import ResetPassword from './components/ResetPassword/ResetPassword';
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -37,6 +38,7 @@ function App() {
             element={token ? <Navigate to="/home" replace={true} /> : <Login />}
           />
           <Route path='/register' element={<Register />} />
+          <Route path='/forgot-password/:token' element={<ResetPassword />} />
           <Route
             path="/home"
             element={renderProtectedRoute(<Home />, '/home')}

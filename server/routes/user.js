@@ -171,24 +171,24 @@ const initiatePasswordReset = async (req, res) => {
       await user.save();
   
       // Create the reset password URL in your frontend website
-      const resetPasswordUrl = `http://localhost:3000/forgot-password/${resetToken}`;
+      const resetPasswordUrl = `${process.env.FRONTEND_URL}/forgot-password/${resetToken}`;
   
       // Send a password reset email to the user
-      const mailOptions = {
-        from: 'your-email@gmail.com',
-        to: email,
-        subject: 'Password Reset',
-        html: `<p>Click the following link to reset your password:</p><a href="${resetPasswordUrl}">${resetPasswordUrl}</a>`
-      };
+      // const mailOptions = {
+      //   from: 'your-email@gmail.com',
+      //   to: email,
+      //   subject: 'Password Reset',
+      //   html: `<p>Click the following link to reset your password:</p><a href="${resetPasswordUrl}">${resetPasswordUrl}</a>`
+      // };
   
-      transporter.sendMail(mailOptions, (error) => {
-        if (error) {
-          console.log(error);
-          return res.status(500).json({ message: 'Failed to send password reset email' });
-        }
-      });
+      // transporter.sendMail(mailOptions, (error) => {
+      //   if (error) {
+      //     console.log(error);
+      //     return res.status(500).json({ message: 'Failed to send password reset email' });
+      //   }
+      // });
   
-      res.status(200).json({ message: 'Password reset email sent' });
+      res.status(200).json(`${resetPasswordUrl}`);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Internal server error' });
@@ -223,33 +223,7 @@ const initiatePasswordReset = async (req, res) => {
     }
   };
 
-// const resetPassword = async (req, res) => {
-//     const { resetToken, newPassword } = req.body;
-  
-//     try {
-//       // Find the user by reset token and check if it has expired
-//       const user = await User.findOne({
-//         resetToken,
-//         resetTokenExpires: { $gt: Date.now() }
-//       });
-  
-//       if (!user) {
-//         return res.status(400).json({ message: 'Invalid or expired reset token' });
-//       }
-  
-//       // Update the user's password
-//       user.password = newPassword;
-//       user.resetToken = undefined;
-//       user.resetTokenExpires = undefined;
-//       await user.save();
-  
-//       res.status(200).json({ message: 'Password reset successfully' });
-//     } catch (error) {
-//       console.log(error);
-//       res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
-  
+
   
 
 router.put("/users/update/:id", verifyTokenAndAuthorization, updateUser);

@@ -4,6 +4,7 @@ import { StarIcon } from "@chakra-ui/icons";
 import { FaStar } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import { publicRequest, userMethod } from '../../useFetch.js'
+import Search from '../../components/Search.jsx';
 
 const Testing = () => {
 
@@ -122,13 +123,14 @@ const Testing = () => {
 
   return (
     <div>
-    <h2>Recommendations</h2>
+      <Search />
+    {/* <h2>Recommendations</h2>
     <ul>
       {recommendations.map((recommendation) => (
         <li key={recommendation.product}>{recommendation.product}</li>
       ))}
-    </ul>
-  </div>
+    </ul> */}
+    </div>
   )
 }
 

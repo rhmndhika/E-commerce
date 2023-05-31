@@ -25,23 +25,23 @@ export const login = async (dispatch, user, toast) => {
         }, 1000)
       });
     } catch (err) {
-        console.log(err)
+        console.log(err);
       dispatch(loginFailure());
-      if (err.response?.data?.message === "Wrong Username!") {
+      if (err.response?.data) {    
           toast({
-            title: "Wrong Username!",
+            title: err.response.data?.message,
             status: 'error',
             duration: 5000,
             isClosable: true,
-        });
-      } else if (err.response?.data?.message === "Please input the correct password!") {
+          });
+      } else {
         toast({
-            title: "Please input the correct password!",
+            title: err.message,
             status: 'error',
             duration: 5000,
             isClosable: true,
-        });
-    }
+          });
+      }
     }
   }
   
