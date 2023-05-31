@@ -134,7 +134,7 @@ const getSearchedProduct = async (req, res) => {
   try {
     const products = await Product.find({
       title: { $regex: new RegExp(term, 'i') }, // Perform case-insensitive search
-    }).select('title'); // Select only the title field
+    }).select('title categories img price'); // Select only the title field
 
     const titles = products.map((product) => product.title);
     res.json(products);
@@ -149,6 +149,6 @@ router.put("/product/update/:id", verifyTokenAndAdmin, updateProduct);
 router.delete("/product/delete/:id", verifyTokenAndAdmin, deleteProduct);
 router.get("/product/find/:id", getProduct);
 router.get("/product/all", getAllProduct);
-router.get("/product/autocomplete", getSearchedProduct);
+router.get("/product/search", getSearchedProduct);
 
 module.exports = router;

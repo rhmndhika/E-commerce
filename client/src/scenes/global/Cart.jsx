@@ -11,7 +11,7 @@ import { useState } from 'react'
 import { userMethod } from '../../useFetch.js'
 import { Link, useNavigate } from 'react-router-dom'
 import { removeCartItem } from '../../redux/apiCalls.js'
-import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, getCartTotal, removeItem } from '../../redux/cartRedux.js'
+import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, decreaseCartItemQuantity, getCartTotal, increaseCartItemQuantity, removeItem } from '../../redux/cartRedux.js'
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from 'js-cookie';
@@ -231,7 +231,79 @@ const Cart = () => {
             } 
         }
         getPriceSummary();
-    }, [tokenUserId])
+    }, [tokenUserId, Carts])
+
+    // const decreaseQuantity = async (cartId, productId) => {
+    //     try {
+    //       await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
+         
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    // };
+
+    
+    // const increaseQuantity = async (cartId, productId) => {
+    //     try {
+    //       await userMethod.put(`/cart/increase/${cartId}/${productId}`);
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    // };
+
+    const decreaseQuantity = async (cartId, productId) => {
+        try {
+          await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
+          const updatedCarts = Carts.map((cart) => {
+            if (cart._id === cartId) {
+              const updatedProducts = cart.products.map((product) => {
+                if (product._id === productId) {
+                  return {
+                    ...product,
+                    quantity: product.quantity - 1,
+                  };
+                }
+                return product;
+              });
+              return {
+                ...cart,
+                products: updatedProducts,
+              };
+            }
+            return cart;
+          });
+          setCarts(updatedCarts);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+    
+      const increaseQuantity = async (cartId, productId) => {
+        try {
+          await userMethod.put(`/cart/increase/${cartId}/${productId}`);
+          const updatedCarts = Carts.map((cart) => {
+            if (cart._id === cartId) {
+              const updatedProducts = cart.products.map((product) => {
+                if (product._id === productId) {
+                  return {
+                    ...product,
+                    quantity: product.quantity + 1,
+                  };
+                }
+                return product;
+              });
+              return {
+                ...cart,
+                products: updatedProducts,
+              };
+            }
+            return cart;
+          });
+          setCarts(updatedCarts);
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
 
     const deleteCart = async (cartId, userId) => {
@@ -311,11 +383,11 @@ const Cart = () => {
                             </Details>
                         </ProductDetail>
                         <PriceDetail>
-                            <ProductAmountContainer>
-                                <AiOutlineMinus />
-                                <ProductAmount>{product.products[0].quantity}</ProductAmount>
-                                <GrAdd />
-                            </ProductAmountContainer>
+                        <ProductAmountContainer>
+                            <AiOutlineMinus cursor="pointer" onClick={() => decreaseQuantity(product._id, product.products[0]._id)} />
+                            <ProductAmount>{product.products[0].quantity}</ProductAmount>
+                            <GrAdd cursor="pointer" onClick={() => increaseQuantity(product._id, product.products[0]._id)} />
+                        </ProductAmountContainer>
                             <ProductPrice>$ {product.products[0].price * product.products[0].quantity}</ProductPrice>
                         </PriceDetail>
                     </Product>

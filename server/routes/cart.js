@@ -95,17 +95,70 @@ const deleteCartIfOrdered = async (req, res) => {
            selectedId = (item.products[0].productId.toString());
         })
 
- 
-        
-
-         
-    //    console.log(carts.products.productId.includes(selectedId))
-
-       
-  
-
     } catch (err) {
         console.log(err);
+    }
+}
+
+const increaseQuantityProduct = async (req, res) => {
+    const { cartId, productId } = req.params;
+
+    try {
+      const cart = await Cart.findById(cartId);
+  
+      if (!cart) {
+        return res.status(404).json({ message: 'Cart not found' });
+      }
+  
+      const product = cart.products.find((p) => p._id.toString() === productId);
+
+  
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found in the cart' });
+      }
+  
+      product.quantity += 1;
+      cart.bill = product.quantity * product.price
+  
+      await cart.save();
+  
+      return res.status(200).json({ message: 'Quantity increased successfully', cart });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: 'Server error' });
+    }
+}
+
+const decreaseQuantityProduct = async (req, res) => {
+    const { cartId, productId } = req.params;
+
+    try {
+      const cart = await Cart.findById(cartId);
+  
+      if (!cart) {
+        return res.status(404).json({ message: 'Cart not found' });
+      }
+  
+      const product = cart.products.find((p) => p._id.toString() === productId);
+  
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found in the cart' });
+      }
+  
+      if (product.quantity > 1) {
+        product.quantity -= 1;
+        cart.bill = product.quantity * product.price
+      } else if (product.quantity < 1) {
+        // Remove the product from the cart if the quantity is 1
+        cart.products = cart.products.filter((p) =>p._id.toString() !== productId);
+      }
+  
+      await cart.save();
+  
+      return res.status(200).json({ message: 'Quantity decreased successfully', cart });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: 'Server error' });
     }
 }
 
@@ -116,5 +169,7 @@ router.get("/cart/find/:userId", verifyToken ,getUserCart);
 router.get("/cart/all", verifyTokenAndAdmin, getAllCart);
 router.get("/cart/summary/:id", verifyToken, getSummaryPriceCart);
 router.delete("/cart/deleteOrdered", verifyToken, deleteCartIfOrdered);
+router.put("/cart/increase/:cartId/:productId", verifyToken, increaseQuantityProduct);
+router.put("/cart/decrease/:cartId/:productId", verifyToken, decreaseQuantityProduct);
 
 module.exports = router

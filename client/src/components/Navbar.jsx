@@ -79,7 +79,7 @@ export default function Nav() {
             <Stack direction={'row'} spacing={7}>
               { user || token || tokenUserId || tokenUsername ?
               <Flex gap="10px">
-                <a href={`/testing`}>
+                <a href="/product/search">
                 <IconButton
                   icon={<Search2Icon />}
                   />
