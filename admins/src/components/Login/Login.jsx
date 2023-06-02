@@ -175,10 +175,10 @@ export default function Login() {
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
                 justify={'space-between'}>
+                <Link onClick={onOpen} color={'blue.400'}>Forgot password</Link>
                 <Link to="/register" color={'blue.400'}>
-                  Create Account
+                  SignUp
                 </Link>
-                <Link onClick={onOpen} color={'blue.400'}>Forgot password?</Link>
               </Stack>
               <Button
                 type='submit'

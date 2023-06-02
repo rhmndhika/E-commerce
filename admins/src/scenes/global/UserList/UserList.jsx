@@ -139,7 +139,7 @@ export default function UserList() {
               <Th>User</Th>
               <Th>Email</Th>
               <Th>Admin</Th>
-              <Th>CreatedAt</Th>
+              <Th>Created Date</Th>
               <Th>Action</Th>
             </Tr>
           </Thead>
@@ -150,8 +150,8 @@ export default function UserList() {
                 <Td>{item.username}</Td>
                 <Td>{item.email}</Td>
                 { item.isAdmin === true ?
-                <Td>true</Td> :
-                <Td>false</Td>
+                <Td>Admin</Td> :
+                <Td>User</Td>
                 }
                 {/* <Td>{item.isAdmin}</Td> */}
                 <Td>{moment(item.createdAt).format('MMMM Do YYYY')}</Td>

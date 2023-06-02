@@ -268,7 +268,7 @@ const CategoryList = () => {
       <Box p={4} width="100%">
         <TableContainer>
         <Table variant="simple" className="admin-table">
-          <TableCaption>Products List</TableCaption>
+          <TableCaption>Category List</TableCaption>
           <Thead>
             <Tr>
               <Th>#</Th> 
