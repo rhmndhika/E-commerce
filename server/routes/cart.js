@@ -153,6 +153,12 @@ const decreaseQuantityProduct = async (req, res) => {
       // Remove the product from the cart if the quantity is 1
       cart.products = cart.products.filter((p) => p._id.toString() !== productId);
       cart.bill -= product.price;
+
+      if (cart.products.length === 0) {
+        // Delete the cart if it has no more products
+        await Cart.findByIdAndDelete(cartId);
+        return res.status(200).json({ message: 'Cart deleted successfully' });
+      }
     } else {
       return res.status(400).json({ message: 'Invalid quantity' });
     }

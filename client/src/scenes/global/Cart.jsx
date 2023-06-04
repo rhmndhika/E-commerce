@@ -15,7 +15,7 @@ import { cartProductsSelector, cartQuantitySelector, cartTotalSelector, decrease
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from 'js-cookie';
-import { Text, Tooltip } from '@chakra-ui/react'
+import { Flex, Text, Tooltip } from '@chakra-ui/react'
 
 const KEY =  "pk_test_51MuV3GECvrLW1LL9pTqGJ5eCINrDmbC81kIycSRw70xvBPx6KDHspuAxibLSQGprMc2TJzFKaRgowk8JwhMd7K6I00oOGcoFW4"
 
@@ -220,63 +220,48 @@ const Cart = () => {
         }
         makeCartRequest();
     }, [tokenUserId])
-    
-    useEffect(() => {
-        const getPriceSummary = async () => {
-            try{
-                const response = await userMethod.get(`/cart/summary/${tokenUserId}`)
-                setPrices(response.data);
-            } catch (err) {
-                console.log(err);
-            } 
-        }
-        getPriceSummary();
-    }, [tokenUserId, Carts])
-
-    // const decreaseQuantity = async (cartId, productId) => {
-    //     try {
-    //       await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
-         
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    // };
-
-    
-    // const increaseQuantity = async (cartId, productId) => {
-    //     try {
-    //       await userMethod.put(`/cart/increase/${cartId}/${productId}`);
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    // };
 
     const decreaseQuantity = async (cartId, productId) => {
-        try {
-          await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
-          const updatedCarts = Carts.map((cart) => {
-            if (cart._id === cartId) {
-              const updatedProducts = cart.products.map((product) => {
-                if (product._id === productId) {
+      try {
+        await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
+        const updatedCarts = Carts.map((cart) => {
+          if (cart._id === cartId) {
+            const updatedProducts = cart.products.map((product) => {
+              if (product._id === productId) {
+                const updatedQuantity = product.quantity - 1;
+                const updatedPrice = product.price * updatedQuantity;
+                if (updatedQuantity > 0) {
                   return {
                     ...product,
-                    quantity: product.quantity - 1,
+                    quantity: updatedQuantity,
+                    total: updatedPrice,
                   };
                 }
-                return product;
-              });
-              return {
-                ...cart,
-                products: updatedProducts,
-              };
+              }
+              return null; // Return null for products with quantity less than 1
+            }).filter((product) => product !== null); // Filter out null products
+            if (updatedProducts.length === 0) {
+              return false; // If no products left in the cart, filter out the cart as well
             }
-            return cart;
-          });
-          setCarts(updatedCarts);
-        } catch (err) {
-          console.log(err);
-        }
-      };
+            const updatedBill = updatedProducts.reduce((total, product) => total + product.total, 0);
+            return {
+              ...cart,
+              products: updatedProducts,
+              bill: updatedBill,
+            };
+          }
+          return cart;
+        }).filter((cart) => cart); // Filter out undefined carts
+        setCarts(updatedCarts);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    
+    
+    
+    
+    
     
       const increaseQuantity = async (cartId, productId) => {
         try {
@@ -304,8 +289,38 @@ const Cart = () => {
           console.log(err);
         }
       };
+    
+    useEffect(() => {
+        const getPriceSummary = async () => {
+            try{
+                const response = await userMethod.get(`/cart/summary/${tokenUserId}`)
+                setPrices(response.data);
+            } catch (err) {
+                console.log(err);
+            } 
+        }
+        getPriceSummary();
+    }, [tokenUserId, Carts, decreaseQuantity, increaseQuantity])
 
+    // const decreaseQuantity = async (cartId, productId) => {
+    //     try {
+    //       await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
+         
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    // };
 
+    
+    // const increaseQuantity = async (cartId, productId) => {
+    //     try {
+    //       await userMethod.put(`/cart/increase/${cartId}/${productId}`);
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    // };
+
+   
     const deleteCart = async (cartId, userId) => {
         try {
           // Asynchronous call to backend, wait to resolve
@@ -351,18 +366,18 @@ const Cart = () => {
         <ToastContainer />
         <Wrapper>
             <Title>Your Cart</Title>
-            <Top>
-                <Link>
+            <Flex justifyContent="center" margin="10px"> 
+                {/* <Link>
                     <TopButton>Continue Shopping</TopButton>
-                </Link>
+                </Link> */}
                 <TopTexts>
                     <TopText>Shooping Cart({Carts.filter((item) => tokenUserId === item.userId).length})</TopText>
                     <Link to="/order/history">
                         <TopText>Order History</TopText>
                     </Link>
                 </TopTexts>
-                <TopButton type="filled">Checkout Now</TopButton>
-            </Top>
+                {/* <TopButton>Checkout Now</TopButton> */}
+            </Flex>
             <Bottom>
                 <Info>
                 {Carts.map((product) => (
