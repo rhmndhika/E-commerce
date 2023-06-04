@@ -33,7 +33,7 @@ export default function Register() {
   const register = (e) => {
     e.preventDefault();
     axios
-      .post('https://e-commerce-production-25ef.up.railway.app/register', {
+      .post('http://localhost:5000/register', {
         username: username,
         email: email,
         password: password,
