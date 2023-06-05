@@ -46,6 +46,16 @@ const CarouselContent1 = () => {
               rounded={'full'}
               color={'white'}
               _hover={{ bg: 'blue.500' }}
+              as="a"
+              href='/'
+            >
+              Back to Home
+            </Button>
+            <Button
+              bg={'blue.400'}
+              rounded={'full'}
+              color={'white'}
+              _hover={{ bg: 'blue.500' }}
               onClick={handleShowMoreClick}
             >
               {showMore ? 'Close' : 'Show me more'}

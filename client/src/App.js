@@ -1,26 +1,28 @@
-import React from 'react';
+import React, { lazy, Suspense} from 'react';
+import { Spinner } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './scenes/home/Home';
-import Signup from './components/SignUp';
-import ProductList from './scenes/global/ProductList';
-import Product from './scenes/global/Product';
-import SignIn from './components/SignIn';
-import Cart from './scenes/global/Cart';
-import Succes from './scenes/global/Succes'
 import { useSelector } from 'react-redux'
-import OrderHistory from './scenes/global/OrderHistory';
-import Invoices from './scenes/global/Invoices';
-import UserProfile from './scenes/global/UserProfile';
-import Welcome from './components/Welcome';
-import UserWishlist from './scenes/global/UserWishlist';
-import Testing from './scenes/global/Testing';
-import Reviewed from './components/Reviewed';
-import ReviewPage from './scenes/global/ReviewPage';
-import ReviewList from './scenes/global/ReviewList';
-import CarouselContent1 from './scenes/global/CarouselContent1';
-import ResetPassword from './components/ResetPasswod';
-import SearchPage from './scenes/global/SearchPage';
+
+const Home = lazy(() => import("./scenes/home/Home"));
+const Signup = lazy(() => import('./components/SignUp'));
+const ProductList = lazy(() => import('./scenes/global/ProductList'));
+const Product = lazy(() => import('./scenes/global/Product'));
+const SignIn = lazy(() => import('./components/SignIn'));
+const Cart = lazy(() => import('./scenes/global/Cart'));
+const Succes = lazy(() => import('./scenes/global/Succes'));
+const OrderHistory = lazy(() => import('./scenes/global/OrderHistory'));
+const Invoices = lazy(() => import('./scenes/global/Invoices'));
+const UserProfile = lazy(() => import('./scenes/global/UserProfile'));
+const Welcome = lazy(() => import('./components/Welcome'));
+const UserWishlist = lazy(() => import('./scenes/global/UserWishlist'));
+const Testing = lazy(() => import('./scenes/global/Testing'));
+const Reviewed = lazy(() => import('./components/Reviewed'));
+const ReviewPage = lazy(() => import('./scenes/global/ReviewPage'));
+const ReviewList = lazy(() => import('./scenes/global/ReviewList'));
+const CarouselContent1 = lazy(() => import('./scenes/global/CarouselContent1'));
+const ResetPassword = lazy(() => import('./components/ResetPasswod'));
+const SearchPage = lazy(() => import('./scenes/global/SearchPage'));
 
 
 function App() {
@@ -30,6 +32,16 @@ function App() {
   return (
   <ChakraProvider>
     <BrowserRouter>
+    <Suspense fallback={
+      <div style={{display : "flex", justifyContent : "center", alignItems : "center", height: "100%", marginTop : "300px"}}>
+      <Spinner
+        thickness='4px'
+        speed='0.65s'
+        emptyColor='gray.200'
+        color='blue.500'
+        size='xl'
+      />
+      </div>}>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/signup' element={ user ? <Navigate to="/welcome" replace={true} /> : <Signup />} />
@@ -51,6 +63,7 @@ function App() {
         <Route path='/product/search' element={<SearchPage />} />
         <Route path='/testing' element={<Testing />} />
       </Routes>
+    </Suspense>
     </BrowserRouter>
   </ChakraProvider>
   );

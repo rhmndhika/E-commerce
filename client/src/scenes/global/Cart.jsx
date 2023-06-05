@@ -259,10 +259,6 @@ const Cart = () => {
     };
     
     
-    
-    
-    
-    
       const increaseQuantity = async (cartId, productId) => {
         try {
           await userMethod.put(`/cart/increase/${cartId}/${productId}`);
@@ -302,25 +298,7 @@ const Cart = () => {
         getPriceSummary();
     }, [tokenUserId, Carts, decreaseQuantity, increaseQuantity])
 
-    // const decreaseQuantity = async (cartId, productId) => {
-    //     try {
-    //       await userMethod.put(`/cart/decrease/${cartId}/${productId}`);
-         
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    // };
 
-    
-    // const increaseQuantity = async (cartId, productId) => {
-    //     try {
-    //       await userMethod.put(`/cart/increase/${cartId}/${productId}`);
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    // };
-
-   
     const deleteCart = async (cartId, userId) => {
         try {
           // Asynchronous call to backend, wait to resolve
@@ -346,7 +324,6 @@ const Cart = () => {
         }
     };
     
-
     const notify = () => {
         toast.success('Item has been deleted', {
           position: "top-right",
@@ -367,16 +344,12 @@ const Cart = () => {
         <Wrapper>
             <Title>Your Cart</Title>
             <Flex justifyContent="center" margin="10px"> 
-                {/* <Link>
-                    <TopButton>Continue Shopping</TopButton>
-                </Link> */}
                 <TopTexts>
                     <TopText>Shooping Cart({Carts.filter((item) => tokenUserId === item.userId).length})</TopText>
                     <Link to="/order/history">
                         <TopText>Order History</TopText>
                     </Link>
                 </TopTexts>
-                {/* <TopButton>Checkout Now</TopButton> */}
             </Flex>
             <Bottom>
                 <Info>
@@ -391,7 +364,6 @@ const Cart = () => {
                                 <Tooltip label={product.products[0].desc}>
                                     <Text cursor="pointer" noOfLines={[1]}><b>Description:</b>  {product.products[0].desc}</Text>
                                 </Tooltip>
-                                {/* <ProductId><b>ID:</b> {product._id}</ProductId> */}
                                 <Button onClick={() => {
                                     deleteCart(product._id, product.products[0]._id)
                                 }}>Delete</Button>

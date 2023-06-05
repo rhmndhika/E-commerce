@@ -1,5 +1,5 @@
 import React from 'react'
-import { Flex, Text, Button, Box, Stack, Heading, Image } from '@chakra-ui/react'
+import { Flex, Text, Button, Box, Stack, Heading, Image, Badge } from '@chakra-ui/react'
 import styled from 'styled-components'
 import { mobile, isMobile } from '../reponsive'
 
@@ -54,9 +54,11 @@ const CategoryItem = ({item}) => {
         objectFit="cover"
       />
       <Info>
-        <Title as={"mark"}>{item.cat}</Title>
+        <Badge variant='solid' colorScheme='green' fontWeight="bold" marginBottom="20px" fontSize="15px">
+          {item.cat}
+        </Badge>
         <a href={`/productList/${item.cat}`}>
-          <Button marginBottom="100px" padding="10px" backgroundColor="white" color="black" cursor="pointer" fontWeight="600">SHOP NOW</Button>
+          <Button marginBottom="100px" padding="10px"  backgroundColor="white" color="black"cursor="pointer" fontWeight="600">SHOP NOW</Button>
         </a>
       </Info>
     </Container>

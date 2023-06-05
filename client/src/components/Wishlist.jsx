@@ -57,8 +57,18 @@ const Wishlist = () => {
           progress: undefined,
           theme: "light",
         });
+  
+        // Filter the wishlistItems array to remove the deleted item
         setTimeout(() => {
-          window.location.reload();
+          const updatedWishlist = wishlistItems.map((rProduct) => {
+            const filteredProducts = rProduct.products.filter((item) => item.productId._id !== id);
+            return {
+              ...rProduct,
+              products: filteredProducts,
+            };
+          }).filter((rProduct) => rProduct.products.length > 0);
+    
+          setWishlistItems(updatedWishlist);
         }, 1000)
       });
     } catch (err) {
@@ -74,6 +84,8 @@ const Wishlist = () => {
       });
     }
   };
+  
+  
 
   const filteredItems = wishlistItems.filter((rProduct) => {
     const items = rProduct.products.filter((item) =>

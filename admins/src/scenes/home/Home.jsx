@@ -11,6 +11,7 @@ import { Flex } from "@chakra-ui/react";
 export default function Home() {
 
   const [ userStats, setUserStats ] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   
   const MONTHS = useMemo(
     () => [
@@ -47,6 +48,18 @@ export default function Home() {
     };
     getStats();
   }, [MONTHS]);
+
+  useEffect(() => {
+    const makeCartRequest = async () => {
+        try{
+            const response = await userRequest.get('/notification')
+            setNotifications(response.data)
+        } catch (err) {
+            console.log(err);
+        } 
+    }
+    makeCartRequest();
+}, [])
 
   return (
     <Sidebar>

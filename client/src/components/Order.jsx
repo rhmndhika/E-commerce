@@ -114,7 +114,13 @@ const Order = () => {
       setSearchTerm('');
       setStartDate(null);
       setEndDate(null);
+      const dateInputs = document.querySelectorAll('input[type="date"]');
+      dateInputs.forEach((input) => {
+        input.value = '';
+      });
     };
+    
+    
     
 
   return (
@@ -241,15 +247,12 @@ const Order = () => {
                       <Text mt="8px" color='green' cursor="pointer" onClick={() => {
                           handleOpenModal(order)
                       }}>See Detail Transaction</Text>
-                       {order.status === "pending" || order.status === "Pending"  ?
-                      //  null
-                       <Link to={`/user/review/${order._id}`}>
+                       {order.status === "Completed"  ?
+                        <Link to={`/user/review/${order._id}`}>
                           <Button colorScheme='green'>Review</Button>
-                      </Link>
-                       :
-                      <Link to={`/user/review/${order._id}`}>
-                          <Button colorScheme='green'>Review</Button>
-                      </Link>
+                        </Link>
+                      :
+                        null
                       }
                       </Flex>
                   </Flex>

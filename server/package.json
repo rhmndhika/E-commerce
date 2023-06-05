@@ -29,7 +29,7 @@
     "nodemailer": "^6.9.2",
     "nodemon": "^2.0.21",
     "pandas-js": "^0.2.4",
-    "socket.io": "^4.6.1",
+    "socket.io": "^4.6.2",
     "stripe": "^12.0.0",
     "uuid": "^9.0.0"
   }

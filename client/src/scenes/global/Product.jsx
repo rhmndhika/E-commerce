@@ -26,7 +26,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { BiCart } from 'react-icons/bi'
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const Container = styled.div`

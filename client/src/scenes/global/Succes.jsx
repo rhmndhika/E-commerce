@@ -53,19 +53,6 @@ const Succes = () => {
     data && createOrder();
   }, [cart, data, tokenUserId, Prices]);
 
-  const deleteCart = async (cartId, itemId) => {
-    try {
-      // Asynchronous call to backend, wait to resolve
-      await dispatch(removeCartItem(cartId)).unwrap;
-
-      // Now dispatch action to remove item from state
-      dispatch(removeItem(itemId));
-      window.location.reload();
-    } catch(error) {
-      // handle any errors
-      console.log(error);
-    }
-  };
 
   const resetCart = () => {
     dispatch(removeItem());
