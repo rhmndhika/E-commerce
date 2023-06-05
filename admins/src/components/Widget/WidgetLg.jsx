@@ -14,7 +14,7 @@ export default function WidgetLg() {
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const res = await userRequest.get("/order/all")
+        const res = await userRequest.get("/order/all/?new=true")
         setOrders(res.data);
       } catch (err) {
         console.log(err);
@@ -33,7 +33,7 @@ export default function WidgetLg() {
           <th className="widgetLgTh">Amount</th>
           <th className="widgetLgTh">Status</th>
         </tr>
-        { orders.map((order) => (
+        { orders.slice(0, 8).map((order) => (
         <tr className="widgetLgTr" key={order._id}>
           <Link to={`/transaction/detail/${order._id}`}>
             <td className="widgetLgUser">
@@ -41,7 +41,7 @@ export default function WidgetLg() {
             </td>
           </Link>
           <td className="widgetLgAmount">{order.userId.username}</td>
-          <td className="widgetLgDate">{moment(order?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</td>
+          <td className="widgetLgDate">{moment(order?.createdAt).startOf('hour').fromNow()}</td>
           <td className="widgetLgAmount">{order.amount}</td>
           <td className="widgetLgStatus">
             <Button type={order.status} />

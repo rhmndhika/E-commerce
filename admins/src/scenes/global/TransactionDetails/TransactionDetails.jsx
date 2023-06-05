@@ -133,7 +133,7 @@ const TransactionDetails = () => {
                 </Text>
               </Link>
             </Flex>
-            <Text>Order Date: {moment(userOrder?.createdAt).format('MMMM Do YYYY')}</Text>
+            <Text>Order Date: {moment(userOrder?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</Text>
             { userOrder?.status === "pending" ? 
                 <Text>Order Status: 
                     <Badge color="#2a7ade">

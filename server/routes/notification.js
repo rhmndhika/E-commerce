@@ -5,7 +5,7 @@ const Notification = require('../models/Notification')
 
 const getNotification = async(req, res) => {
     try {
-        const notif = await Notification.find().limit(10).populate('users')
+        const notif = await Notification.find().limit(10)
         
         res.status(200).json(notif);
     } catch(err) {

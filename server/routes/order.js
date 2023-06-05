@@ -68,9 +68,11 @@ const getUserSingleOrder = async (req, res) => {
 }
 
 const getAllOrder = async (req, res) => {
+
+    const query = req.query.new
     
     try {
-        const orders = await Order.find().populate('products.productId').populate('userId', '_id email isAdmin username')
+        const orders = query ? await Order.find().sort({_id: -1}).limit(10).populate('products.productId').populate('userId', '_id email isAdmin username') : await Order.find().populate('products.productId').populate('userId', '_id email isAdmin username') 
         res.status(200).json(orders);
     } catch (err) {
         res.status(500).json(err);

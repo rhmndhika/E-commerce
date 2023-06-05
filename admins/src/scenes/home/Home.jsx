@@ -6,12 +6,13 @@ import Chart from "../../components/Chart/Chart";
 import FeaturedInfo from "../../components/FeaturedInfo/FeatureInfo";
 import WidgetSm from "../../components/Widget/WidgetSm";
 import WidgetLg from "../../components/Widget/WidgetLg";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Box, Button, IconButton, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import { BellIcon, CloseIcon } from '@chakra-ui/icons';
 
 export default function Home() {
 
   const [ userStats, setUserStats ] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   
   const MONTHS = useMemo(
     () => [
@@ -49,17 +50,6 @@ export default function Home() {
     getStats();
   }, [MONTHS]);
 
-  useEffect(() => {
-    const makeCartRequest = async () => {
-        try{
-            const response = await userRequest.get('/notification')
-            setNotifications(response.data)
-        } catch (err) {
-            console.log(err);
-        } 
-    }
-    makeCartRequest();
-}, [])
 
   return (
     <Sidebar>

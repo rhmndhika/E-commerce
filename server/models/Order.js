@@ -39,7 +39,7 @@ OrderSchema.post('save', async function (doc, next) {
       // Create a notification for the order
       const notification = new NotificationModel({
         userId: doc.userId,
-        message: `${doc.userId.toString()} order has been created.`,
+        message: `${doc.userId.toString()} order has been created`,
         type: 'order',
       });
       await notification.save();
