@@ -282,7 +282,7 @@ export default function ProductList  ()  {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Delete User
+              Delete Product
             </AlertDialogHeader>
 
             <AlertDialogBody>

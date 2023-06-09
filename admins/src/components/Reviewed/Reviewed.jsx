@@ -54,7 +54,7 @@ const Reviewed = () => {
         <>
           <Flex flexDirection="row" gap="10px" width="100%">
             <Flex flexDirection="column" gap="10px" flexWrap="wrap">
-            <Text>By : {productReviewed?.user.username}</Text>
+            <Text>By : {productReviewed?.user?.username}</Text>
             <Image
               boxSize='100px'
               objectFit='cover'

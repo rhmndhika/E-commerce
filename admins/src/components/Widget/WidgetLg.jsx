@@ -40,7 +40,7 @@ export default function WidgetLg() {
               <span className="widgetLgName">{order._id}</span>
             </td>
           </Link>
-          <td className="widgetLgAmount">{order.userId.username}</td>
+          <td className="widgetLgAmount">{order?.userId?.username}</td>
           <td className="widgetLgDate">{moment(order?.createdAt).startOf('hour').fromNow()}</td>
           <td className="widgetLgAmount">{order.amount}</td>
           <td className="widgetLgStatus">

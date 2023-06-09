@@ -147,8 +147,8 @@ const TransactionDetails = () => {
                     </Badge>
                 </Text>
                 }
-            <Text>Customer Name: {userOrder?.userId.username}</Text>
-            <Text>Customer Email: {userOrder?.userId.email}</Text>
+            <Text>Customer Name: {userOrder?.userId?.username}</Text>
+            <Text>Customer Email: {userOrder?.userId?.email}</Text>
             <Text>Country: {userOrder?.address.country}</Text>
             <Text>City: {userOrder?.address.city}</Text>
             <Text>Postal Code: {userOrder?.address.postal_code}</Text>

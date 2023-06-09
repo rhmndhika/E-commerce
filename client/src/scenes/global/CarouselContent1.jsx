@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Stack,
   Flex,
@@ -7,9 +7,13 @@ import {
   VStack,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import { IsUserProfile } from '../../helper/UserProfileProvider'
 
 const CarouselContent1 = () => {
   const [showMore, setShowMore] = useState(false);
+  const { userProfileData } = useContext(IsUserProfile)
+
+  console.log("KONTOL", userProfileData.length)
 
   const handleShowMoreClick = () => {
     setShowMore(!showMore);

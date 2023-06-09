@@ -71,7 +71,9 @@ export default function SignIn() {
       e.preventDefault();
   
       try {
-        const response = await publicRequest.post('/initiate-password-reset', { email: emailReset });
+        const response = await publicRequest.post('/initiate-password-reset', { email: emailReset }).then((res) => {
+          alert("Please Reset Password With This Link : " + res?.data)
+        })
   
         if (response.status === 200) {
           setErrMessage('Password reset email sent');

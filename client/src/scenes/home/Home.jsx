@@ -5,20 +5,20 @@ import Slider from '../../components/Slider';
 import Newsletter from '../../components/Newsletter';
 import Footer from '../../components/Footer.tsx';
 import Navbar from '../../components/Navbar.jsx'
-import Search from '../../components/Search.jsx';
+
 
 
 const Home = () => {
 
   return (
-   <div>
+    <div>
     <Navbar />
       <Slider />
       <Categories />
       <Products />
       <Newsletter />
       <Footer />
-   </div>
+    </div>
   )
 }
 export default Home

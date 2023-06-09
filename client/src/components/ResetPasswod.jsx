@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { publicRequest } from '../useFetch';
-import { Button, Container, Flex, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
+import { Button, Container, Flex, FormControl, FormLabel, Input, Text, Box, useColorModeValue, Stack } from '@chakra-ui/react';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -41,27 +41,35 @@ const ResetPassword = () => {
 
   return (
     <>
-    <Container shadow="dark-lg" display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+    <Container display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
       {errorMessage && <Text>{errorMessage}</Text>}
-      <Flex flexDirection="column" alignItems="center">
-        <Text as="b">Reset Password</Text>
+      <Box
+          rounded={'lg'}
+          bg={useColorModeValue('white', 'gray.700')}
+          boxShadow={'lg'}
+          p={8}>
+          <Stack spacing={4}>
+          <Flex flexDirection="column" alignItems="center">
+            <Text as="b">Reset Password</Text>
 
-        <form onSubmit={handleResetPassword} style={{ width: "300px" }}>
-          <FormControl mt="10px">
-            <FormLabel>New Password</FormLabel>
-            <Input
-              type="password"
-              id="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              isRequired
-            />
-          </FormControl>
-          <Button mt="10px" type="submit">Reset Password</Button>
-        </form>
+            <form onSubmit={handleResetPassword} style={{ width: "300px" }}>
+              <FormControl mt="10px">
+                <FormLabel>New Password</FormLabel>
+                <Input
+                  type="password"
+                  id="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  isRequired
+                />
+              </FormControl>
+              <Button mt="10px" type="submit">Reset Password</Button>
+            </form>
 
-        {message && <p>{message}</p>}
-      </Flex>
+            {message && <p>{message}</p>}
+          </Flex>
+          </Stack>
+        </Box>
     </Container>
     </>
   );

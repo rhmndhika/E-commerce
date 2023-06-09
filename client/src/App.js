@@ -2,7 +2,10 @@ import React, { lazy, Suspense} from 'react';
 import { Spinner } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import UserProfileProvider from './helper/UserProfileProvider';
+import PrivateRoute from './PrivateRoute';
+
 
 const Home = lazy(() => import("./scenes/home/Home"));
 const Signup = lazy(() => import('./components/SignUp'));
@@ -30,42 +33,46 @@ function App() {
   const user = useSelector((state) => state.user.currentUser);
 
   return (
-  <ChakraProvider>
-    <BrowserRouter>
-    <Suspense fallback={
-      <div style={{display : "flex", justifyContent : "center", alignItems : "center", height: "100%", marginTop : "300px"}}>
-      <Spinner
-        thickness='4px'
-        speed='0.65s'
-        emptyColor='gray.200'
-        color='blue.500'
-        size='xl'
-      />
-      </div>}>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/signup' element={ user ? <Navigate to="/welcome" replace={true} /> : <Signup />} />
-        <Route path='/signin' element={ user ? <Navigate to="/welcome" replace={true} /> : <SignIn />} />
-        <Route path='/welcome' element={<Welcome />} />
-        <Route path='/productList/:category' element={<ProductList />} />
-        <Route path='/productSingle/:id' element={<Product />} />
-        <Route path='/cart/:id' element={<Cart />} />
-        <Route path='/success' element={<Succes />} />
-        <Route path='/order/history' element={<OrderHistory />} />
-        <Route path='/order/history/detail/:id' element={<Invoices />} />
-        <Route path='/user/profile/:id' element={<UserProfile />} />
-        <Route path='/user/wishlist/:id' element={<UserWishlist />} />
-        <Route path='/user/review/:id' element={<ReviewPage />} />
-        <Route path='/user/reviewList/:id' element={<ReviewList />} />
-        <Route path='/reviewed/:id' element={<Reviewed />} />
-        <Route path='/carouselcontent1' element={<CarouselContent1 />} />
-        <Route path='/forgot-password/:token' element={<ResetPassword />} />
-        <Route path='/product/search' element={<SearchPage />} />
-        <Route path='/testing' element={<Testing />} />
-      </Routes>
-    </Suspense>
-    </BrowserRouter>
-  </ChakraProvider>
+    <ChakraProvider>
+        <BrowserRouter>
+        <Suspense fallback={
+          <div style={{display : "flex", justifyContent : "center", alignItems : "center", height: "100%", marginTop : "300px"}}>
+          <Spinner
+            thickness='4px'
+            speed='0.65s'
+            emptyColor='gray.200'
+            color='blue.500'
+            size='xl'
+            />
+          </div>}>
+          <UserProfileProvider>
+          <Routes>
+            <Route path='/' element={
+                <Home />
+            } />
+            <Route path='/signup' element={ user ? <Navigate to="/welcome" replace={true} /> : <Signup />} />
+            <Route path='/signin' element={ user ? <Navigate to="/welcome" replace={true} /> : <SignIn />} />
+            <Route path='/welcome' element={<Welcome />} />
+            <Route path='/productList/:category' element={<ProductList />} />
+            <Route path='/productSingle/:id' element={<Product />} />
+            <Route path='/cart/:id' element={<Cart />} />
+            <Route path='/success' element={<Succes />} />
+            <Route path='/order/history' element={<OrderHistory />} />
+            <Route path='/order/history/detail/:id' element={<Invoices />} />
+            <Route path='/user/profile/:id' element={<UserProfile />} />
+            <Route path='/user/wishlist/:id' element={<UserWishlist />} />
+            <Route path='/user/review/:id' element={<ReviewPage />} />
+            <Route path='/user/reviewList/:id' element={<ReviewList />} />
+            <Route path='/reviewed/:id' element={<Reviewed />} />
+            <Route path='/carouselcontent1' element={<CarouselContent1 />} />
+            <Route path='/forgot-password/:token' element={<ResetPassword />} />
+            <Route path='/product/search' element={<SearchPage />} />
+            <Route path='/testing' element={<Testing />} />
+          </Routes>
+          </UserProfileProvider>
+        </Suspense>
+        </BrowserRouter>
+    </ChakraProvider>
   );
 }
 

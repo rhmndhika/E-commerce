@@ -113,8 +113,8 @@ const Search = () => {
         />
         <Select value={sort} onChange={(e) => setSort(e.target.value)} w="150px">
           <option value="Newest">Newest</option>
-          <option value="Asc">Price: Low to High</option>
-          <option value="Desc">Price: High to Low</option>
+          <option value="Asc">Price (ASC)</option>
+          <option value="Desc">Price (DESC)</option>
         </Select>
       </Flex>
       <Flex justify="center" mt={4}>

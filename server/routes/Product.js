@@ -61,7 +61,7 @@ const updateProduct = async (req, res) => {
 
     // Check if the updated category already exists
     const existingProduct = await Product.findOne({
-      category: req.body.category,
+      title: req.body.title,
       _id: { $ne: productToUpdate._id } // Exclude the current product from the check
     });
     if (existingProduct) {

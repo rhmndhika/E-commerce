@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Route, Navigate, Outlet, useLocation } from 'react-router-dom';
-import { userMethod } from './useFetch';
+import React, { useEffect, useContext } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { IsUserProfile } from './helper/UserProfileProvider';
 
-
-const PrivateRoute = ({ element: Element, ...rest }) => {
-  const [userProfile, setUserProfile] = useState(null);
-  const location = useLocation();
+const PrivateRoute = ({ children }) => {
+  const navigate = useNavigate();
+  const { userProfileData } = useContext(IsUserProfile);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await userMethod.get(`/profile/${tokenUserId}`);
-        setUserProfile(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    if (userProfileData.length === 0) {
+      navigate("/welcome");
+    }
+    
+  }, [userProfileData, navigate]);
 
-    fetchUserProfile();
-  }, [location.pathname]);
-
-  if (userProfile) {
-    return <Element />;
-  } else {
-    return <Navigate to="/welcome" replace={true} />;
-  }
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

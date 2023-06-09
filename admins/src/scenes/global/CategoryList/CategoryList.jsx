@@ -241,7 +241,7 @@ const CategoryList = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Delete User
+              Delete Category
             </AlertDialogHeader>
 
             <AlertDialogBody>

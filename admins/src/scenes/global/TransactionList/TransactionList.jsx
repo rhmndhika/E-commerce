@@ -80,10 +80,30 @@ const TransactionList = () => {
       })
     }
     
-    const handleDelete = () => {
+    const handleDelete = async () => {
         // Perform the delete operation for the selected ID here
-        deleteProduct(dispatch, selectedId, toast);
-        setIsDialogOpen(false);
+        // deleteProduct(dispatch, selectedId, toast);
+        // setIsDialogOpen(false);
+        try {
+          await userRequest.delete(`/order/delete/${selectedId}`).then((res) => {
+              toast({
+                  title: res.data,
+                  status: 'success',
+                  duration: 9000,
+                  isClosable: true,
+              })
+              setTimeout(() => {
+                  window.location.reload()
+              }, 1000)
+          })
+      } catch (err) {
+          toast({
+              title: err.response.data,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+          });
+      }
     };
     
     const handleOpenDialog = (id) => {
@@ -178,7 +198,7 @@ const TransactionList = () => {
       const handleSearch = () => {
         const filteredData = orderHistory.filter((item) =>
           item._id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.userId.username.toLowerCase().includes(searchQuery.toLowerCase())
+          item.userId?.username.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setPaginatedData(filteredData);
         setCurrentPage(1); // Reset to the first page after search
@@ -203,7 +223,7 @@ const TransactionList = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Delete User
+              Delete Transaction
             </AlertDialogHeader>
 
             <AlertDialogBody>
@@ -264,7 +284,7 @@ const TransactionList = () => {
                 <Link to={`/user/order/${item._id}/invoice`}>
                   <Td color="green">{item._id}</Td>
                 </Link>
-                <Td>{item.userId.username}</Td>
+                <Td>{item.userId?.username}</Td>
                 <Td>$ {item.amount}</Td>
                 <Td>{moment(item.createdAt).format('MMMM Do YYYY')}</Td>
                 { item.status === "pending" || item.status === "Pending"  ? 

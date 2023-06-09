@@ -174,6 +174,13 @@ const CheckoutButton = styled.button`
   border-radius: 5px;
 `;
 
+const EmptyCartButton = styled(Button)`
+  width: 100%;
+  padding: 10px;
+  background-color: #ccc;
+  cursor: not-allowed;
+`;
+
 const Cart = () => {
 
     // const cart = useSelector(state=>state.cart);
@@ -403,8 +410,9 @@ const Cart = () => {
                             <SummaryItemText type="total">Total</SummaryItemText>
                             <SummaryItemPrice>$ {Prices}</SummaryItemPrice>
                         </SummaryItem>
+                        {Carts.filter((item) => tokenUserId === item.userId).length > 0 ? (
                         <StripeCheckout 
-                            name="Kimia shop" 
+                        name="Kimia shop" 
                             email={emailId}
                             image="https://d3o2e4jr3mxnm3.cloudfront.net/Mens-Jake-Guitar-Vintage-Crusher-Tee_68382_1_lg.png"
                             billingAddress
@@ -417,6 +425,9 @@ const Cart = () => {
                             >
                             <CheckoutButton>Checkout Now</CheckoutButton>
                         </StripeCheckout>
+                         ) : (
+                          <EmptyCartButton>Carts Empty</EmptyCartButton>
+                         )}
                 </Summary>
             </Bottom>
         </Wrapper>

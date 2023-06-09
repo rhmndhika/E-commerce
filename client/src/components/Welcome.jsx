@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   Box,
   Heading,
@@ -32,9 +32,11 @@ import { useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 import Cookies from 'js-cookie';
+import { IsUserProfile } from '../helper/UserProfileProvider'
 
 export default function Welcome() {
 
+  const { userProfileData, setUserProfileData } = useContext(IsUserProfile)
   const user = useSelector((state) => state.user.currentUser);
   const tokenUserId = Cookies.get('userId');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -107,6 +109,7 @@ export default function Welcome() {
         try{
             const response = await userMethod.get(`/profile/${tokenUserId}`);
             setUserProfile(response.data);
+            setUserProfileData(response.data);
         } catch (err) {
             console.log(err);
         } 

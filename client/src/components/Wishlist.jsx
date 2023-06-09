@@ -47,21 +47,23 @@ const Wishlist = () => {
   const deleteWishlistItem = async (id) => {
     try {
       await userMethod.delete(`/wishlist/delete/${tokenUserId}/${id}`).then((res) => {
-        toast.success(res.data, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        // toast.success(res.data, {
+        //   position: "top-right",
+        //   autoClose: 3000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: false,
+        //   draggable: true,
+        //   progress: undefined,
+        //   theme: "light",
+        // });
   
         // Filter the wishlistItems array to remove the deleted item
         setTimeout(() => {
           const updatedWishlist = wishlistItems.map((rProduct) => {
-            const filteredProducts = rProduct.products.filter((item) => item.productId._id !== id);
+            const filteredProducts = rProduct.products.filter(
+              (item) => item.productId._id !== id
+            );
             return {
               ...rProduct,
               products: filteredProducts,

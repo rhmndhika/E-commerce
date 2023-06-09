@@ -35,7 +35,6 @@ const Review = () => {
   const toast = useToast();
   const [ file, setFile ] = useState([]);
 
-  const [ rProductId, setRProductId ] = useState([]);
 
   useEffect(() => {
     const getUserOrder= async () => {
@@ -118,9 +117,9 @@ const Review = () => {
                   duration: 3000,
                   isClosable: true,
                 });
-                // setTimeout(() => {
-                //   window.location.reload();
-                // }, 1500);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1500);
               });
             } catch (err) {
               console.log(err);
@@ -209,22 +208,6 @@ const Review = () => {
                       />
                     </Box>
                   ))}
-
-                  {/* { images.length < 8 && (
-                    <Box
-                      borderWidth="1px"
-                      borderColor="gray.300"
-                      borderStyle="dashed"
-                      borderRadius="md"
-                      p={4}
-                      textAlign="center"
-                      cursor="pointer"
-                      onClick={() => document.getElementById("input-images").click()}
-                    >
-                      <AddIcon mb={2} />
-                      Add more images
-                    </Box>
-                  )} */}
                 </SimpleGrid>
 
                   {/* <Input
