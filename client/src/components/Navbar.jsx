@@ -53,6 +53,7 @@ export default function Nav() {
     Cookies.remove('token');
     Cookies.remove('userId');
     Cookies.remove('username');
+    Cookies.remove('email');
     navigate("/", { replace : true });
   }
 
@@ -77,7 +78,7 @@ export default function Nav() {
           <Box as='a' href="/"><Text as="b">Bumi Baureksa Pratama</Text></Box>
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
-              { user || token || tokenUserId || tokenUsername ?
+              { token || tokenUserId || tokenUsername ?
               <Flex gap="10px">
                 <a href="/product/search">
                 <IconButton
@@ -98,7 +99,7 @@ export default function Nav() {
               :
               null
               }
-              { user || token || tokenUserId || tokenUsername ? 
+              { token || tokenUserId || tokenUsername ? 
               // <p onClick={handleLogout}>{user.username}</p>
               <Menu>
                 <MenuButton

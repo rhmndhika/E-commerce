@@ -1,4 +1,4 @@
-import React, { lazy, Suspense} from 'react';
+import React, { lazy, Suspense, useEffect} from 'react';
 import { Spinner } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -32,6 +32,7 @@ function App() {
 
   const user = useSelector((state) => state.user.currentUser);
   const tokenUserId = Cookies.get('userId');
+
 
   return (
     <ChakraProvider>
