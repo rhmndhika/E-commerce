@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import UserProfileProvider from './helper/UserProfileProvider';
+import Cookies from 'js-cookie';
 import PrivateRoute from './PrivateRoute';
 
 
@@ -27,10 +28,10 @@ const CarouselContent1 = lazy(() => import('./scenes/global/CarouselContent1'));
 const ResetPassword = lazy(() => import('./components/ResetPasswod'));
 const SearchPage = lazy(() => import('./scenes/global/SearchPage'));
 
-
 function App() {
 
   const user = useSelector((state) => state.user.currentUser);
+  const tokenUserId = Cookies.get('userId');
 
   return (
     <ChakraProvider>
@@ -50,8 +51,8 @@ function App() {
             <Route path='/' element={
                 <Home />
             } />
-            <Route path='/signup' element={ user ? <Navigate to="/welcome" replace={true} /> : <Signup />} />
-            <Route path='/signin' element={ user ? <Navigate to="/welcome" replace={true} /> : <SignIn />} />
+            <Route path='/signup' element={ tokenUserId ? <Navigate to="/welcome" replace={true} /> : <Signup />} />
+            <Route path='/signin' element={ tokenUserId ? <Navigate to="/welcome" replace={true} /> : <SignIn />} />
             <Route path='/welcome' element={<Welcome />} />
             <Route path='/productList/:category' element={<ProductList />} />
             <Route path='/productSingle/:id' element={<Product />} />

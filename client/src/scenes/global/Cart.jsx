@@ -201,6 +201,26 @@ const Cart = () => {
     const [ Carts, setCarts ] = useState([]);
     const [ Prices, setPrices ] = useState(null);
 
+    const handleCopy = (message) => {
+      navigator.clipboard.writeText(message); // Copy the message to the clipboard
+      toast.success('Message copied to clipboard'); // Show a success toast indicating the message was copied
+    };
+
+    useEffect(() => {
+      // Check if the user is on the cart page
+      if (tokenUserId) {
+        const message = 'Gunakan kartu kredit : 4242 4242 4242 4242 dan CVC : 123 untuk pembayaran';
+  
+        toast.info(
+          <div>
+            <span style={{ fontWeight: 'bold' }}>{message}</span><br></br>
+            <button onClick={() => handleCopy(message)}>Copy</button>
+          </div>
+        ); // Show the toast notification with a copy button
+      }
+    }, [tokenUserId]);
+    
+    
     useEffect(() => {
         const makeRequest = async () => {
             try{
@@ -219,7 +239,7 @@ const Cart = () => {
     useEffect(() => {
         const makeCartRequest = async () => {
             try{
-                const response = await userMethod.get(`/cart/find/${tokenUserId}`)
+                const response = await userMethod.get(`/cart/find/${tokenUserId}`);
                 setCarts(response.data);
             } catch (err) {
                 console.log(err);
