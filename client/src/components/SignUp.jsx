@@ -21,6 +21,8 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
   const [username, setUsername] = useState('');
@@ -30,16 +32,23 @@ export default function Signup() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
+  const notify = () => toast.success("Registering Account", {
+    position: toast.POSITION.TOP_RIGHT
+  });
+
   const register = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:5000/register', {
+      .post('https://e-commerce-production-25ef.up.railway.app/register', {
         username: username,
         email: email,
         password: password,
       })
       .then((response) => {
-        navigate('/signin', { replace: true });
+        notify();
+        setTimeout(() => {
+          navigate('/signin', { replace: true });
+        }, 2000)
       })
       .catch((error) => {
         if (error.response && error.response.data && error.response.data.message) {
@@ -51,6 +60,8 @@ export default function Signup() {
   };
 
   return (
+    <>
+    <ToastContainer />
     <Flex
       minH={'100vh'}
       align={'center'}
@@ -154,5 +165,6 @@ export default function Signup() {
         </Box>
       </Stack>
     </Flex>
+    </>
   );
 }

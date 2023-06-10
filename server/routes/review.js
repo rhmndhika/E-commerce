@@ -21,36 +21,63 @@ const { verifyTokenAndAuthorization, verifyToken } = require('./verifyToken');
 //   }
 // });
 
+// -----------------
+// const createReview = async (req, res) => {
+
+//     const newReview = new Review(req.body)
+
+//     try {
+//         const saveReview = await newReview.save((err, savedReview) => {
+//           if (err) {
+//             // Handle the error
+//           } else {
+//             // Add the review ID to the product's reviews array
+//             Product.findByIdAndUpdate(
+//               req.body.product,
+//               { $push: { reviews: savedReview._id } },
+//               (err) => {
+//                 if (err) {
+//                   // Handle the error
+//                 } else {
+//                   // Review added to the product successfully
+//                   res.status(200).json("Review added to the product successfully");
+//                 }
+//               }
+//             );
+//           }
+//         })
+//         res.status(200).json(saveReview);
+//     } catch (err) {
+//         res.status(500).json(err);
+//         console.log(err);
+//     }
+// }
+
 const createReview = async (req, res) => {
+  const newReview = new Review(req.body);
 
-    const newReview = new Review(req.body)
+  try {
+    const savedReview = await newReview.save();
+    // Add the review ID to the product's reviews array
+    Product.findByIdAndUpdate(
+      req.body.product,
+      { $push: { reviews: savedReview._id } },
+      (err) => {
+        if (err) {
+          // Handle the error
+          res.status(500).json(err);
+        } else {
+          // Review added to the product successfully
+          res.status(200).json(savedReview);
+        }
+      }
+    );
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+};
 
-    try {
-        const saveReview = await newReview.save((err, savedReview) => {
-          if (err) {
-            // Handle the error
-          } else {
-            // Add the review ID to the product's reviews array
-            Product.findByIdAndUpdate(
-              req.body.product,
-              { $push: { reviews: savedReview._id } },
-              (err) => {
-                if (err) {
-                  // Handle the error
-                } else {
-                  // Review added to the product successfully
-                  res.status(200).json("Review added to the product successfully");
-                }
-              }
-            );
-          }
-        })
-        res.status(200).json(saveReview);
-    } catch (err) {
-        res.status(500).json(err);
-        console.log(err);
-    }
-}
 
 // const getUserReview = async (req, res) => {
 

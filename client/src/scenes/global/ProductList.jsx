@@ -1,14 +1,14 @@
+import React, { useState, useEffect } from 'react'
 import { Flex, Text, Select } from '@chakra-ui/react'
-import React, { useState } from 'react'
 import styled from 'styled-components'
 import Products from '../../components/Products'
 import Newsletter from '../../components/Newsletter'
 import Footer from '../../components/Footer.tsx'
 import Navbar from '../../components/Navbar.jsx'
 import { useMediaQuery } from '@chakra-ui/react'
-import { mobile, isMobile } from '../../reponsive'
 import { useLocation } from 'react-router-dom'
-import axios from 'axios'
+import { publicRequest } from '../../useFetch'
+
 
 const Container = styled.div`
 `
@@ -26,6 +26,7 @@ const ProductList = () => {
 
   const [ filter, setFilter ] = useState({});
   const [ sort, setSort ] = useState("Newest");
+  const [availableMaterials, setAvailableMaterials] = useState(new Set());
 
   
   const handleFilters = (e) => {
@@ -48,8 +49,20 @@ const ProductList = () => {
     fallback: false, 
   })
 
-  console.log(location)
+  useEffect(() => {
+    const getAllProduct = async () => {
+        try{
+            const response = await publicRequest.get("/product/all");
+            const uniqueMaterials = new Set(response.data.map((product) => product.materials));
+            setAvailableMaterials(uniqueMaterials);
+        } catch (err) {
+            console.log(err);
+        } 
+    }
+    getAllProduct();
+  }, [])
 
+ 
   return (
     <>
     <Navbar />
@@ -57,20 +70,19 @@ const ProductList = () => {
       <Text margin="20px" fontSize="35px" fontWeight="bold">{cat}</Text>
         { isSmallerThan666 ? 
         <Flex flexDirection="row" justifyContent="space-between" alignItems="center" margin="20px">
-          { cat === "Automotive" ? 
+  
           <Flex flexDirection="row">
             <FilterText>Filter Products</FilterText>
              <Select name="materials" width="180px" mt="-3px" ml="5px" onChange={handleFilters}>
               <option value='All' onClick={deleteKey()}>All</option>
-              <option value='Rubber'>Rubber</option>
-              <option value='Metal'>Metal</option>
-              <option value='Theromoplastic'>Theromoplastic</option>
-              <option value='Polyurethane'>Polyurethane</option>
+              {[...availableMaterials].map((material) => (
+                <option key={material} value={material}>
+                  {material}
+                </option>
+              ))}
             </Select>
           </Flex>
-            :
-          null
-          }
+           
 
           <Flex>
             <FilterText>Sort Products</FilterText>
@@ -78,6 +90,7 @@ const ProductList = () => {
               <option value='Newest'>Newest</option>
               <option value='Asc'>Price (ASC)</option>
               <option value='Desc'>Price (DESC)</option>
+              <option value='Rating'>Rating</option>
             </Select>
           </Flex>
         </Flex>
@@ -85,19 +98,13 @@ const ProductList = () => {
         <Flex flexDirection="column" justifyContent="space-between" alignItems="center" margin="20px" width="0px 20px">
           <Flex flexDirection="row" alignSelf="flex-start">
             <FilterText>Filter Products</FilterText>
-          
-            <Select name="categories" width="140px" mt="-3px" ml="5px" onChange={handleFilters}>
-              <option value='SC' selected>All</option> :
-              <option value='Automotive'>Automotive</option>
-              <option value='Construction'>Construction</option>
-              <option value='Health'>Health</option>
-            </Select>
-          
              <Select name="materials" placeholder='Material' width="140px" mt="-3px" ml="5px" onChange={handleFilters}>
-              <option value='Rubber'>Rubber</option>
-              <option value='Metal'>Metal</option>
-              <option value='Plastic'>Plastic</option>
-              <option value='Polyurethane'>Polyurethane</option>
+              <option value='All' onClick={deleteKey()}>All</option>
+              {[...availableMaterials].map((material) => (
+                <option key={material} value={material}>
+                  {material}
+                </option>
+              ))}
             </Select>
           </Flex>
 
@@ -107,6 +114,7 @@ const ProductList = () => {
               <option value='Newest'>Newest</option>
               <option value='Asc'>Price (ASC)</option>
               <option value='Desc'>Price (DESC)</option>
+              <option value='Rating'>Rating</option>
             </Select>
           </Flex>
         </Flex>
