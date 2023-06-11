@@ -33,6 +33,9 @@ import { toast, ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 import Cookies from 'js-cookie';
 import { IsUserProfile } from '../helper/UserProfileProvider'
+import AOS from 'aos';
+import 'aos/dist/aos.css'; 
+AOS.init();
 
 export default function Welcome() {
 
@@ -206,7 +209,9 @@ export default function Welcome() {
           textAlign={'center'}
           spacing={{ base: 8, md: 14 }}
           py={{ base: 20, md: 36 }}>
-          <Heading
+          <Heading 
+            data-aos="fade-up"
+            data-aos-duration="700"
             fontWeight={600}
             fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
             lineHeight={'110%'}>
@@ -215,11 +220,18 @@ export default function Welcome() {
             Bumi Baureksa Pratama
             </Text>
           </Heading>
-          <Text color={'gray.500'}>
+          <Text color={'gray.500'} 
+          data-aos="fade-up"
+          data-aos-delay="550"
+          data-aos-duration="500"
+          data-aos-easing="ease-in-out">
           PT Bumi Baureksa Pratama (PT BBP) is Producers of Speciality Chemicals. Our success is primarily based on customising client
           requirements to create true commercial value for the client.
           </Text>
           <Stack
+            data-aos="flip-left"
+            data-aos-delay="1550"
+            data-aos-duration="500"
             direction={'column'}
             spacing={3}
             align={'center'}
@@ -251,40 +263,6 @@ export default function Welcome() {
               Continue
             </Button>
             }
-            <Button  variant={'link'} colorScheme={'blue'} size={'sm'}>
-              Learn more
-            </Button>
-            <Box>
-              <Icon
-                as={Arrow}
-                color={useColorModeValue('gray.800', 'gray.300')}
-                w={71}
-                position={'absolute'}
-                right={-71}
-                top={'10px'}
-              />
-              { userProfile === null ||  userProfile.length <= 0 ?
-              <Text
-                fontSize={'lg'}
-                fontFamily={'Caveat'}
-                position={'absolute'}
-                right={'-125px'}
-                top={'-15px'}
-                transform={'rotate(10deg)'}>
-                Create Profile First 
-              </Text>
-              :
-              <Text
-                fontSize={'lg'}
-                fontFamily={'Caveat'}
-                position={'absolute'}
-                right={'-125px'}
-                top={'-15px'}
-                transform={'rotate(10deg)'}>
-                Go to Homepage
-              </Text>
-              }
-            </Box>
           </Stack>
         </Stack>
       </Container>

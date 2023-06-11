@@ -5,6 +5,9 @@ import CategoryItem from './CategoryItem';
 import styled from 'styled-components'
 import { mobile, isMobile } from '../reponsive'
 import { publicRequest } from '../useFetch';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+AOS.init();
 
 const Container = styled.div`
   display: flex;

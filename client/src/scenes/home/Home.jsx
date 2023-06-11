@@ -5,15 +5,18 @@ import Slider from '../../components/Slider';
 import Newsletter from '../../components/Newsletter';
 import Footer from '../../components/Footer.tsx';
 import Navbar from '../../components/Navbar.jsx'
-
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+AOS.init();
 
 const Home = () => {
 
   return (
     <div>
-    <Navbar />
-      <Slider />
+      <Navbar />
+      <div data-aos="zoom-in"> 
+        <Slider />
+      </div>
       <Categories />
       <Products />
       <Newsletter />

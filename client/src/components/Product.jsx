@@ -16,6 +16,9 @@ import {
 } from 'react-icons/ai';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+AOS.init();
 
 const Info = styled.div`
   opacity: 0;
@@ -80,7 +83,11 @@ const Container = styled.div`
 const Product = ({item}) => {
 
   return (
-    <Flex margin="10px" justifyContent="center" alignItems="center" height="460px"> 
+    <Flex margin="10px" justifyContent="center" alignItems="center" height="460px"
+      data-aos="fade-zoom-in"
+      data-aos-easing="ease-in-back"
+      data-aos-delay="300"
+      data-aos-offset="0">  
       <Card maxW='sm'>
       <CardBody>
         <Link to={`/productSingle/${item._id}`}>
@@ -110,34 +117,9 @@ const Product = ({item}) => {
             <Text noOfLines={1} maxW="300px" cursor="pointer">{item.desc}</Text>
           </Tooltip>
         </Stack>
-        {/* <ButtonGroup spacing='2'>
-          <Button variant='solid' colorScheme='blue'>
-            Buy now
-          </Button>
-          <Button variant='ghost' colorScheme='blue'>
-            Add to cart
-          </Button>
-        </ButtonGroup> */}
       </CardFooter>
       </Card>
     </Flex>
-    // <Container>
-    //   <Circle />
-    //   <Image src={item.img}/>
-    //   <Info>
-    //     <Icon>
-    //       <AiOutlineShoppingCart />
-    //     </Icon>
-    //     <Link to={`/productSingle/${item._id}`}>
-    //       <Icon>
-    //         <AiOutlineSearch />
-    //       </Icon>
-    //     </Link>
-    //     <Icon>
-    //       <AiOutlineHeart />
-    //     </Icon>
-    //   </Info>
-    // </Container>
   )
 }
 

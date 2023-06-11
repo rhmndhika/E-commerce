@@ -2,6 +2,10 @@ import React from 'react'
 import { Flex, Text, Button, Box, Stack, Heading, Image, Badge } from '@chakra-ui/react'
 import styled from 'styled-components'
 import { mobile, isMobile } from '../reponsive'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+AOS.init();
+
 
 const Container = styled.div`
   flex: 1;
@@ -13,12 +17,6 @@ const Container = styled.div`
   
 `;
 
-// const Image = styled.img`
-//   width: 100%;
-//   height: 100%;
-//   object-fit: cover;
-//   ${isMobile({ height: "20vh", padding: "10px"})}
-// `;
 
 const Info = styled.div`
   position: absolute;
@@ -42,7 +40,7 @@ const Title = styled.h1`
 
 const CategoryItem = ({item}) => {
   return (
-    <Container>
+    <Container data-aos="fade-up">
       <Image
         h="337px"
         w="full"
@@ -62,16 +60,6 @@ const CategoryItem = ({item}) => {
         </a>
       </Info>
     </Container>
-
-    // <Container>
-    //   <Image src={item.img} />
-    //   <Info>
-    //     <Title>{item.title}</Title>
-    //     <a href={`/productList/${item.cat}`}>
-    //       <Button border="none" padding="10px" backgroundColor="white" color="black" cursor="pointer" fontWeight="600">SHOP NOW</Button>
-    //     </a>
-    //   </Info>
-    // </Container>
   )
 }
 
