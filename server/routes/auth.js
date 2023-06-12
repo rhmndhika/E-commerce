@@ -68,6 +68,42 @@ const Login = async (req, res) => {
     }
 };
 
+const LoginAdmin = async (req, res) => {
+  try {
+      const user = await User.findOne({ username: req.body.username });
+
+      if (!user) {
+          return res.status(401).json({ message: "Wrong Username!" });
+      }
+
+      const hashedPassword = CryptoJs.AES.decrypt(user.password, process.env.PASS_SEC);
+      const originalPassword = hashedPassword.toString(CryptoJs.enc.Utf8);
+      
+      if (originalPassword !== req.body.password) {
+          return res.status(401).json({ message: "Please input the correct password!" });
+      }
+
+      if (user.isAdmin !== true) {
+        return res.status(401).json({ message: "User is not an admin!" });
+      }
+
+      const accessToken = jwt.sign(
+          { id: user._id, isAdmin: user.isAdmin },
+          process.env.JWT_SEC,
+          { expiresIn: "3d" }
+      );
+
+      const { password, ...others } = user._doc; 
+     
+      return res.status(200).json({ ...others, accessToken });
+        
+  } catch(err) {
+      console.log(err);
+      // Handle the error appropriately (e.g., send an error response)
+      return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 // const Login = async (req, res) => {
     
@@ -104,6 +140,7 @@ const Login = async (req, res) => {
 
 router.post("/register", Register);
 router.post("/login", Login);
+router.post("/login/for/admin", Login);
 
 
 module.exports = router

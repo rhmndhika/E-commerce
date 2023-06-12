@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 export const login = async (dispatch, user, toast) => {
     dispatch(loginStart());
     try {
-      await publicRequest.post("/login", user).then((res) => {
+      await publicRequest.post("/login/for/admin", user).then((res) => {
         console.log("Login response:", res.data);
         Cookies.set('token', res.data.accessToken, { expires: 3 });
         Cookies.set('userId', res.data._id, { expires: 3 });
