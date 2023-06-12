@@ -140,7 +140,7 @@ const LoginAdmin = async (req, res) => {
 
 router.post("/register", Register);
 router.post("/login", Login);
-router.post("/login/for/admin", Login);
+router.post("/login/for/admin", LoginAdmin);
 
 
 module.exports = router
