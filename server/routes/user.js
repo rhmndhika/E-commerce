@@ -129,6 +129,10 @@ const changeUserPassword = async (req, res) => {
       return res.status(401).json({ message: "Current password is incorrect" });
     }
 
+    if (newPassword === currentPassword) {
+      return res.status(401).json({ message: "Your new password is the same as current password, please change it" });
+    }
+
     // Encrypt the new password
     const encryptedPassword = CryptoJs.AES.encrypt(
       newPassword,

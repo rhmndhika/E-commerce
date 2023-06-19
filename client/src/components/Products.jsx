@@ -73,9 +73,9 @@ const Products = ({cat,filter,sort}) => {
     };
   
     const swap = (arr, i, j) => {
-      const temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
+      const temp = arr[i]; 
+      arr[i] = arr[j]; 
+      arr[j] = temp; 
     };
   
     const getSumRating = (reviews) => {

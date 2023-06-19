@@ -13,8 +13,7 @@ import {
     Text,
     Badge,
     Divider,
-    Image,
-
+    Image
   } from '@chakra-ui/react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
@@ -57,7 +56,6 @@ const ModalTransaction = ({ data, isOpen, onClose, id }) => {
             <Flex flexDirection="column" justifyContent="space-between" shadow="lg" padding="10px"> 
               <Text as="b">Detail Product</Text>
               {data?.products.map((itemDetail) => {
-                console.log(itemDetail)
               return (
               <Flex flexDirection="column" mt="10px">
                 <Image 
@@ -74,7 +72,9 @@ const ModalTransaction = ({ data, isOpen, onClose, id }) => {
               <Flex flexDirection="column" mt="20px">
               <Text as="b">Total Price</Text>
               <Text>$ {data?.amount}</Text>
-              <Button colorScheme='green'>Buy Again</Button>
+              <Link to={`/productSingle/${itemDetail.productId._id}`}>
+                <Button colorScheme='green'>Buy Again</Button>
+              </Link>
               </Flex>
             </Flex>    
 
