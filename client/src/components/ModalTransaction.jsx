@@ -65,16 +65,12 @@ const ModalTransaction = ({ data, isOpen, onClose, id }) => {
                 />
                 <Text>{itemDetail.productId.title} </Text>
                 <Text>{itemDetail.quantity} x  $ {itemDetail.productId.price}</Text>
-
               </Flex>
                 )
               })}
               <Flex flexDirection="column" mt="20px">
               <Text as="b">Total Price</Text>
               <Text>$ {data?.amount}</Text>
-              <Link to={`/productSingle/${itemDetail.productId._id}`}>
-                <Button colorScheme='green'>Buy Again</Button>
-              </Link>
               </Flex>
             </Flex>    
 
