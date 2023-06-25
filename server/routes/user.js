@@ -6,22 +6,22 @@ const nodemailer = require('nodemailer');
 const User = require("../models/User");
 const { v4: uuidv4 } = require('uuid');
 
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: process.env.EMAIL,
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      refreshToken: process.env.REFRESH_TOKEN
-    }
-  });
+// const transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//       type: "OAuth2",
+//       user: process.env.EMAIL,
+//       clientId: process.env.CLIENT_ID,
+//       clientSecret: process.env.CLIENT_SECRET,
+//       refreshToken: process.env.REFRESH_TOKEN
+//     }
+//   });
   
-  transporter.verify((err, success) => {
-    err
-    ? console.log(err)
-    : console.log(`=== Server is ready to take messages: ${success} ===`);
-  });
+//   transporter.verify((err, success) => {
+//     err
+//     ? console.log(err)
+//     : console.log(`=== Server is ready to take messages: ${success} ===`);
+//   });
   
 
 const updateUser = async (req, res) => {
