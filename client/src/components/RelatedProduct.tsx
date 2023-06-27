@@ -30,9 +30,10 @@ import {
     numReviews: number;
   }
 
-  function RelatedProduct() {
+  const RelatedProduct = ({categories}) => {
 
     const [ products, setProducts ] = useState<any[]>([]);
+    const [ shuffledProducts, setShuffledProducts ] = useState<any[]>([]);
 
     useEffect(() => {
         const getProducts = async () => {
@@ -44,11 +45,28 @@ import {
           }
         };
         getProducts();
-      }, [])
+    }, [])
+
+    const filteredProducts = categories && categories.length > 0
+    ? products.filter((product) => product.categories.includes(categories[0]))
+    : products;
+
+    useEffect(() => {
+      const shuffleArray = (array: any[]) => {
+        const newArray = [...array];
+        newArray.sort(() => Math.random() - 0.5);
+        return newArray;
+      };
+  
+      const shuffled = shuffleArray(filteredProducts);
+      setShuffledProducts(shuffled.slice(0, 4));
+    }, [products]);
+    
+    
 
     return (
       <Flex flexDirection="row" justifyContent="center" alignItems="center" flexWrap="wrap">
-         { products.slice(0,4).map((rProduct) => {
+         { shuffledProducts.slice(0,4).map((rProduct) => {
           return (
         <Box
           width="300px"

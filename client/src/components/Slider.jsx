@@ -8,13 +8,11 @@ import {
   Text,
   Container,
 } from '@chakra-ui/react';
-// Here we have used react-icons package for the icons
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
-// And react-slick as our Carousel Lib
 import Slider from 'react-slick';
+import Banner from '../assets/Imagez.jpg';
 import { Link } from 'react-router-dom';
 
-// Settings for the slider
 const settings = {
   dots: true,
   arrows: false,
@@ -28,28 +26,19 @@ const settings = {
 };
 
 export default function Carousel() {
-  // As we have used custom buttons, we need a reference variable to
-  // change the state
   const [slider, setSlider] = useState([]);
-
   const sliderIdRef = useRef(0);
-
-  // These are the breakpoints which changes the position of the
-  // buttons as the screen size changes
   const top = useBreakpointValue({ base: '90%', md: '50%' });
   const side = useBreakpointValue({ base: '30%', md: '40px' });
 
-  // This list contains all the data for carousels
-  // This can be static or loaded from a server
   const cards = [
     {
       title: 'Release Agent',
       text:
         "A release agent (also mold release agent, release coating, or mold release coating) is a chemical used to prevent other materials from bonding to surfaces.",
-      image:
-        'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-      href: '/carouselcontent1'
-    }
+      image: Banner,
+      href: '/carouselcontent1',
+    },
   ];
 
   return (
@@ -59,8 +48,7 @@ export default function Carousel() {
       width={'full'}
       overflow={'hidden'}
       padding="30px"
-      >
-      {/* CSS files for react-slick */}
+    >
       <link
         rel="stylesheet"
         type="text/css"
@@ -72,43 +60,18 @@ export default function Carousel() {
         type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
       />
-      {/* Left Icon */}
-      {/* <IconButton
-        aria-label="left-arrow"
-        variant="ghost"
-        position="absolute"
-        left={side}
-        top={top}
-        transform={'translate(0%, -50%)'}
-        zIndex={2}
-        onClick={() => slider?.slickPrev()}>
-        <BiLeftArrowAlt size="40px" />
-      </IconButton> */}
-      {/* Right Icon */}
-      {/* <IconButton
-        aria-label="right-arrow"
-        variant="ghost"
-        position="absolute"
-        right={side}
-        top={top}
-        transform={'translate(0%, -50%)'}
-        zIndex={2}
-        onClick={() => slider?.slickNext()}>
-        <BiRightArrowAlt size="40px" />
-      </IconButton> */}
-      {/* Slider */}
       <Slider {...settings} ref={(slider) => setSlider(slider)}>
         {cards.map((card, index) => (
           <Box
             key={index}
-            height={'6xl'}
+            height={'500px'}
             position="relative"
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
-            backgroundSize="cover"
+            backgroundSize="cover" // Change the backgroundSize property
             objectFit="cover"
-            backgroundImage={`url(${card.image})`}>
-            {/* This is the block you need to change, to customize the caption */}
+            backgroundImage={`url(${card.image})`}
+          >
             <Container size="container.lg" height="600px" position="relative">
               <Stack
                 spacing={6}
@@ -116,13 +79,14 @@ export default function Carousel() {
                 maxW={'lg'}
                 position="absolute"
                 top="50%"
-                transform="translate(0, -50%)">
+                transform="translate(0, -50%)"
+              >
                 <Link to={card.href}>
-                <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
-                  {card.title}
-                </Heading>
+                  <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
+                    {card.title}
+                  </Heading>
                 </Link>
-                <Text fontSize={{ base: 'md', lg: 'lg' }} color="GrayText">
+                <Text fontSize={{ base: 'md', lg: 'lg' }} color="black" fontWeight="bold">
                   {card.text}
                 </Text>
               </Stack>

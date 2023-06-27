@@ -295,8 +295,8 @@ const Product = () => {
             </Flex>
           </InfoContainer>
         </Wrapper>
-      <Text ml="30px" fontSize="20px" fontWeight="bold">Related Product </Text>
-      <RelatedProduct />
+      <Text ml="30px" fontSize="20px" fontWeight="bold">Related Product</Text>
+      <RelatedProduct categories={product.categories} />
       <Newsletter />
       <Footer />
     </Container>
